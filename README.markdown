@@ -11,7 +11,6 @@ Installation
 Pimple consists of just one file: `Pimple.php`. Download it, require it in
 your code, and you're good to go:
 
-    [php]
     require_once '/path/to/Pimple.php';
 
 Usage
@@ -68,7 +67,6 @@ By default, each time you get an object, Pimple returns a new instance of it.
 If you want the same instance for all calls, wrap your lambda function with
 the `asShared()` method:
 
-    [php]
     $c->user = $c->asShared(function ($c)
     {
       return new User($c->storage);
