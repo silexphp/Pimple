@@ -65,6 +65,26 @@ class Pimple
   }
 
   /**
+   * Checks if a parameter or an object is set.
+   *
+   * @return Boolean
+   */
+  function __isset($id)
+  {
+    return isset($this->values[$id]);
+  }
+
+  /**
+   * Checks if a parameter or an object is set
+   *
+   * @throws InvalidArgumentException if the identifier is not defined
+   */
+  function __unset($id)
+  {
+    unset($this->values[$id]);
+  }
+
+  /**
    * Returns a closure that stores the result of the given closure for
    * uniqueness in the scope of this instance of Pimple.
    *
