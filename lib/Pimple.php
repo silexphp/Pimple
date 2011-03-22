@@ -30,80 +30,78 @@
  * @package pimple
  * @author  Fabien Potencier
  */
-class Pimple
+class Pimple implements ArrayAccess
 {
-  protected $values = array();
+    private $values = array();
 
-  /**
-   * Sets a parameter or an object.
-   *
-   * @param string $id    The unique identifier for the parameter or object
-   * @param mixed  $value The value of the parameter or a closure to defined an object
-   */
-  function __set($id, $value)
-  {
-    $this->values[$id] = $value;
-  }
-
-  /**
-   * Gets a parameter or an object.
-   *
-   * @param  string $id The unique identifier for the parameter or object
-   *
-   * @return mixed  The value of the parameter or an object
-   *
-   * @throws InvalidArgumentException if the identifier is not defined
-   */
-  function __get($id)
-  {
-    if (!isset($this->values[$id]))
+    /**
+     * Sets a parameter or an object.
+     *
+     * @param string $id    The unique identifier for the parameter or object
+     * @param mixed  $value The value of the parameter or a closure to defined an object
+     */
+    function offsetSet($id, $value)
     {
-      throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+        $this->values[$id] = $value;
     }
 
-    return is_callable($this->values[$id]) ? $this->values[$id]($this) : $this->values[$id];
-  }
-
-  /**
-   * Checks if a parameter or an object is set.
-   *
-   * @return Boolean
-   */
-  function __isset($id)
-  {
-    return isset($this->values[$id]);
-  }
-
-  /**
-   * Checks if a parameter or an object is set
-   *
-   * @throws InvalidArgumentException if the identifier is not defined
-   */
-  function __unset($id)
-  {
-    unset($this->values[$id]);
-  }
-
-  /**
-   * Returns a closure that stores the result of the given closure for
-   * uniqueness in the scope of this instance of Pimple.
-   *
-   * @param Closure $callable A closure to wrap for uniqueness
-   *
-   * @return Closure The wrapped closure
-   */
-  function asShared($callable)
-  {
-    return function ($c) use ($callable)
+    /**
+     * Gets a parameter or an object.
+     *
+     * @param  string $id The unique identifier for the parameter or object
+     *
+     * @return mixed  The value of the parameter or an object
+     *
+     * @throws InvalidArgumentException if the identifier is not defined
+     */
+    function offsetGet($id)
     {
-      static $object;
+        if (!isset($this->values[$id])) {
+            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+        }
 
-      if (is_null($object))
-      {
-        $object = $callable($c);
-      }
+        return is_callable($this->values[$id]) ? $this->values[$id]($this) : $this->values[$id];
+    }
 
-      return $object;
-    };
-  }
+    /**
+     * Checks if a parameter or an object is set.
+     *
+     * @return Boolean
+     */
+    function offsetExists($id)
+    {
+        return isset($this->values[$id]);
+    }
+
+    /**
+     * Checks if a parameter or an object is set
+     *
+     * @throws InvalidArgumentException if the identifier is not defined
+     */
+    function offsetUnset($id)
+    {
+        unset($this->values[$id]);
+    }
+
+    /**
+     * Returns a closure that stores the result of the given closure for
+     * uniqueness in the scope of this instance of Pimple.
+     *
+     * @param Closure $callable A closure to wrap for uniqueness
+     *
+     * @return Closure The wrapped closure
+     */
+    function asShared($callable)
+    {
+        return function ($c) use ($callable)
+        {
+            static $object;
+
+            if (is_null($object)) {
+                $object = $callable($c);
+            }
+
+            return $object;
+        };
+    }
 }

@@ -25,12 +25,11 @@ different kind of data: objects and parameters.
 
 ### Defining parameters
 
-Defining a parameter is as simple as defining a new property of a Pimple
-instance:
+Defining a parameter is as simple as using the Pimple instance as an array:
 
     // define some parameters
-    $container->cookie_name = 'SESSION_ID';
-    $container->storage_class = 'SessionStorage';
+    $container['cookie_name'] = 'SESSION_ID';
+    $container['storage_class'] = 'SessionStorage';
 
 ### Defining objects
 
@@ -38,14 +37,14 @@ Objects are defined by a lambda function that returns an instance of the
 object:
 
     // define some objects
-    $container->storage = function ($c)
+    $container['storage'] = function ($c)
     {
-      return new $c->storage_class($c->cookie_name);
+      return new $c['storage_class']($c['cookie_name']);
     };
 
-    $container->user = function ($c)
+    $container['user'] = function ($c)
     {
-      return new User($c->storage);
+      return new User($c['storage']);
     };
 
 Notice that the lambda function has access to the current instance of the
@@ -57,7 +56,7 @@ does not matter, and there is no performance penalty.
 Using the defined objects is also very easy:
 
     // get the user object
-    $user = $container->user;
+    $user = $container['user'];
 
     // the above call is roughly equivalent to the following code:
     // $storage = new SessionStorage('SESSION_ID');
@@ -67,9 +66,9 @@ By default, each time you get an object, Pimple returns a new instance of it.
 If you want the same instance for all calls, wrap your lambda function with
 the `asShared()` method:
 
-    $c->user = $c->asShared(function ($c)
+    $c['user'] = $c->asShared(function ($c)
     {
-      return new User($c->storage);
+      return new User($c['storage']);
     });
 
 ### Packaging a container for reusability
@@ -80,11 +79,11 @@ that extends `Pimple`, and configuring it in the constructor:
 
     class SomeContainer extends Pimple
     {
-      public function __construct()
-      {
-        $this->parameter = 'foo';
-        $this->object = function () { return stdClass(); };
-      }
+        public function __construct()
+        {
+            $this['parameter'] = 'foo';
+            $this['object'] = function () { return stdClass(); };
+        }
     }
 
 Here is the beginning of a container for the Zend Framework with the
@@ -95,31 +94,31 @@ account:
 
     class Zend_Pimple extends Pimple
     {
-      public function __construct()
-      {
-        set_include_path(__DIR__.'/lib/vendor/Zend/library'.PATH_SEPARATOR.get_include_path());
-        require_once 'Zend/Loader/Autoloader.php';
-        spl_autoload_register(array('Zend_Loader_Autoloader', 'autoload'));
-
-        $this->mailer_transport = $this->asShared(function ($c)
+        public function __construct()
         {
-          return new Zend_Mail_Transport_Smtp('smtp.gmail.com', array(
-            'auth'     => 'login', 'ssl' => 'ssl', 'port' => 465,
-            'username' => $c->mailer_username,
-            'password' => $c->mailer_password,
-          ));
-        });
+            set_include_path(__DIR__.'/lib/vendor/Zend/library'.PATH_SEPARATOR.get_include_path());
+            require_once 'Zend/Loader/Autoloader.php';
+            spl_autoload_register(array('Zend_Loader_Autoloader', 'autoload'));
 
-        $this->mailer = $this->asShared(function ($c)
-        {
-          $mailer = new $c->mailer_class();
-          $mailer->setDefaultTransport($c->mailer_transport);
+            $this['mailer_transport'] = $this->asShared(function ($c)
+            {
+                return new Zend_Mail_Transport_Smtp('smtp.gmail.com', array(
+                    'auth'     => 'login', 'ssl' => 'ssl', 'port' => 465,
+                    'username' => $c['mailer_username'],
+                    'password' => $c['mailer_password'],
+                ));
+            });
 
-          return $mailer;
-        });
+            $this['mailer'] = $this->asShared(function ($c)
+            {
+                $mailer = new $c['mailer_class']();
+                $mailer->setDefaultTransport($c['mailer_transport']);
 
-        $this->mailer_class = 'Zend_Mail';
-      }
+                return $mailer;
+            });
+
+            $this['mailer_class'] = 'Zend_Mail';
+        }
     }
 
 Using this container from your own is rather easy:
@@ -130,14 +129,14 @@ Using this container from your own is rather easy:
     // ...
 
     // embed the Zend_Pimple container
-    $container->zend = $container->asShared(function () { return new Zend_Pimple(); });
+    $container['zend'] = $container->asShared(function () { return new Zend_Pimple(); });
 
     // configure it
-    $container->zend->mailer_username = 'YourUsername';
-    $container->zend->mailer_password = 'YourPassword';
+    $container['zend']['mailer_username'] = 'YourUsername';
+    $container['zend']['mailer_password'] = 'YourPassword';
 
     // use it
-    $container->zend->mailer
+    $container['zend']['mailer']
       ->setBodyText('Sent from my Pimple container!')
       ->setFrom('fabien.potencier@example.com', 'Fabien Potencier')
       ->addTo('fabien.potencier@example.com', 'Fabien Potencier')
@@ -160,7 +159,7 @@ Source code:
 License
 -------
 
-Copyright (c) 2009 Fabien Potencier
+Copyright (c) 2009,2010,2011 Fabien Potencier
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
