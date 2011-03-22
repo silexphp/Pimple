@@ -83,6 +83,11 @@ class Pimple implements ArrayAccess
         unset($this->values[$id]);
     }
 
+    function attach($name, $callable)
+    {
+        $this[$name] = $this->asShared($callable);
+    }
+
     /**
      * Returns a closure that stores the result of the given closure for
      * uniqueness in the scope of this instance of Pimple.

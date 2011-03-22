@@ -128,8 +128,8 @@ Using this container from your own is rather easy:
     // define your project parameters and objects
     // ...
 
-    // embed the Zend_Pimple container
-    $container['zend'] = $container->asShared(function () { return new Zend_Pimple(); });
+    // attach the Zend_Pimple container
+    $container->attach('zend', function () { return new Zend_Pimple(); });
 
     // configure it
     $container['zend']['mailer_username'] = 'YourUsername';
