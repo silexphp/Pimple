@@ -53,7 +53,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Pimple\Tests\Service', $pimple['service']);
     }
-    
+
     public function testServicesShouldBeDifferent()
     {
         $pimple = new Pimple();
@@ -63,11 +63,25 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
         $serviceOne = $pimple['service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
-        
+
         $serviceTwo = $pimple['service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
-        
+
         $this->assertNotSame($serviceOne, $serviceTwo);
+    }
+
+    public function testShouldPassContainerAsParameter()
+    {
+        $pimple = new Pimple();
+        $pimple['service'] = function() {
+            return new Service();
+        };
+        $pimple['container'] = function($container) {
+            return $container;
+        };
+
+        $this->assertNotSame($pimple, $pimple['service']);
+        $this->assertSame($pimple, $pimple['container']);
     }
 
     public function testIsset()
@@ -105,10 +119,10 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
         $serviceOne = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
-        
+
         $serviceTwo = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
-        
+
         $this->assertSame($serviceOne, $serviceTwo);
     }
 }
