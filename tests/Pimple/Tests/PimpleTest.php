@@ -89,7 +89,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple = new Pimple();
         $pimple['param'] = 'value';
         $pimple['service'] = function() {
-            return 'SomeService';
+            return new Service();
         };
 
         $this->assertTrue(isset($pimple['param']));
@@ -102,7 +102,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple = new Pimple();
         $pimple['param'] = 'value';
         $pimple['service'] = function() {
-            return 'SomeService';
+            return new Service();
         };
 
         unset($pimple['param'], $pimple['service']);
