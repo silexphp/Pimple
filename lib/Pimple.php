@@ -34,11 +34,6 @@ class Pimple implements ArrayAccess
 {
     private $values = array();
 
-    public function add(array $values)
-    {
-        $this->values = array_merge($this->values, $values);
-    }
-
     /**
      * Sets a parameter or an object.
      *
