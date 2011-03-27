@@ -110,10 +110,10 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($pimple['service']));
     }
 
-    public function testAsShared()
+    public function testShare()
     {
         $pimple = new Pimple();
-        $pimple['shared_service'] = $pimple->asShared(function() {
+        $pimple['shared_service'] = $pimple->share(function() {
             return new Service();
         });
 
