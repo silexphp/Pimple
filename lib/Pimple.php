@@ -104,4 +104,21 @@ class Pimple implements ArrayAccess
             return $object;
         };
     }
+
+    /**
+     * Protects a callable from being interpreted as a service.
+     *
+     * This is useful when you want to store a callable as a parameter.
+     *
+     * @param Closure $callable A closure to protect from being evaluated
+     *
+     * @return Closure The protected closure
+     */
+    function protect($callable)
+    {
+        return function ($c) use ($callable)
+        {
+            return $callable;
+        };
+    }
 }

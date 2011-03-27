@@ -125,4 +125,13 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($serviceOne, $serviceTwo);
     }
+
+    public function testProtect()
+    {
+        $pimple = new Pimple();
+        $callback = function () { return 'foo'; };
+        $pimple['protected'] = $pimple->protect($callback);
+
+        $this->assertSame($callback, $pimple['protected']);
+    }
 }
