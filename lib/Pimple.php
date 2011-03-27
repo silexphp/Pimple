@@ -91,7 +91,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The wrapped closure
      */
-    function share($callable)
+    function share(\Closure $callable)
     {
         return function ($c) use ($callable)
         {
@@ -114,7 +114,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    function protect($callable)
+    function protect(\Closure $callable)
     {
         return function ($c) use ($callable)
         {
