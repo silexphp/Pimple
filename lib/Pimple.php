@@ -66,6 +66,8 @@ class Pimple implements ArrayAccess
     /**
      * Checks if a parameter or an object is set.
      *
+     * @param  string $id The unique identifier for the parameter or object
+     *
      * @return Boolean
      */
     function offsetExists($id)
@@ -75,6 +77,8 @@ class Pimple implements ArrayAccess
 
     /**
      * Checks if a parameter or an object is set
+     *
+     * @param  string $id The unique identifier for the parameter or object
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
