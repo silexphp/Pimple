@@ -64,9 +64,9 @@ Using the defined objects is also very easy:
 
 By default, each time you get an object, Pimple returns a new instance of it.
 If you want the same instance for all calls, wrap your lambda function with
-the `asShared()` method:
+the `shared()` method:
 
-    $c['user'] = $c->asShared(function ($c)
+    $c['user'] = $c->shared(function ($c)
     {
       return new User($c['storage']);
     });
