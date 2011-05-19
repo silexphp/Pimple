@@ -76,11 +76,9 @@ class Pimple implements ArrayAccess
     }
 
     /**
-     * Checks if a parameter or an object is set
+     * Unsets a parameter or an object.
      *
      * @param  string $id The unique identifier for the parameter or object
-     *
-     * @throws InvalidArgumentException if the identifier is not defined
      */
     function offsetUnset($id)
     {
