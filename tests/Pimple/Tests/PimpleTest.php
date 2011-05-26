@@ -135,10 +135,10 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($callback, $pimple['protected']);
     }
 
-    public function testProtectGlobalFunctionName()
+    public function testGlobalFunctionNameAsParameterValue()
     {
         $pimple = new Pimple();
-        $pimple['global_function'] = $pimple->protect('strlen');
+        $pimple['global_function'] = 'strlen';
         $this->assertSame('strlen', $pimple['global_function']);
     }
 }

@@ -74,11 +74,6 @@ function::
 
     $c['random'] = $c->protect(function () { return rand(); });
 
-When you want to set the the value of a parameter to an existing (global)
-function name, you must also protect it. For example::
-
-    $container['log_function'] = $container->protect('var_dump');
-
 Packaging a Container for reusability
 -------------------------------------
 

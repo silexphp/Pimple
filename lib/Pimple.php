@@ -60,7 +60,7 @@ class Pimple implements ArrayAccess
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        return is_callable($this->values[$id]) ? $this->values[$id]($this) : $this->values[$id];
+        return $this->values[$id] instanceof Closure ? $this->values[$id]($this) : $this->values[$id];
     }
 
     /**
@@ -93,7 +93,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The wrapped closure
      */
-    function share(\Closure $callable)
+    function share(Closure $callable)
     {
         return function ($c) use ($callable)
         {
@@ -116,7 +116,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    function protect($callable)
+    function protect(Closure $callable)
     {
         return function ($c) use ($callable)
         {
