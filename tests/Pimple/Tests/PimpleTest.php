@@ -47,7 +47,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testWithClosure()
     {
         $pimple = new Pimple();
-        $pimple['service'] = function() {
+        $pimple['service'] = function () {
             return new Service();
         };
 
@@ -57,7 +57,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testServicesShouldBeDifferent()
     {
         $pimple = new Pimple();
-        $pimple['service'] = function() {
+        $pimple['service'] = function () {
             return new Service();
         };
 
@@ -73,10 +73,10 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testShouldPassContainerAsParameter()
     {
         $pimple = new Pimple();
-        $pimple['service'] = function() {
+        $pimple['service'] = function () {
             return new Service();
         };
-        $pimple['container'] = function($container) {
+        $pimple['container'] = function ($container) {
             return $container;
         };
 
@@ -88,7 +88,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new Pimple();
         $pimple['param'] = 'value';
-        $pimple['service'] = function() {
+        $pimple['service'] = function () {
             return new Service();
         };
 
@@ -101,7 +101,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new Pimple();
         $pimple['param'] = 'value';
-        $pimple['service'] = function() {
+        $pimple['service'] = function () {
             return new Service();
         };
 
@@ -113,7 +113,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testShare()
     {
         $pimple = new Pimple();
-        $pimple['shared_service'] = $pimple->share(function() {
+        $pimple['shared_service'] = $pimple->share(function () {
             return new Service();
         });
 

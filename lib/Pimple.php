@@ -95,8 +95,7 @@ class Pimple implements ArrayAccess
      */
     function share(\Closure $callable)
     {
-        return function ($c) use ($callable)
-        {
+        return function ($c) use ($callable) {
             static $object;
 
             if (is_null($object)) {
@@ -118,8 +117,7 @@ class Pimple implements ArrayAccess
      */
     function protect($callable)
     {
-        return function ($c) use ($callable)
-        {
+        return function ($c) use ($callable) {
             return $callable;
         };
     }
