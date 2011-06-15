@@ -135,6 +135,17 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($callback, $pimple['protected']);
     }
 
+    public function testFactory()
+    {
+        $pimple = new Pimple();
+        $callback = function ($c, $y) { return $c['x'] + $y; };
+        $pimple['x'] = 5;
+        $pimple['factory'] = $pimple->factory($callback);
+
+        $this->assertNotSame($callback, $pimple['factory']);
+        $this->assertEquals(7, $pimple['factory'](2));
+    }
+
     public function testGlobalFunctionNameAsParameterValue()
     {
         $pimple = new Pimple();

@@ -54,6 +54,22 @@ Using the defined objects is also very easy::
     // $storage = new SessionStorage('SESSION_ID');
     // $session = new Session($storage);
 
+Passing Arguments to Objects
+----------------------------
+
+If the anonymous function requires arguments that aren't in the container,
+wrap it with the ``factory()`` method. Call the object returned by the container
+as you would a normal method and pass the desired values to it::
+
+    // define the factory method
+    $container['log.path'] = __DIR__ . '/logs/';
+    $container['log'] = $container->factory(function ($c, $subsystem) {
+        return new Logger($c['log.path'] . $subsystem . '.log');
+    });
+
+    // get the mail logger
+    $log = $container['log']('mail');
+
 Defining Shared Objects
 -----------------------
 

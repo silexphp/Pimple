@@ -113,6 +113,32 @@ class Pimple implements ArrayAccess
     }
 
     /**
+     * Returns a closure that wraps the given factory method closure to prepend
+     * the container as the first argument.
+     *
+     * @param Closure $callable A closure to use as a factory method
+     *
+     * @return Closure The wrapped closure
+     */
+    function factory(Closure $callable)
+    {
+        return function ($c) use ($callable) {
+            static $factory;
+
+            if (is_null($factory)) {
+                $factory = function () use ($c, $callable) {
+                    $args = func_get_args();
+                    array_unshift($args, $c);
+
+                    return call_user_func_array($callable, $args);
+                };
+            }
+
+            return $factory;
+        };
+    }
+
+    /**
      * Protects a callable from being interpreted as a service.
      *
      * This is useful when you want to store a callable as a parameter.
