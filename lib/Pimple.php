@@ -127,4 +127,22 @@ class Pimple implements ArrayAccess
             return $callable;
         };
     }
+
+    /**
+     * Gets a parameter or the closure defining an object.
+     *
+     * @param  string $id The unique identifier for the parameter or object
+     *
+     * @return mixed  The value of the parameter or the closure defining an object
+     *
+     * @throws InvalidArgumentException if the identifier is not defined
+     */
+    function raw($id)
+    {
+        if (!isset($this->values[$id])) {
+            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+        }
+
+        return $this->values[$id];
+    }
 }

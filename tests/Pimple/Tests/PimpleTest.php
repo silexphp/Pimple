@@ -141,4 +141,11 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple['global_function'] = 'strlen';
         $this->assertSame('strlen', $pimple['global_function']);
     }
+
+    public function testRaw()
+    {
+        $pimple = new Pimple();
+        $pimple['service'] = $definition = function () { return 'foo'; };
+        $this->assertSame($definition, $pimple->raw('service'));
+    }
 }
