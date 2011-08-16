@@ -165,4 +165,21 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple['service'] = $definition = function () { return 'foo'; };
         $this->assertSame($definition, $pimple->raw('service'));
     }
+
+    public function testRawHonorsNullValues()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = null;
+        $this->assertNull($pimple->raw('foo'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" is not defined.
+     */
+    public function testRawValidatesKeyIsPresent()
+    {
+        $pimple = new Pimple();
+        $pimple->raw('foo');
+    }
 }
