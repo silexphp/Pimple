@@ -97,6 +97,23 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($pimple['non_existent']));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" is not defined.
+     */
+    public function testOffsetGetValidatesKeyIsPresent()
+    {
+        $pimple = new Pimple();
+        echo $pimple['foo'];
+    }
+
+    public function testOffsetGetHonorsNullValues()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = null;
+        $this->assertNull($pimple['foo']);
+    }
+
     public function testUnset()
     {
         $pimple = new Pimple();
