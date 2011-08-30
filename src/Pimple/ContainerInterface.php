@@ -65,4 +65,12 @@ interface ContainerInterface extends \ArrayAccess
      * @throws InvalidArgumentException if the identifier is not defined
      */
     function raw($id);
+
+    /**
+     * Registers an extension.
+     *
+     * @param ExtensionInterface $extension An ExtensionInterface instance
+     * @param array              $values    An array of values that customizes the extension
+     */
+    function register(ExtensionInterface $extension, array $values = array());
 }

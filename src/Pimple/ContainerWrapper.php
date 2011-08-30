@@ -124,6 +124,13 @@ class ContainerWrapper implements ContainerInterface
         return $this->container->protect($callable);
     }
 
+    public function register(ExtensionInterface $extension, array $values = array())
+    {
+        $this->throwExceptionUnlessHasContainer();
+
+        return $this->container->register($extension, $values);
+    }
+
     private function throwExceptionUnlessHasContainer()
     {
         if (!$this->hasContainer()) {

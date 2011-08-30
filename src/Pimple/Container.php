@@ -131,4 +131,16 @@ class Container implements ContainerInterface
 
         return $this->values[$id];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function register(ExtensionInterface $extension, array $values = array())
+    {
+        foreach ($values as $key => $value) {
+            $this[$key] = $value;
+        }
+
+        $extension->register($this);
+    }
 }
