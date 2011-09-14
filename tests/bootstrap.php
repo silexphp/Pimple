@@ -9,6 +9,14 @@
  * file that was distributed with this source code.
  */
 
+spl_autoload_register(function ($class) {
+    if (0 === strpos($class, 'Pimple\\Tests')) {
+        $path = implode('/', explode('\\', $class)).'.php';
+        require_once __DIR__.'/'.$path;
+        return true;
+    }
+});
+
 if (file_exists($file = __DIR__.'/../autoload.php')) {
     require_once $file;
 } elseif (file_exists($file = __DIR__.'/../autoload.php.dist')) {
