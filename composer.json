@@ -1,6 +1,6 @@
 {
-    "name": "Pimple",
-    "type": "Library",
+    "name": "pimple",
+    "type": "library",
     "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
     "keywords": ["dependency injection", "container"],
     "homepage": "http://pimple.sensiolabs.org",
