@@ -32,7 +32,19 @@
  */
 class Pimple implements ArrayAccess
 {
-    private $values = array();
+    private $values;
+
+    /**
+     * Instantiate the container.
+     *
+     * Objects and parameters can be passed as argument to the constructor.
+     *
+     * @param array $values The parameters or objects.
+     */
+    function __construct (array $values = array())
+    {
+        $this->values = $values;
+    }
 
     /**
      * Sets a parameter or an object.
