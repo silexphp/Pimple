@@ -79,7 +79,7 @@ Packaging a Container for reusability
 
 If you use the same libraries over and over, you might want to create reusable
 containers. Creating a reusable container is as simple as creating a class
-that extends ``Pimple``, and configuring it in the constructor::
+that extends ``Pimple\Container``, and configuring it in the constructor::
 
     class SomeContainer extends Pimple\Container
     {
