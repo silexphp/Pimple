@@ -24,13 +24,16 @@
  * THE SOFTWARE.
  */
 
+namespace Pimple;
+
 /**
- * Pimple main class.
+ * Pimple container.
  *
  * @package pimple
  * @author  Fabien Potencier
+ * @author  Igor Wiedler
  */
-class Pimple implements ArrayAccess
+class Container implements \ArrayAccess
 {
     private $values = array();
 
@@ -46,7 +49,7 @@ class Pimple implements ArrayAccess
      * @param string $id    The unique identifier for the parameter or object
      * @param mixed  $value The value of the parameter or a closure to defined an object
      */
-    function offsetSet($id, $value)
+    public function offsetSet($id, $value)
     {
         $this->values[$id] = $value;
     }
@@ -60,13 +63,13 @@ class Pimple implements ArrayAccess
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    function offsetGet($id)
+    public function offsetGet($id)
     {
         if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        return $this->values[$id] instanceof Closure ? $this->values[$id]($this) : $this->values[$id];
+        return $this->values[$id] instanceof \Closure ? $this->values[$id]($this) : $this->values[$id];
     }
 
     /**
@@ -76,7 +79,7 @@ class Pimple implements ArrayAccess
      *
      * @return Boolean
      */
-    function offsetExists($id)
+    public function offsetExists($id)
     {
         return isset($this->values[$id]);
     }
@@ -86,7 +89,7 @@ class Pimple implements ArrayAccess
      *
      * @param  string $id The unique identifier for the parameter or object
      */
-    function offsetUnset($id)
+    public function offsetUnset($id)
     {
         unset($this->values[$id]);
     }
@@ -99,7 +102,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The wrapped closure
      */
-    function share(Closure $callable)
+    public function share(\Closure $callable)
     {
         return function ($c) use ($callable) {
             static $object;
@@ -121,7 +124,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    function protect(Closure $callable)
+    public function protect(\Closure $callable)
     {
         return function ($c) use ($callable) {
             return $callable;
@@ -137,10 +140,10 @@ class Pimple implements ArrayAccess
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    function raw($id)
+    public function raw($id)
     {
         if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         return $this->values[$id];

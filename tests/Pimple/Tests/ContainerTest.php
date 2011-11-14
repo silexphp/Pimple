@@ -26,7 +26,7 @@
 
 namespace Pimple\Tests;
 
-use Pimple;
+use Pimple\Container;
 
 /**
  * Pimple Test
@@ -34,11 +34,11 @@ use Pimple;
  * @package pimple
  * @author  Igor Wiedler <igor@wiedler.ch>
  */
-class PimpleTest extends \PHPUnit_Framework_TestCase
+class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     public function testWithString()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['param'] = 'value';
 
         $this->assertEquals('value', $pimple['param']);
@@ -46,7 +46,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testWithClosure()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['service'] = function () {
             return new Service();
         };
@@ -56,7 +56,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testServicesShouldBeDifferent()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['service'] = function () {
             return new Service();
         };
@@ -72,7 +72,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldPassContainerAsParameter()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['service'] = function () {
             return new Service();
         };
@@ -86,7 +86,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testIsset()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['param'] = 'value';
         $pimple['service'] = function () {
             return new Service();
@@ -103,20 +103,20 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
      */
     public function testOffsetGetValidatesKeyIsPresent()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         echo $pimple['foo'];
     }
 
     public function testOffsetGetHonorsNullValues()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['foo'] = null;
         $this->assertNull($pimple['foo']);
     }
 
     public function testUnset()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['param'] = 'value';
         $pimple['service'] = function () {
             return new Service();
@@ -129,7 +129,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testShare()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['shared_service'] = $pimple->share(function () {
             return new Service();
         });
@@ -145,7 +145,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testProtect()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $callback = function () { return 'foo'; };
         $pimple['protected'] = $pimple->protect($callback);
 
@@ -154,14 +154,14 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testGlobalFunctionNameAsParameterValue()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['global_function'] = 'strlen';
         $this->assertSame('strlen', $pimple['global_function']);
     }
 
     public function testRaw()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['service'] = $definition = function () { return 'foo'; };
         $this->assertSame($definition, $pimple->raw('service'));
     }
