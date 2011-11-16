@@ -97,6 +97,14 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($pimple['non_existent']));
     }
 
+    public function testConstructorInjection ()
+    {
+        $params = array("param" => "value");
+        $pimple = new Pimple($params);
+
+        $this->assertSame($params['param'], $pimple['param']);
+    }
+
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Identifier "foo" is not defined.
