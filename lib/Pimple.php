@@ -43,7 +43,7 @@ class Pimple extends ArrayObject
      */
     function offsetGet($id)
     {
-        if (parent::offsetExists($id) === false) {
+        if (!parent::offsetExists($id)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -100,7 +100,7 @@ class Pimple extends ArrayObject
      */
     function raw($id)
     {
-        if (parent::offsetExists($id) === false) {
+        if (!parent::offsetExists($id)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
