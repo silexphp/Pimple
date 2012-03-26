@@ -32,7 +32,7 @@
  */
 class Pimple implements ArrayAccess
 {
-    private $values;
+    protected $values;
 
     /**
      * Instantiate the container.
@@ -72,13 +72,17 @@ class Pimple implements ArrayAccess
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    function offsetGet($id)
+    function &offsetGet($id)
     {
         if (!array_key_exists($id, $this->values)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        return $this->values[$id] instanceof Closure ? $this->values[$id]($this) : $this->values[$id];
+        if (  $this->values[$id] instanceof Closure )
+            $ref=$this->values[$id]($this);
+        else
+	        $ref = &$this->values[$id];
+        return $ref;
     }
 
     /**
