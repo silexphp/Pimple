@@ -215,4 +215,25 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($serviceOne, $serviceTwo);
     }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" is not defined.
+     */
+    public function testExtendValidatesKeyIsPresent()
+    {
+        $pimple = new Pimple();
+        $pimple->extend('foo', function () {});
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" does not contain an object definition.
+     */
+    public function testExtendValidatesKeyYieldsObjectDefinition()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = 123;
+        $pimple->extend('foo', function () {});
+    }
 }

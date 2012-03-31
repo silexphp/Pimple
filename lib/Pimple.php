@@ -179,6 +179,11 @@ class Pimple implements ArrayAccess
         }
 
         $factory = $this->values[$id];
+
+        if (!($factory instanceof Closure)) {
+            throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
+        }
+
         return $this->values[$id] = function ($c) use ($callable, $factory) {
             return $callable($factory($c), $c);
         };
