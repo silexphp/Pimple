@@ -257,6 +257,16 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $pimple['array']['property']);
     }
 
+    public function testArrayNewReference()
+    {
+        $pimple = new Pimple();
+        $pimple['array'] = array();
+        $array = $pimple['array'];
+        $array['property'] = 'foo';
+
+        $this->assertEquals(array(), $pimple['array']);
+    }
+
     public function testModifyOverloadedInteger()
     {
         $pimple = new Pimple();
