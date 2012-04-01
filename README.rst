@@ -74,6 +74,34 @@ function::
 
     $c['random'] = $c->protect(function () { return rand(); });
 
+Modifying Objects after creation
+--------------------------------
+
+In some cases you may want to modify an object after it has been created. You
+can use the ``extend()`` method to do just that::
+
+    $c['twig'] = $c->share(function ($c) {
+        return new Twig_Environment($c['twig.loader'], $c['twig.options']);
+    });
+
+    $c['twig'] = $c->extend(function ($twig, $c) {
+        $twig->addExtension(new MyTwigExtension());
+        return $twig;
+    });
+
+Fetching the Object creation function
+-------------------------------------
+
+When you access an Object, Pimple automatically calls the function that you
+defined, which creates the Object for you. If you want to get this function,
+you can use the ``raw()`` method::
+
+    $c['session'] = $c->share(function ($c) {
+        return new Session($c['session_storage']);
+    });
+
+    $sessionFunction = $c->raw('session');
+
 Packaging a Container for reusability
 -------------------------------------
 
