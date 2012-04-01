@@ -159,14 +159,13 @@ class Pimple implements ArrayAccess
     }
 
     /**
-     * Extends an object (in place)
+     * Extends an object definition.
      *
-     * Useful when you want to extend an existing objects Closure definition,
-     * without necessarily loading that object
+     * Useful when you want to extend an existing object definition,
+     * without necessarily loading that object.
      *
-     * @param  string  $id The unique identifier for the object
-     *
-     * @param  Closure $callable A closure to extend the original 
+     * @param  string  $id       The unique identifier for the object
+     * @param  Closure $callable A closure to extend the original
      *
      * @return Closure The wrapped closure
      *
