@@ -84,15 +84,19 @@ can use the ``extend()`` method to do just that::
         return new Twig_Environment($c['twig.loader'], $c['twig.options']);
     });
 
-    $c['twig'] = $c->extend(function ($twig, $c) {
+    $c['twig'] = $c->extend('twig', function ($twig, $c) {
         $twig->addExtension(new MyTwigExtension());
         return $twig;
     });
 
+The first argument is the name of the object, the second is a function that
+gets access to the object instance and the container. The return value is
+a service definition, so you need to re-assign it on the container.
+
 Fetching the Object creation function
 -------------------------------------
 
-When you access an Object, Pimple automatically calls the function that you
+When you access an object, Pimple automatically calls the function that you
 defined, which creates the Object for you. If you want to get this function,
 you can use the ``raw()`` method::
 
