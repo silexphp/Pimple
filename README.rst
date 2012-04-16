@@ -89,14 +89,15 @@ be run on your service just after it is created::
         return new Twig_Environment($c['twig.loader'], $c['twig.options']);
     });
 
-    $c['twig'] = $c->extend('twig', function ($twig, $c) {
+    $c['twig'] = $c->share($c->extend('twig', function ($twig, $c) {
         $twig->addExtension(new MyTwigExtension());
         return $twig;
-    });
+    }));
 
 The first argument is the name of the object, the second is a function that
 gets access to the object instance and the container. The return value is
-a service definition, so you need to re-assign it on the container.
+a service definition, so you need to re-assign it on the container, in this
+example re-wrapped with the ``share`` method.
 
 Fetching the service creation function
 --------------------------------------
