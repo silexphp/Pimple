@@ -85,18 +85,31 @@ In some cases you may want to modify a service definition after it has been
 defined. You can use the ``extend()`` method to add define additional code to
 be run on your service just after it is created::
 
-    $c['twig'] = $c->share(function ($c) {
-        return new Twig_Environment($c['twig.loader'], $c['twig.options']);
-    });
+    $container['mail'] = function ($c) {
+        return new \Zend_Mail();
+    };
 
-    $c['twig'] = $c->extend('twig', function ($twig, $c) {
-        $twig->addExtension(new MyTwigExtension());
-        return $twig;
+    $container['mail'] = $c->extend('mail', function($mail, $c) {
+        $mail->setFrom($c['mail.default_from']);
+        return $mail;
     });
 
 The first argument is the name of the object, the second is a function that
 gets access to the object instance and the container. The return value is
 a service definition, so you need to re-assign it on the container.
+
+If the service you plan to extend is already shared, it's recommended that you
+re-wrap your extended service with the ``shared`` method, otherwise your extension
+code will be called every time you access the service::
+
+    $c['twig'] = $c->share(function ($c) {
+        return new Twig_Environment($c['twig.loader'], $c['twig.options']);
+    });
+
+    $c['twig'] = $c->share($c->extend('twig', function ($twig, $c) {
+        $twig->addExtension(new MyTwigExtension());
+        return $twig;
+    }));
 
 Fetching the service creation function
 --------------------------------------
