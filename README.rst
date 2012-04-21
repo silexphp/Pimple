@@ -89,7 +89,7 @@ be run on your service just after it is created::
         return new \Zend_Mail();
     };
 
-    $container['mail'] = $c->extend('mail', function($mail, $c) {
+    $container['mail'] = $container->extend('mail', function($mail, $c) {
         $mail->setFrom($c['mail.default_from']);
         return $mail;
     });
