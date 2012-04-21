@@ -65,7 +65,7 @@ By default, each time you get a service, Pimple returns a new instance of it.
 If you want the same instance to be returned for all calls, wrap your
 anonymous function with the ``share()`` method::
 
-    $c['session'] = $c->share(function ($c) {
+    $container['session'] = $container->share(function ($c) {
         return new Session($c['session_storage']);
     });
 
@@ -76,7 +76,7 @@ Because Pimple sees anonymous functions as service definitions, you need to
 wrap anonymous functions with the ``protect()`` method to store them as
 parameter::
 
-    $c['random'] = $c->protect(function () { return rand(); });
+    $container['random'] = $container->protect(function () { return rand(); });
 
 Modifying services after creation
 ---------------------------------
@@ -102,11 +102,11 @@ If the service you plan to extend is already shared, it's recommended that you
 re-wrap your extended service with the ``shared`` method, otherwise your extension
 code will be called every time you access the service::
 
-    $c['twig'] = $c->share(function ($c) {
+    $container['twig'] = $container->share(function ($c) {
         return new Twig_Environment($c['twig.loader'], $c['twig.options']);
     });
 
-    $c['twig'] = $c->share($c->extend('twig', function ($twig, $c) {
+    $container['twig'] = $container->share($c->extend('twig', function ($twig, $c) {
         $twig->addExtension(new MyTwigExtension());
         return $twig;
     }));
@@ -118,11 +118,11 @@ When you access an object, Pimple automatically calls the anonymous function
 that you defined, which creates the service object for you. If you want to get
 raw access to this function, you can use the ``raw()`` method::
 
-    $c['session'] = $c->share(function ($c) {
+    $container['session'] = $container->share(function ($c) {
         return new Session($c['session_storage']);
     });
 
-    $sessionFunction = $c->raw('session');
+    $sessionFunction = $container->raw('session');
 
 Packaging a Container for reusability
 -------------------------------------
