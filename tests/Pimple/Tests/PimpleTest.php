@@ -236,4 +236,43 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple['foo'] = 123;
         $pimple->extend('foo', function () {});
     }
+
+    public function testNestedPimple()
+    {
+        $pimple = new Pimple();
+        $pimple['pimple'] = $pimple->share(function () {
+            return new Pimple();
+        });
+        $pimple['pimple']['property'] = 'foo';
+
+        $this->assertEquals('foo', $pimple['pimple']['property']);
+    }
+
+    public function testModifyOverloadedArray()
+    {
+        $pimple = new Pimple();
+        $pimple['array'] = array();
+        $pimple['array']['property'] = 'foo';
+
+        $this->assertEquals('foo', $pimple['array']['property']);
+    }
+
+    public function testArrayNewReference()
+    {
+        $pimple = new Pimple();
+        $pimple['array'] = array();
+        $array = $pimple['array'];
+        $array['property'] = 'foo';
+
+        $this->assertEquals(array(), $pimple['array']);
+    }
+
+    public function testModifyOverloadedInteger()
+    {
+        $pimple = new Pimple();
+        $pimple['count'] = 1;
+        $pimple['count']++;
+
+        $this->assertEquals(2, $pimple['count']);
+    }
 }
