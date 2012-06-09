@@ -187,4 +187,14 @@ class Pimple implements ArrayAccess
             return $callable($factory($c), $c);
         };
     }
+
+    /**
+     * Returns all defined value names.
+     *
+     * @return array An array of value names
+     */
+    function keys()
+    {
+        return array_keys($this->values);
+    }
 }

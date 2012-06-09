@@ -236,4 +236,13 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple['foo'] = 123;
         $pimple->extend('foo', function () {});
     }
+
+    public function testKeys()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = 123;
+        $pimple['bar'] = 123;
+
+        $this->assertEquals(array('foo', 'bar'), $pimple->keys());
+    }
 }
