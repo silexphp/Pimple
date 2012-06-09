@@ -174,16 +174,16 @@ class Container implements \ArrayAccess
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    function extend($id, Closure $callable)
+    public function extend($id, \Closure $callable)
     {
         if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         $factory = $this->values[$id];
 
-        if (!($factory instanceof Closure)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
+        if (!($factory instanceof \Closure)) {
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
         }
 
         return $this->values[$id] = function ($c) use ($callable, $factory) {

@@ -100,7 +100,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testConstructorInjection ()
     {
         $params = array("param" => "value");
-        $pimple = new Pimple($params);
+        $pimple = new Container($params);
 
         $this->assertSame($params['param'], $pimple['param']);
     }
@@ -176,7 +176,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testRawHonorsNullValues()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['foo'] = null;
         $this->assertNull($pimple->raw('foo'));
     }
@@ -187,13 +187,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testRawValidatesKeyIsPresent()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple->raw('foo');
     }
 
     public function testExtend()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['shared_service'] = $pimple->share(function () {
             return new Service();
         });
@@ -222,7 +222,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testExtendValidatesKeyIsPresent()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple->extend('foo', function () {});
     }
 
@@ -232,8 +232,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testExtendValidatesKeyYieldsObjectDefinition()
     {
-        $pimple = new Pimple();
+        $pimple = new Container();
         $pimple['foo'] = 123;
         $pimple->extend('foo', function () {});
     }
+}
+
+class Service
+{
 }
