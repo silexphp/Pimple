@@ -97,6 +97,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($pimple['non_existent']));
     }
 
+    public function testConstructorInjection ()
+    {
+        $params = array("param" => "value");
+        $pimple = new Pimple($params);
+
+        $this->assertSame($params['param'], $pimple['param']);
+    }
+
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Identifier "foo" is not defined.
@@ -181,5 +189,51 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new Pimple();
         $pimple->raw('foo');
+    }
+
+    public function testExtend()
+    {
+        $pimple = new Pimple();
+        $pimple['shared_service'] = $pimple->share(function () {
+            return new Service();
+        });
+
+        $value = 12345;
+
+        $pimple->extend('shared_service', function($sharedService) use ($value) {
+            $sharedService->value = $value;
+            return $sharedService;
+        });
+
+        $serviceOne = $pimple['shared_service'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
+        $this->assertEquals($value, $serviceOne->value);
+
+        $serviceTwo = $pimple['shared_service'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
+        $this->assertEquals($value, $serviceTwo->value);
+
+        $this->assertSame($serviceOne, $serviceTwo);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" is not defined.
+     */
+    public function testExtendValidatesKeyIsPresent()
+    {
+        $pimple = new Pimple();
+        $pimple->extend('foo', function () {});
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" does not contain an object definition.
+     */
+    public function testExtendValidatesKeyYieldsObjectDefinition()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = 123;
+        $pimple->extend('foo', function () {});
     }
 }

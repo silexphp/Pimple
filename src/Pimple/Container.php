@@ -35,7 +35,19 @@ namespace Pimple;
  */
 class Container implements \ArrayAccess
 {
-    private $values = array();
+    private $values;
+
+    /**
+     * Instantiate the container.
+     *
+     * Objects and parameters can be passed as argument to the constructor.
+     *
+     * @param array $values The parameters or objects.
+     */
+    function __construct (array $values = array())
+    {
+        $this->values = $values;
+    }
 
     /**
      * Sets a parameter or an object.
@@ -147,5 +159,35 @@ class Container implements \ArrayAccess
         }
 
         return $this->values[$id];
+    }
+
+    /**
+     * Extends an object definition.
+     *
+     * Useful when you want to extend an existing object definition,
+     * without necessarily loading that object.
+     *
+     * @param  string  $id       The unique identifier for the object
+     * @param  Closure $callable A closure to extend the original
+     *
+     * @return Closure The wrapped closure
+     *
+     * @throws InvalidArgumentException if the identifier is not defined
+     */
+    function extend($id, Closure $callable)
+    {
+        if (!array_key_exists($id, $this->values)) {
+            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+        }
+
+        $factory = $this->values[$id];
+
+        if (!($factory instanceof Closure)) {
+            throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
+        }
+
+        return $this->values[$id] = function ($c) use ($callable, $factory) {
+            return $callable($factory($c), $c);
+        };
     }
 }
