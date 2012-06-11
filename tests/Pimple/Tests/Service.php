@@ -34,6 +34,6 @@ use Pimple;
  * @package pimple
  * @author  Igor Wiedler <igor@wiedler.ch>
  */
-class Service extends \PHPUnit_Framework_TestCase
+class Service
 {
 }
