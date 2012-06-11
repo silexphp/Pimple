@@ -90,7 +90,7 @@ class Pimple implements ArrayAccess
      */
     function offsetExists($id)
     {
-        return isset($this->values[$id]);
+        return array_key_exists($id, $this->values);
     }
 
     /**
