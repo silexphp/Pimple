@@ -41,7 +41,7 @@ class Pimple implements ArrayAccess
      *
      * @param array $values The parameters or objects.
      */
-    function __construct (array $values = array())
+    public function __construct (array $values = array())
     {
         $this->values = $values;
     }
@@ -58,7 +58,7 @@ class Pimple implements ArrayAccess
      * @param string $id    The unique identifier for the parameter or object
      * @param mixed  $value The value of the parameter or a closure to defined an object
      */
-    function offsetSet($id, $value)
+    public function offsetSet($id, $value)
     {
         $this->values[$id] = $value;
     }
@@ -66,13 +66,13 @@ class Pimple implements ArrayAccess
     /**
      * Gets a parameter or an object.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param string $id The unique identifier for the parameter or object
      *
-     * @return mixed  The value of the parameter or an object
+     * @return mixed The value of the parameter or an object
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    function offsetGet($id)
+    public function offsetGet($id)
     {
         if (!array_key_exists($id, $this->values)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
@@ -84,11 +84,11 @@ class Pimple implements ArrayAccess
     /**
      * Checks if a parameter or an object is set.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param string $id The unique identifier for the parameter or object
      *
      * @return Boolean
      */
-    function offsetExists($id)
+    public function offsetExists($id)
     {
         return array_key_exists($id, $this->values);
     }
@@ -96,9 +96,9 @@ class Pimple implements ArrayAccess
     /**
      * Unsets a parameter or an object.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param string $id The unique identifier for the parameter or object
      */
-    function offsetUnset($id)
+    public function offsetUnset($id)
     {
         unset($this->values[$id]);
     }
@@ -111,7 +111,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The wrapped closure
      */
-    function share(Closure $callable)
+    public function share(Closure $callable)
     {
         return function ($c) use ($callable) {
             static $object;
@@ -133,7 +133,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    function protect(Closure $callable)
+    public function protect(Closure $callable)
     {
         return function ($c) use ($callable) {
             return $callable;
@@ -143,13 +143,13 @@ class Pimple implements ArrayAccess
     /**
      * Gets a parameter or the closure defining an object.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param string $id The unique identifier for the parameter or object
      *
-     * @return mixed  The value of the parameter or the closure defining an object
+     * @return mixed The value of the parameter or the closure defining an object
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    function raw($id)
+    public function raw($id)
     {
         if (!array_key_exists($id, $this->values)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
@@ -164,14 +164,14 @@ class Pimple implements ArrayAccess
      * Useful when you want to extend an existing object definition,
      * without necessarily loading that object.
      *
-     * @param  string  $id       The unique identifier for the object
-     * @param  Closure $callable A closure to extend the original
+     * @param string  $id       The unique identifier for the object
+     * @param Closure $callable A closure to extend the original
      *
      * @return Closure The wrapped closure
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    function extend($id, Closure $callable)
+    public function extend($id, Closure $callable)
     {
         if (!array_key_exists($id, $this->values)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
@@ -193,7 +193,7 @@ class Pimple implements ArrayAccess
      *
      * @return array An array of value names
      */
-    function keys()
+    public function keys()
     {
         return array_keys($this->values);
     }

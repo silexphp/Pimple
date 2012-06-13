@@ -205,6 +205,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
         $pimple->extend('shared_service', function($sharedService) use ($value) {
             $sharedService->value = $value;
+
             return $sharedService;
         });
 
