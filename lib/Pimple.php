@@ -116,7 +116,7 @@ class Pimple implements ArrayAccess
         return function ($c) use ($callable) {
             static $object;
 
-            if (is_null($object)) {
+            if (null === $object) {
                 $object = $callable($c);
             }
 
