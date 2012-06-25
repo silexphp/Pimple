@@ -74,7 +74,7 @@ class Pimple implements ArrayAccess
      */
     function offsetGet($id)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->values[$id]) && !array_key_exists($id, $this->values)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -90,7 +90,7 @@ class Pimple implements ArrayAccess
      */
     function offsetExists($id)
     {
-        return array_key_exists($id, $this->values);
+        return isset($this->values[$id]) || array_key_exists($id, $this->values);
     }
 
     /**
@@ -151,7 +151,7 @@ class Pimple implements ArrayAccess
      */
     function raw($id)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->values[$id]) && !array_key_exists($id, $this->values)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -173,7 +173,7 @@ class Pimple implements ArrayAccess
      */
     function extend($id, Closure $callable)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->values[$id]) && !array_key_exists($id, $this->values)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
