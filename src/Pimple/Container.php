@@ -193,7 +193,8 @@ class Container implements \ArrayAccess
 }
 
 /**
- * Interface that must implement all Silex service providers.
+ * Interface that must be implemented by all Pimple service
+ * providers.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
