@@ -26,12 +26,9 @@
 
 namespace Pimple\Tests;
 
-/**
- * Pimple Test Service
- *
- * @package pimple
- * @author  Igor Wiedler <igor@wiedler.ch>
- */
-class Service
+class NonInvokable
 {
+    public function __call($a, $b)
+    {
+    }
 }

@@ -249,4 +249,22 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array('foo', 'bar'), $pimple->keys());
     }
+
+    /** @test */
+    public function settingAnInvokableObjectShouldTreatItAsFactory()
+    {
+        $pimple = new Pimple();
+        $pimple['invokable'] = new Invokable();
+
+        $this->assertEquals('I was invoked', $pimple['invokable']);
+    }
+
+    /** @test */
+    public function settingNonInvokableObjectShouldTreatItAsParameter()
+    {
+        $pimple = new Pimple();
+        $pimple['non_invokable'] = new NonInvokable();
+
+        $this->assertInstanceOf('Pimple\Tests\NonInvokable', $pimple['non_invokable']);
+    }
 }

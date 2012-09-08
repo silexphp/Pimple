@@ -26,12 +26,10 @@
 
 namespace Pimple\Tests;
 
-/**
- * Pimple Test Service
- *
- * @package pimple
- * @author  Igor Wiedler <igor@wiedler.ch>
- */
-class Service
+class Invokable
 {
+    public function __invoke()
+    {
+        return 'I was invoked';
+    }
 }
