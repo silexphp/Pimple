@@ -11,3 +11,5 @@
 
 require_once __DIR__.'/../lib/Pimple.php';
 require_once __DIR__.'/Pimple/Tests/Service.php';
+require_once __DIR__.'/Pimple/Tests/Invokable.php';
+require_once __DIR__.'/Pimple/Tests/NonInvokable.php';
