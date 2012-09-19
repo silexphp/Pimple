@@ -4,7 +4,7 @@ Pimple
 Pimple is a small Dependency Injection Container for PHP 5.3 that consists
 of just one file and one class (about 80 lines of code).
 
-`Download it`_, require it in your code, and you're good to go:
+[Download it](https://github.com/fabpot/Pimple), require it in your code, and you're good to go:
 
 ```php
 require_once '/path/to/Pimple.php';
@@ -179,5 +179,3 @@ $container['embedded']['parameter'] = 'bar';
 // use it
 $container['embedded']['object']->...;
 ```
-
-.. _Download it: https://github.com/fabpot/Pimple
