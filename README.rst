@@ -82,7 +82,7 @@ Modifying services after creation
 ---------------------------------
 
 In some cases you may want to modify a service definition after it has been
-defined. You can use the ``extend()`` method to add define additional code to
+defined. You can use the ``extend()`` method to define additional code to
 be run on your service just after it is created::
 
     $container['mail'] = function ($c) {
