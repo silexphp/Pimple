@@ -43,9 +43,7 @@ class Pimple implements ArrayAccess
      */
     public function __construct(array $values = array())
     {
-        foreach ($values as $id => $value) {
-            $this->values[$id] = $value;
-        }
+        $this->values = array_replace($this->values, $values);
     }
 
     /**
