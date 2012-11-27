@@ -32,7 +32,7 @@
  */
 class Pimple implements ArrayAccess
 {
-    private $values;
+    private $values = array();
 
     /**
      * Instantiate the container.
@@ -41,9 +41,11 @@ class Pimple implements ArrayAccess
      *
      * @param array $values The parameters or objects.
      */
-    public function __construct (array $values = array())
+    public function __construct(array $values = array())
     {
-        $this->values = $values;
+        foreach ($values as $id => $value) {
+            $this->values[$id] = $value;
+        }
     }
 
     /**
