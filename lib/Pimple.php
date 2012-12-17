@@ -32,7 +32,7 @@
  */
 class Pimple implements ArrayAccess
 {
-    private $values;
+    private $values = array();
 
     /**
      * Instantiate the container.
