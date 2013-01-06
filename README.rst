@@ -106,7 +106,7 @@ code will be called every time you access the service::
         return new Twig_Environment($c['twig.loader'], $c['twig.options']);
     });
 
-    $container['twig'] = $container->share($c->extend('twig', function ($twig, $c) {
+    $container['twig'] = $container->share($container->extend('twig', function ($twig, $c) {
         $twig->addExtension(new MyTwigExtension());
         return $twig;
     }));
