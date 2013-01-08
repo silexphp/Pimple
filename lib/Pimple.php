@@ -74,13 +74,7 @@ class Pimple implements ArrayAccess
      */
     public function offsetGet($id)
     {
-        if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
-        }
-
-        $isFactory = is_object($this->values[$id]) && method_exists($this->values[$id], '__invoke');
-
-        return $isFactory ? $this->values[$id]($this) : $this->values[$id];
+        return static::isFactory($this->raw($id)) ? $this->values[$id]($this) : $this->values[$id];
     }
 
     /**
@@ -93,6 +87,18 @@ class Pimple implements ArrayAccess
     public function offsetExists($id)
     {
         return array_key_exists($id, $this->values);
+    }
+
+    /**
+     * Checks if a param is a factory, if it is callable.
+     *
+     * @param mixed $value The value we are checking
+     *
+     * @return Boolean
+     */
+    public static function isFactory($value)
+    {
+        return is_object($value) && method_exists($value, '__invoke');
     }
 
     /**
@@ -153,7 +159,7 @@ class Pimple implements ArrayAccess
      */
     public function raw($id)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!$this->offsetExists($id)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -175,11 +181,7 @@ class Pimple implements ArrayAccess
      */
     public function extend($id, Closure $callable)
     {
-        if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
-        }
-
-        $factory = $this->values[$id];
+        $factory = $this->raw($id);
 
         if (!($factory instanceof Closure)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
