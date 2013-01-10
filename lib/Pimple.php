@@ -74,7 +74,9 @@ class Pimple implements ArrayAccess
      */
     public function offsetGet($id)
     {
-        return static::isFactory($this->raw($id)) ? $this->values[$id]($this) : $this->values[$id];
+        $value = $this->raw($id);
+
+        return static::isFactory($value) ? $value($this) : $value;
     }
 
     /**
@@ -119,8 +121,10 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The wrapped closure
      */
-    public function share(Closure $callable)
+    public function share($callable)
     {
+        static::expectFactory($callable);
+
         return function ($c) use ($callable) {
             static $object;
 
@@ -141,8 +145,10 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    public function protect(Closure $callable)
+    public function protect($callable)
     {
+        static::expectFactory($callable);
+
         return function ($c) use ($callable) {
             return $callable;
         };
@@ -179,13 +185,13 @@ class Pimple implements ArrayAccess
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    public function extend($id, Closure $callable)
+    public function extend($id, $callable)
     {
         $factory = $this->raw($id);
 
-        if (!($factory instanceof Closure)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
-        }
+        static::expectFactory($factory, 'Identifier "%s" does not contain an object definition.', $id);
+
+        static::expectFactory($callable);
 
         return $this->values[$id] = function ($c) use ($callable, $factory) {
             return $callable($factory($c), $c);
@@ -200,5 +206,26 @@ class Pimple implements ArrayAccess
     public function keys()
     {
         return array_keys($this->values);
+    }
+
+    /**
+     * Makes sure that $value is a factory.
+     *
+     * Throws an InvalidArgumentException when it isn't
+     * with the error and formatters given.
+     *
+     * @param mixed  $value  The value to test
+     * @param string $error  An error string for the exception to throw
+     * @param ...            Strings to format the error with. Like for sprintf.
+     *
+     * @throws InvalidArgumentException
+     */
+    protected static function expectFactory($value, $error = 'Expected an invokable object.')
+    {
+        $args = array_slice(func_get_args(), 2);
+
+        if (!static::isFactory($value)) {
+            throw new InvalidArgumentException(vsprintf($error, $args));
+        }
     }
 }
