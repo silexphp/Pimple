@@ -69,6 +69,10 @@ anonymous function with the ``share()`` method::
         return new Session($c['session_storage']);
     });
 
+Since this is quite a common case, there is also a shorthand notation::
+
+    $container->registerSharedService('session', 'Session', array('session_storage'));
+
 Protecting Parameters
 ---------------------
 
@@ -110,6 +114,14 @@ code will be called every time you access the service::
         $twig->addExtension(new MyTwigExtension());
         return $twig;
     }));
+
+A shorthand for the above is the ``extendService`` method, which will set and
+share the extended service::
+
+    $container->extendService('twig', function ($twig, $c) {
+        $twig->addExtension(new MyTwigExtension());
+        return $twig;
+    });
 
 Fetching the service creation function
 --------------------------------------
