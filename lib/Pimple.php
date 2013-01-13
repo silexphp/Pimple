@@ -200,24 +200,45 @@ class Pimple implements ArrayAccess
         return array_keys($this->values);
     }
 
-    public function registerSharedService($id, $class, array $depIds = array())
+    /**
+     * Shorthand for registering a shared service.
+     *
+     * @param string $id         The unique identifier for the object
+     * @param string $class      The name of the class the service should be an instance of
+     * @param array  $serviceIds Array of service ids whose resolved services will be passed
+     *                           to the service constructor.
+     */
+    public function registerSharedService($id, $class, array $serviceIds = array())
     {
         $that = $this;
 
-        $this[$id] = $this->share(function () use ($that, $class, $depIds) {
+        $this[$id] = $this->share(function () use ($that, $class, $serviceIds) {
             $reflection = new ReflectionClass($class);
-            $deps = $that->resolveDeps($depIds);
+            $deps = $that->resolveServiceIds($serviceIds);
             return $reflection->newInstanceArgs($deps);
         });
     }
 
-    public function extendService($id, $callable)
+    /**
+     * Shorthand for extending and re-sharing a service.
+     *
+     * @param string $id       The unique identifier for the object
+     * @param Closure $callable A closure to extend the original
+     */
+    public function extendService($id, Closure $callable)
     {
         $this[$id] = $this->share($this->extend($id, $callable));
     }
 
-    public function resolveDeps(array $depIds)
+    /**
+     * Resolve an array of service ids to their service instances.
+     *
+     * @param array  $serviceIds Array of service ids to resolve.
+     *
+     * @return array An array of services.
+     */
+    public function resolveServiceIds(array $serviceIds)
     {
-        return array_map(array($this, 'offsetGet'), $depIds);
+        return array_map(array($this, 'offsetGet'), $serviceIds);
     }
 }
