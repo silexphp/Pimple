@@ -199,4 +199,25 @@ class Pimple implements ArrayAccess
     {
         return array_keys($this->values);
     }
+
+    public function registerSharedService($id, $class, array $depIds = array())
+    {
+        $that = $this;
+
+        $this[$id] = $this->share(function () use ($that, $class, $depIds) {
+            $reflection = new ReflectionClass($class);
+            $deps = $that->resolveDeps($depIds);
+            return $reflection->newInstanceArgs($deps);
+        });
+    }
+
+    public function extendService($id, $callable)
+    {
+        $this[$id] = $this->share($this->extend($id, $callable));
+    }
+
+    public function resolveDeps(array $depIds)
+    {
+        return array_map(array($this, 'offsetGet'), $depIds);
+    }
 }
