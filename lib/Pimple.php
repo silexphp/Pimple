@@ -74,13 +74,9 @@ class Pimple implements ArrayAccess
      */
     public function offsetGet($id)
     {
-        if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
-        }
+        $value = $this->raw($id);
 
-        $isFactory = is_object($this->values[$id]) && method_exists($this->values[$id], '__invoke');
-
-        return $isFactory ? $this->values[$id]($this) : $this->values[$id];
+        return static::isFactory($value) ? $value($this) : $value;
     }
 
     /**
@@ -93,6 +89,18 @@ class Pimple implements ArrayAccess
     public function offsetExists($id)
     {
         return array_key_exists($id, $this->values);
+    }
+
+    /**
+     * Checks if a param is a factory, if it is callable.
+     *
+     * @param mixed $value The value we are checking
+     *
+     * @return Boolean
+     */
+    public static function isFactory($value)
+    {
+        return is_object($value) && method_exists($value, '__invoke');
     }
 
     /**
@@ -113,8 +121,10 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The wrapped closure
      */
-    public function share(Closure $callable)
+    public function share($callable)
     {
+        static::expectFactory($callable);
+
         return function ($c) use ($callable) {
             static $object;
 
@@ -135,8 +145,10 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    public function protect(Closure $callable)
+    public function protect($callable)
     {
+        static::expectFactory($callable);
+
         return function ($c) use ($callable) {
             return $callable;
         };
@@ -153,7 +165,7 @@ class Pimple implements ArrayAccess
      */
     public function raw($id)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!$this->offsetExists($id)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -173,17 +185,13 @@ class Pimple implements ArrayAccess
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
-    public function extend($id, Closure $callable)
+    public function extend($id, $callable)
     {
-        if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
-        }
+        $factory = $this->raw($id);
 
-        $factory = $this->values[$id];
+        static::expectFactory($factory, 'Identifier "%s" does not contain an object definition.', $id);
 
-        if (!($factory instanceof Closure)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
-        }
+        static::expectFactory($callable);
 
         return $this->values[$id] = function ($c) use ($callable, $factory) {
             return $callable($factory($c), $c);
@@ -198,5 +206,26 @@ class Pimple implements ArrayAccess
     public function keys()
     {
         return array_keys($this->values);
+    }
+
+    /**
+     * Makes sure that $value is a factory.
+     *
+     * Throws an InvalidArgumentException when it isn't
+     * with the error and formatters given.
+     *
+     * @param mixed  $value  The value to test
+     * @param string $error  An error string for the exception to throw
+     * @param ...            Strings to format the error with. Like for sprintf.
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function expectFactory($value, $error = 'Expected an invokable object.')
+    {
+        $args = array_slice(func_get_args(), 2);
+
+        if (!static::isFactory($value)) {
+            throw new InvalidArgumentException(vsprintf($error, $args));
+        }
     }
 }

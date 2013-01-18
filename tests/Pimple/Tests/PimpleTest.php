@@ -163,6 +163,27 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($callback, $pimple['protected']);
     }
 
+    public function testProtectWorksWithInvokable()
+    {
+        $pimple = new Pimple();
+        $invokable = new Invokable();
+
+        $pimple['protected'] = $pimple->protect($invokable);
+        $this->assertSame($invokable, $pimple['protected']);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Expected an invokable object.
+     */
+    public function testProtectThrowsNonInvokable()
+    {
+        $pimple = new Pimple();
+        $non_invokable = new NonInvokable();
+
+        $pimple['protect'] = $pimple->protect($non_invokable);
+    }
+
     public function testGlobalFunctionNameAsParameterValue()
     {
         $pimple = new Pimple();
@@ -228,6 +249,54 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new Pimple();
         $pimple->extend('foo', function () {});
+    }
+
+    public function testIsFactoryFalseOnLiterals()
+    {
+        $this->assertFalse(Pimple::isFactory('foo'));
+        $this->assertFalse(Pimple::isFactory(array('foo')));
+        $this->assertFalse(Pimple::isFactory(1));
+    }
+
+    public function testIsFactoryFalseOnCallbacks()
+    {
+        $a = 'trim';
+        $this->assertTrue(is_callable($a));
+        $this->assertFalse(Pimple::isFactory($a));
+
+        $b = array(new Pimple(), 'keys');
+        $this->assertTrue(is_callable($b));
+        $this->assertFalse(Pimple::isFactory($b));
+    }
+
+    public function testIsFactoryTrueOnInvokables()
+    {
+        $this->assertTrue(Pimple::isFactory(function () { }));
+        $this->assertTrue(Pimple::isFactory(new Invokable()));
+        $this->assertFalse(Pimple::isFactory(new NonInvokable()));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Expected an invokable object.
+     */
+    public function testExpectFactoryThrows()
+    {
+        Pimple::expectFactory('foo');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage this is formatted with vsprintf.
+     */
+    public function testExpectFactoryFormats()
+    {
+        Pimple::expectFactory('foo', '%s is formatted %s %s.', 'this', 'with', 'vsprintf');
+    }
+
+    public function testExpectFactory()
+    {
+        $this->assertNull(Pimple::expectFactory(function () {}));
     }
 
     /**
