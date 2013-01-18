@@ -220,7 +220,7 @@ class Pimple implements ArrayAccess
      *
      * @throws InvalidArgumentException
      */
-    protected static function expectFactory($value, $error = 'Expected an invokable object.')
+    public static function expectFactory($value, $error = 'Expected an invokable object.')
     {
         $args = array_slice(func_get_args(), 2);
 
