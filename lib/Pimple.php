@@ -33,6 +33,8 @@
 class Pimple implements ArrayAccess
 {
     private $values;
+    private $listeners;
+    private $initialized;
 
     /**
      * Instantiate the container.
@@ -41,7 +43,7 @@ class Pimple implements ArrayAccess
      *
      * @param array $values The parameters or objects.
      */
-    public function __construct (array $values = array())
+    public function __construct(array $values = array())
     {
         $this->values = $values;
     }
@@ -61,6 +63,12 @@ class Pimple implements ArrayAccess
     public function offsetSet($id, $value)
     {
         $this->values[$id] = $value;
+
+        if (isset($this->listeners[$id])) {
+            foreach ($this->listeners[$id] as $listener) {
+                $listener($this);
+            }
+        }
     }
 
     /**
@@ -79,6 +87,7 @@ class Pimple implements ArrayAccess
         }
 
         $isFactory = is_object($this->values[$id]) && method_exists($this->values[$id], '__invoke');
+        $this->initialized[$id] = true;
 
         return $isFactory ? $this->values[$id]($this) : $this->values[$id];
     }
@@ -198,5 +207,28 @@ class Pimple implements ArrayAccess
     public function keys()
     {
         return array_keys($this->values);
+    }
+
+    /**
+     * Checks if a parameter of an object has already been retrieved.
+     *
+     * @param string $id The unique identifier for the parameter or object
+     *
+     * @return Boolean true if the object or parameter has already been retrieved, false otherwise
+     */
+    public function initialized($id)
+    {
+        return isset($this->initialized[$id]);
+    }
+
+    /**
+     * Listens to object or a parameter changes.
+     *
+     * @param string  $id       The unique identifier for the parameter or object
+     * @param Closure $callable A closure to call when the parameter or object changes
+     */
+    public function listen($id, Closure $callable)
+    {
+        $this->listeners[$id][] = $callable;
     }
 }
