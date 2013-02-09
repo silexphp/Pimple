@@ -106,18 +106,6 @@ class Pimple implements ArrayAccess
     }
 
     /**
-     * Alias of shareStatic.
-     *
-     * @param Closure $callable A closure to wrap for uniqueness
-     *
-     * @return Closure The wrapped closure
-     */
-    public function share(Closure $callable)
-    {
-        return static::shareStatic($callable);
-    }
-
-    /**
      * Returns a closure that stores the result of the given closure for
      * uniqueness in the scope of this instance of Pimple.
      *
@@ -125,7 +113,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The wrapped closure
      */
-    public static function shareStatic(Closure $callable)
+    public static function share(Closure $callable)
     {
         return function ($c) use ($callable) {
             static $object;
@@ -139,18 +127,6 @@ class Pimple implements ArrayAccess
     }
 
     /**
-     * Alias of protectStatic.
-     *
-     * @param Closure $callable A closure to protect from being evaluated
-     *
-     * @return Closure The protected closure
-     */
-    public function protect(Closure $callable)
-    {
-        return static::protectStatic($callable);
-    }
-
-    /**
      * Protects a callable from being interpreted as a service.
      *
      * This is useful when you want to store a callable as a parameter.
@@ -159,7 +135,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    public static function protectStatic(Closure $callable)
+    public static function protect(Closure $callable)
     {
         return function ($c) use ($callable) {
             return $callable;
