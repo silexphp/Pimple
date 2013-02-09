@@ -113,7 +113,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The wrapped closure
      */
-    public function share(Closure $callable)
+    public static function share(Closure $callable)
     {
         return function ($c) use ($callable) {
             static $object;
@@ -135,7 +135,7 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    public function protect(Closure $callable)
+    public static function protect(Closure $callable)
     {
         return function ($c) use ($callable) {
             return $callable;
