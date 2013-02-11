@@ -100,7 +100,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($pimple['non_existent']));
     }
 
-    public function testConstructorInjection ()
+    public function testConstructorInjection()
     {
         $params = array("param" => "value");
         $pimple = new Pimple($params);
@@ -250,8 +250,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('foo', 'bar'), $pimple->keys());
     }
 
-    /** @test */
-    public function settingAnInvokableObjectShouldTreatItAsFactory()
+    public function testSettingAnInvokableObjectShouldTreatItAsFactory()
     {
         $pimple = new Pimple();
         $pimple['invokable'] = new Invokable();
@@ -259,12 +258,65 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('I was invoked', $pimple['invokable']);
     }
 
-    /** @test */
-    public function settingNonInvokableObjectShouldTreatItAsParameter()
+    public function testSettingNonInvokableObjectShouldTreatItAsParameter()
     {
         $pimple = new Pimple();
         $pimple['non_invokable'] = new NonInvokable();
 
         $this->assertInstanceOf('Pimple\Tests\NonInvokable', $pimple['non_invokable']);
     }
+
+    public function testInitialized()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = 'foo';
+        $pimple['bar'] = function () { return 'bar'; };
+
+        $this->assertFalse($pimple->initialized('foo'));
+        $pimple['foo'];
+        $this->assertTrue($pimple->initialized('foo'));
+
+        $this->assertFalse($pimple->initialized('bar'));
+        $pimple['bar'];
+        $this->assertTrue($pimple->initialized('bar'));
+    }
+
+    public function testListen()
+    {
+        $sc = new Pimple();
+        $sc['foo'] = $sc->share(function () use ($sc) {
+            $foo = new Foo();
+            $foo->setRequest($sc['request']);
+
+            return $foo;
+        });
+        $sc['request'] = $sc->share(function () {
+            return new Request();
+        });
+        $sc->listen('request', function ($sc) {
+            if ($sc->initialized('foo')) {
+                $sc['foo']->setRequest($sc['request']);
+            }
+        });
+
+        $sc['request'] = $request = new Request();
+        $this->assertSame($request, $sc['foo']->request);
+
+        $sc['request'] = $nested = new Request();
+        $this->assertSame($nested, $sc['foo']->request);
+    }
+}
+
+class Foo
+{
+    public $request;
+
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+    }
+}
+
+class Request
+{
 }
