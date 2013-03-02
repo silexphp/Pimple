@@ -32,6 +32,16 @@
  */
 class Pimple implements ArrayAccess
 {
+    /**
+     * Parent pimple container.
+     *
+     * @var Pimple
+     */
+    private $parent;
+
+    /**
+     * @var array
+     */
     private $values;
 
     /**
@@ -39,11 +49,19 @@ class Pimple implements ArrayAccess
      *
      * Objects and parameters can be passed as argument to the constructor.
      *
-     * @param array $values The parameters or objects.
+     * @param mixed $values The parameters or objects.
+     * @throws InvalidArgumentException if the $values is not a Pimple or an array instance
      */
-    public function __construct (array $values = array())
+    public function __construct($values = array())
     {
-        $this->values = $values;
+        if (is_object($values) && $values instanceof Pimple) {
+            $this->parent = $values;
+            $this->values = array();
+        } else if (is_array($values)) {
+            $this->values = $values;
+        } else {
+            throw new InvalidArgumentException(sprintf("Invalid initialization values."));
+        }
     }
 
     /**
@@ -75,6 +93,10 @@ class Pimple implements ArrayAccess
     public function offsetGet($id)
     {
         if (!array_key_exists($id, $this->values)) {
+            // Return the value from the parent, if exists
+            if ($this->parent !== null) {
+                return $this->parent[$id];
+            }
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -92,7 +114,13 @@ class Pimple implements ArrayAccess
      */
     public function offsetExists($id)
     {
-        return array_key_exists($id, $this->values);
+        if (array_key_exists($id, $this->values)) {
+            return true;
+        } else if ($this->parent != null) {
+            return isset($this->parent[$id]);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -154,6 +182,10 @@ class Pimple implements ArrayAccess
     public function raw($id)
     {
         if (!array_key_exists($id, $this->values)) {
+            // Check for parent
+            if ($this->parent !== null) {
+                return $this->parent->raw($id);
+            }
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -175,11 +207,7 @@ class Pimple implements ArrayAccess
      */
     public function extend($id, Closure $callable)
     {
-        if (!array_key_exists($id, $this->values)) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
-        }
-
-        $factory = $this->values[$id];
+        $factory = $this->raw($id);
 
         if (!($factory instanceof Closure)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
@@ -197,6 +225,11 @@ class Pimple implements ArrayAccess
      */
     public function keys()
     {
-        return array_keys($this->values);
+        $result = array_keys($this->values);
+        if ($this->parent !== null) {
+            $result = array_unique(array_merge($result, $this->parent->keys()));
+            sort($result);
+        }
+        return $result;
     }
 }
