@@ -178,7 +178,7 @@ class Pimple implements ArrayAccess
                 throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
             }
 
-            $factory = $this->raw[$id];
+            $factory = $this->value[$id];
 
             if (!($factory instanceof Closure)) {
                 throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
