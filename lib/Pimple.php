@@ -173,12 +173,14 @@ class Pimple implements ArrayAccess
      */
     public function extend($id, Closure $callable)
     {
-        return $this->values[$id] = function ($c) use ($callable, $id) {
-            if (!array_key_exists($id, $this->values)) {
+        $that = $this;
+        
+        return $this->values[$id] = function ($c) use ($callable, $id, $that) {
+            if (!array_key_exists($id, $that->values)) {
                 throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
             }
 
-            $factory = $this->values[$id];
+            $factory = $that->values[$id];
 
             if (!($factory instanceof Closure)) {
                 throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
