@@ -106,15 +106,19 @@ class Pimple implements ArrayAccess
     }
 
     /**
-     * Returns a closure that stores the result of the given closure for
-     * uniqueness in the scope of this instance of Pimple.
+     * Returns a closure that stores the result of the given service definition
+     * for uniqueness in the scope of this instance of Pimple.
      *
-     * @param Closure $callable A closure to wrap for uniqueness
+     * @param object $callable A service definition to wrap for uniqueness
      *
      * @return Closure The wrapped closure
      */
-    public static function share(Closure $callable)
+    public static function share($callable)
     {
+        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+            throw new InvalidArgumentException('Service definition is not a Closure or invokable object.');
+        }
+
         return function ($c) use ($callable) {
             static $object;
 
@@ -131,12 +135,16 @@ class Pimple implements ArrayAccess
      *
      * This is useful when you want to store a callable as a parameter.
      *
-     * @param Closure $callable A closure to protect from being evaluated
+     * @param object $callable A callable to protect from being evaluated
      *
      * @return Closure The protected closure
      */
-    public static function protect(Closure $callable)
+    public static function protect($callable)
     {
+        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+            throw new InvalidArgumentException('Callable is not a Closure or invokable object.');
+        }
+
         return function ($c) use ($callable) {
             return $callable;
         };
@@ -166,24 +174,28 @@ class Pimple implements ArrayAccess
      * Useful when you want to extend an existing object definition,
      * without necessarily loading that object.
      *
-     * @param string  $id       The unique identifier for the object
-     * @param Closure $callable A closure to extend the original
+     * @param string $id       The unique identifier for the object
+     * @param object $callable A service definition to extend the original
      *
      * @return Closure The wrapped closure
      *
-     * @throws InvalidArgumentException if the identifier is not defined
+     * @throws InvalidArgumentException if the identifier is not defined or not a service definition
      */
-    public function extend($id, Closure $callable)
+    public function extend($id, $callable)
     {
         if (!array_key_exists($id, $this->values)) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        $factory = $this->values[$id];
-
-        if (!($factory instanceof Closure)) {
+        if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke')) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
         }
+
+        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+            throw new InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
+        }
+
+        $factory = $this->values[$id];
 
         return $this->values[$id] = function ($c) use ($callable, $factory) {
             return $callable($factory($c), $c);
