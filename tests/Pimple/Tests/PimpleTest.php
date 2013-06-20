@@ -154,6 +154,18 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($serviceOne, $serviceTwo);
     }
 
+    /**
+     * @expectedException \LogicException
+     */
+    public function testShareThrowExeptionForInfiniteLoops()
+    {
+        $pimple = new Pimple();
+        $pimple['looping'] = $pimple->share(function ($pimple) {
+            $pimple['looping'];
+        });
+        $pimple['looping'];
+    }
+
     public function testProtect()
     {
         $pimple = new Pimple();

@@ -117,9 +117,16 @@ class Pimple implements ArrayAccess
     {
         return function ($c) use ($callable) {
             static $object;
+            static $loading;
 
             if (null === $object) {
+                if (true === $loading) {
+                    throw new \LogicException('A shared service has a circular reference to itself. You must fix your service dependencies.');
+                }
+
+                $loading = true;
                 $object = $callable($c);
+                $loading = null;
             }
 
             return $object;
