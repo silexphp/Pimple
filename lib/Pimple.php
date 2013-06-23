@@ -33,6 +33,7 @@
 class Pimple implements ArrayAccess
 {
     private $values;
+    private $loading = array();
 
     /**
      * Instantiate the container.
@@ -78,7 +79,26 @@ class Pimple implements ArrayAccess
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        return $this->values[$id] instanceof Closure ? $this->values[$id]($this) : $this->values[$id];
+        if (!$this->values[$id] instanceof Closure) {
+            return $this->values[$id];
+        }
+
+        if (isset($this->loading[$id])) {
+            throw new LogicException(sprintf('The service "%s" has a circular reference to itself. Loading: %s', $id, implode(', ', $this->loading)));
+        }
+        $this->loading[$id] = true;
+
+        try {
+            $value = $this->values[$id]($this);
+
+            unset($this->loading[$id]);
+        } catch (Exception $e) {
+            unset($this->loading[$id]);
+
+            throw $e;
+        }
+
+        return $value;
     }
 
     /**

@@ -122,6 +122,40 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($pimple['foo']);
     }
 
+    /**
+     * @expectedException LogicException
+     * @expectedExceptionMessage The service "looping" has a circular reference to itself.
+     */
+    public function testOffsetGetDetectCircularReference()
+    {
+        $pimple = new Pimple();
+        $pimple['looping'] = function ($pimple) {
+            $pimple['looping'];
+        };
+        $pimple['looping'];
+    }
+
+    public function testOffsetGetLetFactoryExceptions()
+    {
+        $pimple = new Pimple();
+        $exception = new \RuntimeException('failed');
+        $pimple['failing'] = function () use ($exception) {
+            throw $exception;
+        };
+
+        try {
+            $pimple['failing'];
+        } catch (\RuntimeException $e) {
+            $this->assertSame($exception, $e);
+        }
+
+        try {
+            $pimple['failing'];
+        } catch (\RuntimeException $e) {
+            $this->assertSame($exception, $e);
+        }
+    }
+
     public function testUnset()
     {
         $pimple = new Pimple();
