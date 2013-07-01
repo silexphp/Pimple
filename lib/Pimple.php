@@ -137,7 +137,7 @@ class Pimple implements ArrayAccess
      */
     public static function protect(Closure $callable)
     {
-        return function ($c) use ($callable) {
+        return function () use ($callable) {
             return $callable;
         };
     }
