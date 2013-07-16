@@ -30,7 +30,7 @@
  * @package pimple
  * @author  Fabien Potencier
  */
-class Pimple implements ArrayAccess
+class Pimple implements PimpleInterface
 {
     protected $values = array();
 
