@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by whatthejeff at 2013-06-14T13:11:34Z
+
+@igorw or @fabpot: any update on this or #61?
+
+---------------------------------------------------------------------------
+
+by igorw at 2013-06-14T13:31:04Z
+
+IMO adding `isFactory` from #61 makes sense. Apart from that I am in favour of this PR.
+
+---------------------------------------------------------------------------
+
+by whatthejeff at 2013-08-29T05:49:18Z
+
+Bump :)
