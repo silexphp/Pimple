@@ -6,11 +6,11 @@ of just one file and one class (about 80 lines of code).
 
 `Download it`_, require it in your code, and you're good to go::
 
-    require_once '/path/to/Pimple.php';
+    require_once '/path/to/pimple/autoload.php';
 
-Creating a container is a matter of instating the ``Pimple`` class::
+Creating a container is a matter of instating the ``Pimple\Container`` class::
 
-    $container = new Pimple();
+    $container = new Pimple\Container();
 
 As many other dependency injection containers, Pimple is able to manage two
 different kind of data: *services* and *parameters*.
@@ -129,9 +129,9 @@ Packaging a Container for reusability
 
 If you use the same libraries over and over, you might want to create reusable
 containers. Creating a reusable container is as simple as creating a class
-that extends ``Pimple``, and configuring it in the constructor::
+that extends ``Pimple\Container``, and configuring it in the constructor::
 
-    class SomeContainer extends Pimple
+    class SomeContainer extends Pimple\Container
     {
         public function __construct()
         {
@@ -142,7 +142,7 @@ that extends ``Pimple``, and configuring it in the constructor::
 
 Using this container from your own is as easy as it can get::
 
-    $container = new Pimple();
+    $container = new Pimple\Container();
 
     // define your project parameters and services
     // ...
