@@ -92,12 +92,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             return new Service();
         };
 
+        $pimple['null'] = null;
+
         $this->assertTrue(isset($pimple['param']));
         $this->assertTrue(isset($pimple['service']));
+        $this->assertTrue(isset($pimple['null']));
         $this->assertFalse(isset($pimple['non_existent']));
     }
 
-    public function testConstructorInjection ()
+    public function testConstructorInjection()
     {
         $params = array("param" => "value");
         $pimple = new Container($params);
@@ -135,12 +138,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($pimple['service']));
     }
 
-    public function testShare()
+    /**
+     * @dataProvider serviceDefinitionProvider
+     */
+    public function testShare($service)
     {
         $pimple = new Container();
-        $pimple['shared_service'] = $pimple->share(function () {
-            return new Service();
-        });
+        $pimple['shared_service'] = $pimple->share($service);
 
         $serviceOne = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
@@ -151,13 +155,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($serviceOne, $serviceTwo);
     }
 
-    public function testProtect()
+    /**
+     * @dataProvider serviceDefinitionProvider
+     */
+    public function testProtect($service)
     {
         $pimple = new Container();
-        $callback = function () { return 'foo'; };
-        $pimple['protected'] = $pimple->protect($callback);
+        $pimple['protected'] = $pimple->protect($service);
 
-        $this->assertSame($callback, $pimple['protected']);
+        $this->assertSame($service, $pimple['protected']);
     }
 
     public function testGlobalFunctionNameAsParameterValue()
@@ -191,29 +197,26 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $pimple->raw('foo');
     }
 
-    public function testExtend()
+    /**
+     * @dataProvider serviceDefinitionProvider
+     */
+    public function testExtend($service)
     {
         $pimple = new Container();
         $pimple['shared_service'] = $pimple->share(function () {
             return new Service();
         });
 
-        $value = 12345;
-
-        $pimple->extend('shared_service', function($sharedService) use ($value) {
-            $sharedService->value = $value;
-            return $sharedService;
-        });
+        $pimple->extend('shared_service', $service);
 
         $serviceOne = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
-        $this->assertEquals($value, $serviceOne->value);
 
         $serviceTwo = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
-        $this->assertEquals($value, $serviceTwo->value);
 
-        $this->assertSame($serviceOne, $serviceTwo);
+        $this->assertNotSame($serviceOne, $serviceTwo);
+        $this->assertSame($serviceOne->value, $serviceTwo->value);
     }
 
     /**
@@ -226,18 +229,103 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $pimple->extend('foo', function () {});
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Identifier "foo" does not contain an object definition.
-     */
-    public function testExtendValidatesKeyYieldsObjectDefinition()
+    public function testKeys()
     {
         $pimple = new Container();
         $pimple['foo'] = 123;
+        $pimple['bar'] = 123;
+
+        $this->assertEquals(array('foo', 'bar'), $pimple->keys());
+    }
+
+    /** @test */
+    public function settingAnInvokableObjectShouldTreatItAsFactory()
+    {
+        $pimple = new Container();
+        $pimple['invokable'] = new Invokable();
+
+        $this->assertInstanceOf('Pimple\Tests\Service', $pimple['invokable']);
+    }
+
+    /** @test */
+    public function settingNonInvokableObjectShouldTreatItAsParameter()
+    {
+        $pimple = new Container();
+        $pimple['non_invokable'] = new NonInvokable();
+
+        $this->assertInstanceOf('Pimple\Tests\NonInvokable', $pimple['non_invokable']);
+    }
+
+    /**
+     * @dataProvider badServiceDefinitionProvider
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Service definition is not a Closure or invokable object.
+     */
+    public function testShareFailsForInvalidServiceDefinitions($service)
+    {
+        $pimple = new Container();
+        $pimple->share($service);
+    }
+
+    /**
+     * @dataProvider badServiceDefinitionProvider
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Callable is not a Closure or invokable object.
+     */
+    public function testProtectFailsForInvalidServiceDefinitions($service)
+    {
+        $pimple = new Container();
+        $pimple->protect($service);
+    }
+
+    /**
+     * @dataProvider badServiceDefinitionProvider
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" does not contain an object definition.
+     */
+    public function testExtendFailsForKeysNotContainingServiceDefinitions($service)
+    {
+        $pimple = new Container();
+        $pimple['foo'] = $service;
         $pimple->extend('foo', function () {});
     }
-}
 
-class Service
-{
+    /**
+     * @dataProvider badServiceDefinitionProvider
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Extension service definition is not a Closure or invokable object.
+     */
+    public function testExtendFailsForInvalidServiceDefinitions($service)
+    {
+        $pimple = new Container();
+        $pimple['foo'] = function () {};
+        $pimple->extend('foo', $service);
+    }
+
+    /**
+     * Provider for invalid service definitions
+     */
+    public function badServiceDefinitionProvider()
+    {
+        return array(
+          array(123),
+          array(new NonInvokable())
+        );
+    }
+
+    /**
+     * Provider for service definitions
+     */
+    public function serviceDefinitionProvider()
+    {
+        return array(
+            array(function ($value) {
+                $service = new Service();
+                $service->value = $value;
+
+                return $service;
+            }),
+            array(new Invokable())
+        );
+    }
 }

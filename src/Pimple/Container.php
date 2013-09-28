@@ -35,7 +35,7 @@ namespace Pimple;
  */
 class Container implements \ArrayAccess
 {
-    private $values;
+    protected $values = array();
 
     /**
      * Instantiate the container.
@@ -44,7 +44,7 @@ class Container implements \ArrayAccess
      *
      * @param array $values The parameters or objects.
      */
-    function __construct (array $values = array())
+    public function __construct(array $values = array())
     {
         $this->values = $values;
     }
@@ -69,9 +69,9 @@ class Container implements \ArrayAccess
     /**
      * Gets a parameter or an object.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param string $id The unique identifier for the parameter or object
      *
-     * @return mixed  The value of the parameter or an object
+     * @return mixed The value of the parameter or an object
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
@@ -81,25 +81,27 @@ class Container implements \ArrayAccess
             throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        return $this->values[$id] instanceof \Closure ? $this->values[$id]($this) : $this->values[$id];
+        $isFactory = is_object($this->values[$id]) && method_exists($this->values[$id], '__invoke');
+
+        return $isFactory ? $this->values[$id]($this) : $this->values[$id];
     }
 
     /**
      * Checks if a parameter or an object is set.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param string $id The unique identifier for the parameter or object
      *
      * @return Boolean
      */
     public function offsetExists($id)
     {
-        return isset($this->values[$id]);
+        return array_key_exists($id, $this->values);
     }
 
     /**
      * Unsets a parameter or an object.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param string $id The unique identifier for the parameter or object
      */
     public function offsetUnset($id)
     {
@@ -107,19 +109,23 @@ class Container implements \ArrayAccess
     }
 
     /**
-     * Returns a closure that stores the result of the given closure for
-     * uniqueness in the scope of this instance of Pimple.
+     * Returns a closure that stores the result of the given service definition
+     * for uniqueness in the scope of this instance of Pimple.
      *
-     * @param Closure $callable A closure to wrap for uniqueness
+     * @param object $callable A service definition to wrap for uniqueness
      *
      * @return Closure The wrapped closure
      */
-    public function share(\Closure $callable)
+    public static function share($callable)
     {
+        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+            throw new \InvalidArgumentException('Service definition is not a Closure or invokable object.');
+        }
+
         return function ($c) use ($callable) {
             static $object;
 
-            if (is_null($object)) {
+            if (null === $object) {
                 $object = $callable($c);
             }
 
@@ -132,12 +138,16 @@ class Container implements \ArrayAccess
      *
      * This is useful when you want to store a callable as a parameter.
      *
-     * @param Closure $callable A closure to protect from being evaluated
+     * @param object $callable A callable to protect from being evaluated
      *
      * @return Closure The protected closure
      */
-    public function protect(\Closure $callable)
+    public static function protect($callable)
     {
+        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+            throw new \InvalidArgumentException('Callable is not a Closure or invokable object.');
+        }
+
         return function ($c) use ($callable) {
             return $callable;
         };
@@ -146,9 +156,9 @@ class Container implements \ArrayAccess
     /**
      * Gets a parameter or the closure defining an object.
      *
-     * @param  string $id The unique identifier for the parameter or object
+     * @param string $id The unique identifier for the parameter or object
      *
-     * @return mixed  The value of the parameter or the closure defining an object
+     * @return mixed The value of the parameter or the closure defining an object
      *
      * @throws InvalidArgumentException if the identifier is not defined
      */
@@ -167,28 +177,42 @@ class Container implements \ArrayAccess
      * Useful when you want to extend an existing object definition,
      * without necessarily loading that object.
      *
-     * @param  string  $id       The unique identifier for the object
-     * @param  Closure $callable A closure to extend the original
+     * @param string $id       The unique identifier for the object
+     * @param object $callable A service definition to extend the original
      *
      * @return Closure The wrapped closure
      *
-     * @throws InvalidArgumentException if the identifier is not defined
+     * @throws InvalidArgumentException if the identifier is not defined or not a service definition
      */
-    public function extend($id, \Closure $callable)
+    public function extend($id, $callable)
     {
         if (!array_key_exists($id, $this->values)) {
             throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        $factory = $this->values[$id];
-
-        if (!($factory instanceof \Closure)) {
+        if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke')) {
             throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
         }
+
+        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+            throw new \InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
+        }
+
+        $factory = $this->values[$id];
 
         return $this->values[$id] = function ($c) use ($callable, $factory) {
             return $callable($factory($c), $c);
         };
+    }
+
+    /**
+     * Returns all defined value names.
+     *
+     * @return array An array of value names
+     */
+    public function keys()
+    {
+        return array_keys($this->values);
     }
 }
 

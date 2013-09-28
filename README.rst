@@ -82,7 +82,7 @@ Modifying services after creation
 ---------------------------------
 
 In some cases you may want to modify a service definition after it has been
-defined. You can use the ``extend()`` method to add define additional code to
+defined. You can use the ``extend()`` method to define additional code to
 be run on your service just after it is created::
 
     $container['mail'] = function ($c) {
@@ -106,7 +106,7 @@ code will be called every time you access the service::
         return new Twig_Environment($c['twig.loader'], $c['twig.options']);
     });
 
-    $container['twig'] = $container->share($c->extend('twig', function ($twig, $c) {
+    $container['twig'] = $container->share($container->extend('twig', function ($twig, $c) {
         $twig->addExtension(new MyTwigExtension());
         return $twig;
     }));
