@@ -226,6 +226,9 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testExtendDoesNotLeakWithFactories()
     {
+        if (extension_loaded('pimple')) {
+            $this->markTestSkipped('Pimple extension does not support this test');
+        }
         $pimple = new Container();
 
         $pimple['foo'] = $pimple->factory(function () { return; });
