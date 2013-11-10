@@ -58,17 +58,6 @@ Using the defined services is also very easy::
     // $storage = new SessionStorage('SESSION_ID');
     // $session = new Session($storage);
 
-Defining Shared Services
-------------------------
-
-By default, each time you get a service, Pimple returns a new instance of it.
-If you want the same instance to be returned for all calls, wrap your
-anonymous function with the ``share()`` method::
-
-    $container['session'] = $container->share(function ($c) {
-        return new Session($c['session_storage']);
-    });
-
 Protecting Parameters
 ---------------------
 
@@ -98,19 +87,6 @@ The first argument is the name of the object, the second is a function that
 gets access to the object instance and the container. The return value is
 a service definition, so you need to re-assign it on the container.
 
-If the service you plan to extend is already shared, it's recommended that you
-re-wrap your extended service with the ``shared`` method, otherwise your extension
-code will be called every time you access the service::
-
-    $container['twig'] = $container->share(function ($c) {
-        return new Twig_Environment($c['twig.loader'], $c['twig.options']);
-    });
-
-    $container['twig'] = $container->share($container->extend('twig', function ($twig, $c) {
-        $twig->addExtension(new MyTwigExtension());
-        return $twig;
-    }));
-
 Fetching the service creation function
 --------------------------------------
 
@@ -118,9 +94,9 @@ When you access an object, Pimple automatically calls the anonymous function
 that you defined, which creates the service object for you. If you want to get
 raw access to this function, you can use the ``raw()`` method::
 
-    $container['session'] = $container->share(function ($c) {
+    $container['session'] = function ($c) {
         return new Session($c['session_storage']);
-    });
+    };
 
     $sessionFunction = $container->raw('session');
 
@@ -148,12 +124,23 @@ Using this container from your own is as easy as it can get::
     // ...
 
     // embed the SomeContainer container
-    $container['embedded'] = $container->share(function () { return new SomeContainer(); });
+    $container['embedded'] = function () { return new SomeContainer(); };
 
     // configure it
     $container['embedded']['parameter'] = 'bar';
 
     // use it
     $container['embedded']['object']->...;
+
+Defining Prototype Services
+---------------------------
+
+By default, each time you get a service, Pimple returns the **same instance**
+of it. If you want a different instance to be returned for all calls, wrap your
+anonymous function with the ``prototype()`` method::
+
+    $container['session'] = $container->prototype(function ($c) {
+        return new Session($c['session_storage']);
+    });
 
 .. _Download it: https://github.com/fabpot/Pimple
