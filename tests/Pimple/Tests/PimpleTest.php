@@ -57,9 +57,9 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testServicesShouldBeDifferent()
     {
         $pimple = new Pimple();
-        $pimple['service'] = function () {
+        $pimple['service'] = $pimple->prototype(function () {
             return new Service();
-        };
+        });
 
         $serviceOne = $pimple['service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
@@ -144,7 +144,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testShare($service)
     {
         $pimple = new Pimple();
-        $pimple['shared_service'] = $pimple->share($service);
+        $pimple['shared_service'] = $service;
 
         $serviceOne = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
@@ -176,7 +176,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testRaw()
     {
         $pimple = new Pimple();
-        $pimple['service'] = $definition = function () { return 'foo'; };
+        $pimple['service'] = $definition = $pimple->prototype(function () { return 'foo'; });
         $this->assertSame($definition, $pimple->raw('service'));
     }
 
@@ -203,9 +203,9 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testExtend($service)
     {
         $pimple = new Pimple();
-        $pimple['shared_service'] = $pimple->share(function () {
+        $pimple['shared_service'] = function () {
             return new Service();
-        });
+        };
 
         $pimple->extend('shared_service', $service);
 
@@ -261,10 +261,10 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Service definition is not a Closure or invokable object.
      */
-    public function testShareFailsForInvalidServiceDefinitions($service)
+    public function testPrototypeFailsForInvalidServiceDefinitions($service)
     {
         $pimple = new Pimple();
-        $pimple->share($service);
+        $pimple->prototype($service);
     }
 
     /**

@@ -33,6 +33,7 @@
 class Pimple implements ArrayAccess
 {
     protected $values = array();
+    protected $protected;
 
     /**
      * Instantiate the container.
@@ -44,6 +45,7 @@ class Pimple implements ArrayAccess
     public function __construct(array $values = array())
     {
         $this->values = $values;
+        $this->protected = new \SplObjectStorage();
     }
 
     /**
@@ -60,7 +62,19 @@ class Pimple implements ArrayAccess
      */
     public function offsetSet($id, $value)
     {
-        $this->values[$id] = $value;
+        if (!is_object($value) || !method_exists($value, '__invoke') || isset($this->protected[$value])) {
+            $this->values[$id] = $value;
+        } else {
+            $this->values[$id] = function ($c) use ($value) {
+                static $object;
+
+                if (null === $object) {
+                    $object = $value($c);
+                }
+
+                return $object;
+            };
+        }
     }
 
     /**
@@ -106,28 +120,29 @@ class Pimple implements ArrayAccess
     }
 
     /**
-     * Returns a closure that stores the result of the given service definition
-     * for uniqueness in the scope of this instance of Pimple.
-     *
-     * @param object $callable A service definition to wrap for uniqueness
-     *
-     * @return Closure The wrapped closure
+     * Noop for BC with Silex 1.
      */
     public static function share($callable)
+    {
+        return $callable;
+    }
+
+    /**
+     * Protects a callable from being a shared service.
+     *
+     * @param object $callable A service definition to wrap to use as a prototype
+     *
+     * @return Closure The prototype closure
+     */
+    public function prototype($callable)
     {
         if (!is_object($callable) || !method_exists($callable, '__invoke')) {
             throw new InvalidArgumentException('Service definition is not a Closure or invokable object.');
         }
 
-        return function ($c) use ($callable) {
-            static $object;
+        $this->protected->attach($callable);
 
-            if (null === $object) {
-                $object = $callable($c);
-            }
-
-            return $object;
-        };
+        return $callable;
     }
 
     /**
@@ -139,15 +154,19 @@ class Pimple implements ArrayAccess
      *
      * @return Closure The protected closure
      */
-    public static function protect($callable)
+    public function protect($callable)
     {
         if (!is_object($callable) || !method_exists($callable, '__invoke')) {
             throw new InvalidArgumentException('Callable is not a Closure or invokable object.');
         }
 
-        return function ($c) use ($callable) {
+        $callable = function ($c) use ($callable) {
             return $callable;
         };
+
+        $this->protected->attach($callable);
+
+        return $callable;
     }
 
     /**
