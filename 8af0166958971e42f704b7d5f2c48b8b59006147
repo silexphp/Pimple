@@ -1,0 +1,51 @@
+---------------------------------------------------------------------------
+
+by davedevelopment at 2013-11-10T19:42:27Z
+
+I'm :+1: on the general idea, but :-1: on this implementation. I think this would be too restrictive for Pimple's general use. The implementation either needs to freeze individual services, so a service gets frozen once accessed, or allow services to be overwritten (usually use case is extending something), while in a container fetch. I toyed with the idea of the latter in this gist https://gist.github.com/davedevelopment/d4e137e69c8d2e845899
+
+---------------------------------------------------------------------------
+
+by igorw at 2013-11-10T19:51:41Z
+
+@davedevelopment updated to freeze individual services only.
+
+---------------------------------------------------------------------------
+
+by davedevelopment at 2013-11-10T23:04:57Z
+
+:+1:
+
+I just ran the test suite of my biggest silex project against this, and apart from a few problems with the dispatcher, which will be solved with the `EventListenerProviderInterface` anyway, everything seemed to work.
+
+I also ran it against the silex 2.0 branch's test suite and the only things that failed where due to the way some tests have been written.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2013-11-11T07:52:19Z
+
+Can you rebase please?
+
+---------------------------------------------------------------------------
+
+by stof at 2013-11-11T10:19:06Z
+
+As this is a BC break, it should target the 2.0 branch, not master
+
+---------------------------------------------------------------------------
+
+by fabpot at 2013-11-11T10:19:43Z
+
+The master branch is the 2.0 branch.
+
+---------------------------------------------------------------------------
+
+by stof at 2013-11-11T10:19:44Z
+
+nevermind, Pimple does not have a separate branch for 2.0
+
+---------------------------------------------------------------------------
+
+by igorw at 2013-11-11T14:01:30Z
+
+rebased
