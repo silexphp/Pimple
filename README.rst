@@ -132,14 +132,14 @@ Using this container from your own is as easy as it can get::
     // use it
     $container['embedded']['object']->...;
 
-Defining Prototype Services
----------------------------
+Defining Factory Services
+-------------------------
 
 By default, each time you get a service, Pimple returns the **same instance**
 of it. If you want a different instance to be returned for all calls, wrap your
-anonymous function with the ``prototype()`` method::
+anonymous function with the ``factory()`` method::
 
-    $container['session'] = $container->prototype(function ($c) {
+    $container['session'] = $container->factory(function ($c) {
         return new Session($c['session_storage']);
     });
 
