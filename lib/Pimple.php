@@ -226,9 +226,15 @@ class Pimple implements ArrayAccess
 
         $factory = $this->values[$id];
 
-        return $this->values[$id] = function ($c) use ($callable, $factory) {
+        $extended = function ($c) use ($callable, $factory) {
             return $callable($factory($c), $c);
         };
+
+        if (isset($this->factories[$factory])) {
+            $this->factories->attach($extended);
+        }
+
+        return $this[$id] = $extended;
     }
 
     /**

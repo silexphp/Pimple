@@ -78,14 +78,14 @@ be run on your service just after it is created::
         return new \Zend_Mail();
     };
 
-    $container['mail'] = $container->extend('mail', function($mail, $c) {
+    $container->extend('mail', function($mail, $c) {
         $mail->setFrom($c['mail.default_from']);
+
         return $mail;
     });
 
 The first argument is the name of the object, the second is a function that
-gets access to the object instance and the container. The return value is
-a service definition, so you need to re-assign it on the container.
+gets access to the object instance and the container.
 
 Fetching the service creation function
 --------------------------------------
