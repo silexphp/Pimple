@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by igorw at 2013-11-11T15:39:21Z
+
+Duplicate of #49 and #82.
+
+---------------------------------------------------------------------------
+
+by whatthejeff at 2013-11-11T15:43:44Z
+
+I don't think it's a duplicate actually.
+
+---------------------------------------------------------------------------
+
+by whatthejeff at 2013-11-11T15:52:41Z
+
+@igorw or maybe I misunderstood. Isn't this what @fabpot is suggesting in https://github.com/fabpot/Pimple/pull/49#issuecomment-8755743.
+
+---------------------------------------------------------------------------
+
+by igorw at 2013-11-11T15:54:29Z
+
+Ah you're right - this one is RST. My bad. :) :+1:
