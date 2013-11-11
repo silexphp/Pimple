@@ -328,4 +328,82 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
             array(new Invokable())
         );
     }
+
+    public function testDefiningNewServiceAfterFreeze()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $foo = $pimple['foo'];
+
+        $pimple['bar'] = function () {
+            return 'bar';
+        };
+        $this->assertSame('bar', $pimple['bar']);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Cannot override frozen service "foo".
+     */
+    public function testOverridingServiceAfterFreeze()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $foo = $pimple['foo'];
+
+        $pimple['foo'] = function () {
+            return 'bar';
+        };
+    }
+
+    public function testRemovingServiceAfterFreeze()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $foo = $pimple['foo'];
+
+        unset($pimple['foo']);
+        $pimple['foo'] = function () {
+            return 'bar';
+        };
+        $this->assertSame('bar', $pimple['foo']);
+    }
+
+    public function testExtendingService()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple['foo'] = $pimple->extend('foo', function ($foo, $app) {
+            return "$foo.bar";
+        });
+        $pimple['foo'] = $pimple->extend('foo', function ($foo, $app) {
+            return "$foo.baz";
+        });
+        $this->assertSame('foo.bar.baz', $pimple['foo']);
+    }
+
+    public function testExtendingServiceAfterOtherServiceFreeze()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple['bar'] = function () {
+            return 'bar';
+        };
+        $foo = $pimple['foo'];
+
+        $pimple['bar'] = $pimple->extend('bar', function ($bar, $app) {
+            return "$bar.baz";
+        });
+        $this->assertSame('bar.baz', $pimple['bar']);
+    }
 }

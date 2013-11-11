@@ -34,6 +34,7 @@ class Pimple implements ArrayAccess
 {
     protected $values = array();
     protected $factories;
+    protected $frozen = array();
 
     /**
      * Instantiate the container.
@@ -62,6 +63,10 @@ class Pimple implements ArrayAccess
      */
     public function offsetSet($id, $value)
     {
+        if (isset($this->frozen[$id])) {
+            throw new RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
+        }
+
         if (!is_object($value) || !method_exists($value, '__invoke') || isset($this->factories[$value])) {
             $this->values[$id] = $value;
         } else {
@@ -94,6 +99,10 @@ class Pimple implements ArrayAccess
 
         $isFactory = is_object($this->values[$id]) && method_exists($this->values[$id], '__invoke');
 
+        if ($isFactory) {
+            $this->frozen[$id] = true;
+        }
+
         return $isFactory ? $this->values[$id]($this) : $this->values[$id];
     }
 
@@ -117,6 +126,7 @@ class Pimple implements ArrayAccess
     public function offsetUnset($id)
     {
         unset($this->values[$id]);
+        unset($this->frozen[$id]);
     }
 
     /**
