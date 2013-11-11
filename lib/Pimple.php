@@ -56,10 +56,10 @@ class Pimple implements ArrayAccess
      *
      * Allowing any PHP callable leads to difficult to debug problems
      * as function names (strings) are callable (creating a function with
-     * the same a name as an existing parameter would break your container).
+     * the same name as an existing parameter would break your container).
      *
      * @param string $id    The unique identifier for the parameter or object
-     * @param mixed  $value The value of the parameter or a closure to defined an object
+     * @param mixed  $value The value of the parameter or a closure to define an object
      */
     public function offsetSet($id, $value)
     {
