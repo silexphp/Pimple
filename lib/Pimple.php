@@ -33,7 +33,7 @@
 class Pimple implements ArrayAccess
 {
     protected $values = array();
-    protected $protected;
+    protected $factories;
 
     /**
      * Instantiate the container.
@@ -45,7 +45,7 @@ class Pimple implements ArrayAccess
     public function __construct(array $values = array())
     {
         $this->values = $values;
-        $this->protected = new \SplObjectStorage();
+        $this->factories = new \SplObjectStorage();
     }
 
     /**
@@ -62,7 +62,7 @@ class Pimple implements ArrayAccess
      */
     public function offsetSet($id, $value)
     {
-        if (!is_object($value) || !method_exists($value, '__invoke') || isset($this->protected[$value])) {
+        if (!is_object($value) || !method_exists($value, '__invoke') || isset($this->factories[$value])) {
             $this->values[$id] = $value;
         } else {
             $this->values[$id] = function ($c) use ($value) {
@@ -128,19 +128,19 @@ class Pimple implements ArrayAccess
     }
 
     /**
-     * Protects a callable from being a shared service.
+     * Marks a callable as being a factory service.
      *
-     * @param object $callable A service definition to wrap to use as a prototype
+     * @param object $callable A service definition to be used as a factory
      *
-     * @return Closure The prototype closure
+     * @return Closure The factory closure
      */
-    public function prototype($callable)
+    public function factory($callable)
     {
         if (!is_object($callable) || !method_exists($callable, '__invoke')) {
             throw new InvalidArgumentException('Service definition is not a Closure or invokable object.');
         }
 
-        $this->protected->attach($callable);
+        $this->factories->attach($callable);
 
         return $callable;
     }
@@ -164,7 +164,7 @@ class Pimple implements ArrayAccess
             return $callable;
         };
 
-        $this->protected->attach($callable);
+        $this->factories->attach($callable);
 
         return $callable;
     }

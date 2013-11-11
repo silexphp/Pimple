@@ -57,7 +57,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testServicesShouldBeDifferent()
     {
         $pimple = new Pimple();
-        $pimple['service'] = $pimple->prototype(function () {
+        $pimple['service'] = $pimple->factory(function () {
             return new Service();
         });
 
@@ -176,7 +176,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testRaw()
     {
         $pimple = new Pimple();
-        $pimple['service'] = $definition = $pimple->prototype(function () { return 'foo'; });
+        $pimple['service'] = $definition = $pimple->factory(function () { return 'foo'; });
         $this->assertSame($definition, $pimple->raw('service'));
     }
 
@@ -261,10 +261,10 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Service definition is not a Closure or invokable object.
      */
-    public function testPrototypeFailsForInvalidServiceDefinitions($service)
+    public function testFactoryFailsForInvalidServiceDefinitions($service)
     {
         $pimple = new Pimple();
-        $pimple->prototype($service);
+        $pimple->factory($service);
     }
 
     /**
