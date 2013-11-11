@@ -207,7 +207,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
             return new Service();
         };
 
-        $pimple->extend('shared_service', $service);
+        $pimple['shared_service'] = $pimple->prototype($pimple->extend('shared_service', $service));
 
         $serviceOne = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
