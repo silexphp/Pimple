@@ -206,17 +206,25 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple['shared_service'] = function () {
             return new Service();
         };
+        $pimple['factory_service'] = $pimple->factory(function () {
+            return new Service();
+        });
 
         $pimple->extend('shared_service', $service);
-
         $serviceOne = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
-
         $serviceTwo = $pimple['shared_service'];
         $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
-
-        $this->assertNotSame($serviceOne, $serviceTwo);
+        $this->assertSame($serviceOne, $serviceTwo);
         $this->assertSame($serviceOne->value, $serviceTwo->value);
+
+        $pimple->extend('factory_service', $service);
+        $serviceOne = $pimple['factory_service'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
+        $serviceTwo = $pimple['factory_service'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
+        $this->assertNotSame($serviceOne, $serviceTwo);
+        $this->assertNotSame($serviceOne->value, $serviceTwo->value);
     }
 
     /**
