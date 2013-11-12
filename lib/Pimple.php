@@ -33,11 +33,12 @@
 class Pimple implements ArrayAccess
 {
     protected $values = array();
-    protected $factories;
-    protected $protected;
-    protected $frozen = array();
-    protected $raw = array();
-    protected $keys = array();
+
+    private $factories;
+    private $protected;
+    private $frozen = array();
+    private $raw = array();
+    private $keys = array();
 
     /**
      * Instantiate the container.
