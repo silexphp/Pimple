@@ -34,7 +34,10 @@ class Pimple implements ArrayAccess
 {
     protected $values = array();
     protected $factories;
+    protected $protected;
     protected $frozen = array();
+    protected $raw = array();
+    protected $keys = array();
 
     /**
      * Instantiate the container.
@@ -45,8 +48,11 @@ class Pimple implements ArrayAccess
      */
     public function __construct(array $values = array())
     {
-        $this->values = $values;
+        foreach ($values as $key => $value) {
+            $this[$key] = $value;
+        }
         $this->factories = new \SplObjectStorage();
+        $this->protected = new \SplObjectStorage();
     }
 
     /**
@@ -67,19 +73,8 @@ class Pimple implements ArrayAccess
             throw new RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
         }
 
-        if (!is_object($value) || !method_exists($value, '__invoke') || isset($this->factories[$value])) {
-            $this->values[$id] = $value;
-        } else {
-            $this->values[$id] = function ($c) use ($value) {
-                static $object;
-
-                if (null === $object) {
-                    $object = $value($c);
-                }
-
-                return $object;
-            };
-        }
+        $this->values[$id] = $value;
+        $this->keys[$id] = true;
     }
 
     /**
@@ -93,17 +88,27 @@ class Pimple implements ArrayAccess
      */
     public function offsetGet($id)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        $isFactory = is_object($this->values[$id]) && method_exists($this->values[$id], '__invoke');
-
-        if ($isFactory) {
-            $this->frozen[$id] = true;
+        if (
+            isset($this->raw[$id])
+            || !is_object($this->values[$id])
+            || isset($this->protected[$this->values[$id]])
+            || !method_exists($this->values[$id], '__invoke')
+        ) {
+            return $this->values[$id];
         }
 
-        return $isFactory ? $this->values[$id]($this) : $this->values[$id];
+        if (isset($this->factories[$this->values[$id]])) {
+            return $this->values[$id]($this);
+        }
+
+        $this->frozen[$id] = true;
+        $this->raw[$id] = $this->values[$id];
+
+        return $this->values[$id] = $this->values[$id]($this);
     }
 
     /**
@@ -125,8 +130,13 @@ class Pimple implements ArrayAccess
      */
     public function offsetUnset($id)
     {
-        unset($this->values[$id]);
-        unset($this->frozen[$id]);
+        if (isset($this->keys[$id])) {
+            if (is_object($this->values[$id])) {
+                unset($this->factories[$this->values[$id]], $this->protected[$this->values[$id]]);
+            }
+
+            unset($this->values[$id], $this->frozen[$id], $this->raw[$id], $this->keys[$id]);
+        }
     }
 
     /**
@@ -172,11 +182,7 @@ class Pimple implements ArrayAccess
             throw new InvalidArgumentException('Callable is not a Closure or invokable object.');
         }
 
-        $callable = function ($c) use ($callable) {
-            return $callable;
-        };
-
-        $this->factories->attach($callable);
+        $this->protected->attach($callable);
 
         return $callable;
     }
@@ -192,8 +198,12 @@ class Pimple implements ArrayAccess
      */
     public function raw($id)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+        }
+
+        if (isset($this->raw[$id])) {
+            return $this->raw[$id];
         }
 
         return $this->values[$id];
@@ -214,7 +224,7 @@ class Pimple implements ArrayAccess
      */
     public function extend($id, $callable)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
