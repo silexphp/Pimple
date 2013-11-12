@@ -131,6 +131,8 @@ class Pimple implements ArrayAccess
 
     /**
      * Noop for BC with Silex 1.
+     *
+     * @deprecated
      */
     public static function share($callable)
     {
