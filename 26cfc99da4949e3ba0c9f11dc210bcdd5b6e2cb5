@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2013-11-12T19:43:44Z
+
+After removing an `array_key_exists` call and reordering a condition for the most use cases, the `get` call are now 6x times faster than before.
+
+---------------------------------------------------------------------------
+
+by stof at 2013-11-12T20:06:26Z
+
+:+1:
