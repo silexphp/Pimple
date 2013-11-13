@@ -153,7 +153,7 @@ class Pimple implements ArrayAccess
     /**
      * Marks a callable as being a factory service.
      *
-     * @param object $callable A service definition to be used as a factory
+     * @param object|callable $callable A service definition to be used as a factory
      *
      * @return Closure The factory closure
      */
@@ -173,7 +173,7 @@ class Pimple implements ArrayAccess
      *
      * This is useful when you want to store a callable as a parameter.
      *
-     * @param object $callable A callable to protect from being evaluated
+     * @param object|callable $callable A callable to protect from being evaluated
      *
      * @return Closure The protected closure
      */
@@ -217,7 +217,7 @@ class Pimple implements ArrayAccess
      * without necessarily loading that object.
      *
      * @param string $id       The unique identifier for the object
-     * @param object $callable A service definition to extend the original
+     * @param object|callable $callable A service definition to extend the original
      *
      * @return Closure The wrapped closure
      *
