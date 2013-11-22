@@ -109,7 +109,7 @@ class Pimple implements ArrayAccess
      * Returns a closure that stores the result of the given service definition
      * for uniqueness in the scope of this instance of Pimple.
      *
-     * @param object $callable A service definition to wrap for uniqueness
+     * @param callable $callable A service definition to wrap for uniqueness
      *
      * @return Closure The wrapped closure
      */
@@ -135,7 +135,7 @@ class Pimple implements ArrayAccess
      *
      * This is useful when you want to store a callable as a parameter.
      *
-     * @param object $callable A callable to protect from being evaluated
+     * @param callable $callable A callable to protect from being evaluated
      *
      * @return Closure The protected closure
      */
@@ -175,7 +175,7 @@ class Pimple implements ArrayAccess
      * without necessarily loading that object.
      *
      * @param string $id       The unique identifier for the object
-     * @param object $callable A service definition to extend the original
+     * @param callable $callable A service definition to extend the original
      *
      * @return Closure The wrapped closure
      *
