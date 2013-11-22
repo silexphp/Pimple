@@ -154,7 +154,7 @@ class Pimple implements ArrayAccess
      *
      * @param callable $callable A service definition to be used as a factory
      *
-     * @return Closure The factory closure
+     * @return callable The passed callable
      */
     public function factory($callable)
     {
@@ -174,7 +174,7 @@ class Pimple implements ArrayAccess
      *
      * @param callable $callable A callable to protect from being evaluated
      *
-     * @return Closure The protected closure
+     * @return callable The passed callable
      */
     public function protect($callable)
     {
@@ -215,10 +215,10 @@ class Pimple implements ArrayAccess
      * Useful when you want to extend an existing object definition,
      * without necessarily loading that object.
      *
-     * @param string $id       The unique identifier for the object
+     * @param string $id         The unique identifier for the object
      * @param callable $callable A service definition to extend the original
      *
-     * @return Closure The wrapped closure
+     * @return callable The wrapped callable
      *
      * @throws InvalidArgumentException if the identifier is not defined or not a service definition
      */
