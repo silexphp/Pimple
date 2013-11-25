@@ -258,4 +258,14 @@ class Pimple implements ArrayAccess
     {
         return array_keys($this->values);
     }
+
+    /**
+     * Returns an array of all parameters and objects
+     *
+     * @return array An array of parameters or objects
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
 }
