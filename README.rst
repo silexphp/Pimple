@@ -129,6 +129,8 @@ that extends ``Pimple``, and configuring it in the constructor
     {
         public function __construct()
         {
+            parent::__construct();
+
             $this['parameter'] = 'foo';
             $this['object'] = function () { return stdClass(); };
         }
