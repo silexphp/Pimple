@@ -50,7 +50,7 @@ class Pimple implements ArrayAccess
     {
         $this->factories = new \SplObjectStorage();
         $this->protected = new \SplObjectStorage();
-        
+
         foreach ($values as $key => $value) {
             $this->offsetSet($key, $value);
         }
@@ -65,8 +65,9 @@ class Pimple implements ArrayAccess
      * as function names (strings) are callable (creating a function with
      * the same name as an existing parameter would break your container).
      *
-     * @param string $id    The unique identifier for the parameter or object
-     * @param mixed  $value The value of the parameter or a closure to define an object
+     * @param  string           $id    The unique identifier for the parameter or object
+     * @param  mixed            $value The value of the parameter or a closure to define an object
+     * @throws RuntimeException Prevent override of a frozen service
      */
     public function offsetSet($id, $value)
     {
@@ -156,6 +157,8 @@ class Pimple implements ArrayAccess
      * @param callable $callable A service definition to be used as a factory
      *
      * @return callable The passed callable
+     *
+     * @throws InvalidArgumentException Service definition has to be a closure of an invokable object
      */
     public function factory($callable)
     {
@@ -176,6 +179,8 @@ class Pimple implements ArrayAccess
      * @param callable $callable A callable to protect from being evaluated
      *
      * @return callable The passed callable
+     *
+     * @throws InvalidArgumentException Service definition has to be a closure of an invokable object
      */
     public function protect($callable)
     {
@@ -216,7 +221,7 @@ class Pimple implements ArrayAccess
      * Useful when you want to extend an existing object definition,
      * without necessarily loading that object.
      *
-     * @param string $id         The unique identifier for the object
+     * @param string   $id       The unique identifier for the object
      * @param callable $callable A service definition to extend the original
      *
      * @return callable The wrapped callable
