@@ -57,6 +57,48 @@ class Pimple implements ArrayAccess
     }
 
     /**
+     * Magic getter
+     *
+     * {@see Pimple::offsetGet}
+     *
+     * @link http://www.php.net/manual/en/language.oop5.overloading.php#object.get
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        $value = $this->offsetGet($name);
+
+        if (isset($this->values[$name]) && isset($this->factories[$this->values[$name]])) {
+            return $value;
+        }
+
+        if (! $this->isReservedService($name)) {
+            $this->$name = $value;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Magic issetter
+     *
+     * {@see Pimple::offsetExists}
+     *
+     * @link http://www.php.net/manual/en/language.oop5.overloading.php#object.isset
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return $this->offsetExists($name);
+    }
+
+    /**
      * Sets a parameter or an object.
      *
      * Objects must be defined as Closures.
@@ -137,6 +179,10 @@ class Pimple implements ArrayAccess
             }
 
             unset($this->values[$id], $this->frozen[$id], $this->raw[$id], $this->keys[$id]);
+
+            if (! $this->isReservedService($id)) {
+                unset($this->$id);
+            }
         }
     }
 
@@ -258,5 +304,17 @@ class Pimple implements ArrayAccess
     public function keys()
     {
         return array_keys($this->values);
+    }
+
+    /**
+     * Retrieves whether the given service is a reserved key that should not be cached in a property
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    protected function isReservedService($key)
+    {
+        return in_array($key, array('values', 'factories', 'protected', 'frozen', 'raw', 'keys'));
     }
 }
