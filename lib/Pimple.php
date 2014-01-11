@@ -247,6 +247,7 @@ class Pimple implements ArrayAccess
         };
 
         if (isset($this->factories[$factory])) {
+            $this->factories->detach($factory);
             $this->factories->attach($extended);
         }
 
