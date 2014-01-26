@@ -464,11 +464,11 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testInstanceReplacesService()
     {
         $pimple = new Pimple();
-        $pimple['foo'] = function() {
+        $pimple['foo'] = function () {
             return new Service();
         };
 
-        $pimple->instance('foo', function() {
+        $pimple->instance('foo', function () {
             return new OtherService();
         });
 
@@ -478,13 +478,13 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testInstanceReplacesServiceAfterOriginalUsed()
     {
         $pimple = new Pimple();
-        $pimple['foo'] = function() {
+        $pimple['foo'] = function () {
             return new Service();
         };
 
         $original = $pimple['foo'];
 
-        $pimple->instance('foo', function() {
+        $pimple->instance('foo', function () {
             return new OtherService();
         });
 
@@ -494,13 +494,13 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testOriginalUsedAfterInstanceServiceUsed()
     {
         $pimple = new Pimple();
-        $pimple['foo'] = function() {
+        $pimple['foo'] = function () {
             return new Service();
         };
 
         $foo = $pimple['foo'];
 
-        $pimple->instance('foo', function() {
+        $pimple->instance('foo', function () {
             return new OtherService();
         });
 
@@ -512,11 +512,11 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testInstanceReplacesFactory()
     {
         $pimple = new Pimple();
-        $pimple['foo'] = $pimple->factory(function() {
+        $pimple['foo'] = $pimple->factory(function () {
             return new Service();
         });
 
-        $pimple->instance('foo', function() {
+        $pimple->instance('foo', function () {
             return new OtherService();
         });
 
@@ -526,13 +526,13 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testInstanceReplacesFactoryAfterOriginalUsed()
     {
         $pimple = new Pimple();
-        $pimple['foo'] = $pimple->factory(function() {
+        $pimple['foo'] = $pimple->factory(function () {
             return new Service();
         });
 
         $foo = $pimple['foo'];
 
-        $pimple->instance('foo', function() {
+        $pimple->instance('foo', function () {
             return new OtherService();
         });
 
@@ -542,13 +542,13 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testOriginalUsedAfterInstanceFactory()
     {
         $pimple = new Pimple();
-        $pimple['foo'] = $pimple->factory(function() {
+        $pimple['foo'] = $pimple->factory(function () {
             return new Service();
         });
 
         $foo = $pimple['foo'];
 
-        $pimple->instance('foo', function() {
+        $pimple->instance('foo', function () {
             return new OtherService();
         });
 

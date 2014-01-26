@@ -51,7 +51,7 @@ class Pimple implements ArrayAccess
     {
         $this->factories = new \SplObjectStorage();
         $this->protected = new \SplObjectStorage();
-        
+
         foreach ($values as $key => $value) {
             $this->offsetSet($key, $value);
         }
@@ -100,26 +100,25 @@ class Pimple implements ArrayAccess
             || isset($this->protected[$this->values[$id]])
             || !method_exists($this->values[$id], '__invoke')
         ) {
-            if (isset($this->instance[$id]))
-            {
+            if (isset($this->instance[$id])) {
                 return $this->getInstance($id);
             }
+
             return $this->values[$id];
         }
 
         if (isset($this->factories[$this->values[$id]])) {
-            if (isset($this->instance[$id]))
-            {
+            if (isset($this->instance[$id])) {
                 return $this->getInstance($id);
             }
+
             return $this->values[$id]($this);
         }
 
         $this->frozen[$id] = true;
         $this->raw[$id] = $this->values[$id];
 
-        if (isset($this->instance[$id]))
-        {
+        if (isset($this->instance[$id])) {
             return $this->getInstance($id);
         }
 
@@ -282,7 +281,7 @@ class Pimple implements ArrayAccess
      * the container. This is useful in testing because it allows you to
      * substitute mock objects into the container to be injected in place
      * of the originals.
-     *     
+     *
      * @param  string $id    The unique identifier for the parameter or object
      * @param  mixed $value The value of the parameter or a closure to define an object
      *
@@ -290,8 +289,7 @@ class Pimple implements ArrayAccess
      */
     public function instance($id, $value)
     {
-        if( !isset($this->values[$id]) )
-        {
+        if ( !isset($this->values[$id]) ) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
         $this->instance[$id] = $value;
@@ -299,7 +297,7 @@ class Pimple implements ArrayAccess
 
     /**
      * Gets and unsets the instance parameter or object.
-     * 
+     *
      * @param string $id The unique identifier for the parameter or object
      *
      * @return mixed The value of the parameter or an object
