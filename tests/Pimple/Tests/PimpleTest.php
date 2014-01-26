@@ -414,4 +414,146 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         });
         $this->assertSame('bar.baz', $pimple['bar']);
     }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInstanceThrowsInvalidArgumentExceptionWhenInvalidIdGiven()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = 'bar';
+
+        $pimple->instance('bar', 'baz');
+    }
+
+    public function testInstanceReplacesParameter()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = 'foo';
+
+        $pimple->instance('foo', 'bar');
+
+        $this->assertSame('bar', $pimple['foo']);
+    }
+
+    public function testInstanceReplacesParameterAfterOriginalUsed()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = 'foo';
+
+        $original = $pimple['foo'];
+
+        $pimple->instance('foo', 'bar');
+
+        $this->assertSame('bar', $pimple['foo']);
+    }
+
+    public function testOriginalUsedAfterInstanceParameterUsed()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = 'foo';
+        $foo = $pimple['foo'];
+
+        $pimple->instance('foo', 'bar');
+
+        $instance = $pimple['foo'];
+
+        $this->assertSame('foo', $pimple['foo']);
+    }
+
+    public function testInstanceReplacesService()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return new Service();
+        };
+
+        $pimple->instance('foo', function () {
+            return new OtherService();
+        });
+
+        $this->assertInstanceOf('Pimple\Tests\OtherService', $pimple['foo']);
+    }
+
+    public function testInstanceReplacesServiceAfterOriginalUsed()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return new Service();
+        };
+
+        $original = $pimple['foo'];
+
+        $pimple->instance('foo', function () {
+            return new OtherService();
+        });
+
+        $this->assertInstanceOf('Pimple\Tests\OtherService', $pimple['foo']);
+    }
+
+    public function testOriginalUsedAfterInstanceServiceUsed()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return new Service();
+        };
+
+        $foo = $pimple['foo'];
+
+        $pimple->instance('foo', function () {
+            return new OtherService();
+        });
+
+        $instance = $pimple['foo'];
+
+        $this->assertInstanceOf('Pimple\Tests\Service', $pimple['foo']);
+    }
+
+    public function testInstanceReplacesFactory()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = $pimple->factory(function () {
+            return new Service();
+        });
+
+        $pimple->instance('foo', function () {
+            return new OtherService();
+        });
+
+        $this->assertInstanceOf('Pimple\Tests\OtherService', $pimple['foo']);
+    }
+
+    public function testInstanceReplacesFactoryAfterOriginalUsed()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = $pimple->factory(function () {
+            return new Service();
+        });
+
+        $foo = $pimple['foo'];
+
+        $pimple->instance('foo', function () {
+            return new OtherService();
+        });
+
+        $this->assertInstanceOf('Pimple\Tests\OtherService', $pimple['foo']);
+    }
+
+    public function testOriginalUsedAfterInstanceFactory()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = $pimple->factory(function () {
+            return new Service();
+        });
+
+        $foo = $pimple['foo'];
+
+        $pimple->instance('foo', function () {
+            return new OtherService();
+        });
+
+        $instance = $pimple['foo'];
+
+        $this->assertInstanceOf('Pimple\Tests\Service', $pimple['foo']);
+    }
 }
