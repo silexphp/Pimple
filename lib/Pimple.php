@@ -141,16 +141,6 @@ class Pimple implements ArrayAccess
     }
 
     /**
-     * Noop for BC with Silex 1.
-     *
-     * @deprecated
-     */
-    public static function share($callable)
-    {
-        return $callable;
-    }
-
-    /**
      * Marks a callable as being a factory service.
      *
      * @param callable $callable A service definition to be used as a factory
