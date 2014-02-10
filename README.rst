@@ -8,8 +8,8 @@ Pimple
     way to learn more about how to create a simple Dependency Injection
     Container (Pimple 2.x implementation being more focused on performance).
 
-Pimple is a small Dependency Injection Container for PHP 5.3 that consists
-of just one file and one class (about 80 lines of code).
+Pimple is a small Dependency Injection Container for PHP that consists of just
+one file and one class (about 80 lines of code).
 
 `Download it`_, require it in your code, and you're good to go
 
