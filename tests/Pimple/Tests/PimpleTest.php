@@ -227,6 +227,23 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($serviceOne->value, $serviceTwo->value);
     }
 
+    public function testExtendDoesNotLeakWithFactories()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = $pimple->factory(function () { return; });
+        $pimple['foo'] = $pimple->extend('foo', function ($foo, $pimple) { return; });
+        unset($pimple['foo']);
+
+        $p = new \ReflectionProperty($pimple, 'values');
+        $p->setAccessible(true);
+        $this->assertEmpty($p->getValue($pimple));
+
+        $p = new \ReflectionProperty($pimple, 'factories');
+        $p->setAccessible(true);
+        $this->assertCount(0, $p->getValue($pimple));
+    }
+
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Identifier "foo" is not defined.
