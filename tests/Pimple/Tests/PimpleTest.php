@@ -431,4 +431,112 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         });
         $this->assertSame('bar.baz', $pimple['bar']);
     }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" is not defined.
+     */
+    public function testPropertyAccessOnNonExistingService()
+    {
+        $pimple = new Pimple();
+
+        $this->setExpectedException('InvalidArgumentException');
+
+        echo $pimple->foo;
+    }
+
+    public function testPropertyAccessOnSharedService()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = function () {
+            return new \stdClass();
+        };
+
+        $foo = $pimple->foo;
+
+        $this->assertInstanceOf('stdClass', $foo);
+        $this->assertSame($foo, $pimple->foo);
+        $this->assertSame($foo, $pimple['foo']);
+        $this->assertTrue(isset($pimple->foo));
+        $this->assertArrayHasKey('foo', get_object_vars($pimple));
+    }
+
+    public function testPropoertyAccessOnNonSharedService()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = $pimple->factory(function () {
+            return new \stdClass();
+        });
+
+        $foo = $pimple->foo;
+
+        $this->assertInstanceOf('stdClass', $foo);
+        $this->assertInstanceOf('stdClass', $pimple->foo);
+        $this->assertNotSame($foo, $pimple->foo);
+        $this->assertNotSame($foo, $pimple['foo']);
+        $this->assertTrue(isset($pimple->foo));
+        $this->assertArrayNotHasKey('foo', get_object_vars($pimple));
+    }
+
+    /**
+     * @dataProvider protectedServicesProvider
+     *
+     * @param string $key
+     */
+    public function testProtectsReservedKey($key)
+    {
+        $pimple = new Pimple();
+
+        $pimple[$key] = function () {
+            return new \stdClass();
+        };
+
+        $service = $pimple->$key;
+
+        $this->assertSame($service, $pimple->$key);
+        $this->assertSame($service, $pimple[$key]);
+        $this->assertTrue(isset($pimple->$key));
+        $this->assertArrayNotHasKey($key, get_object_vars($pimple));
+    }
+
+    public function testRemovesCachedPropertyInstancesOnUnset()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = function () {
+            return new \stdClass();
+        };
+
+        $service = $pimple->foo;
+
+        $this->assertSame($service, $pimple->foo);
+        $this->assertArrayHasKey('foo', get_object_vars($pimple));
+
+        unset($pimple['foo']);
+
+        $this->assertArrayNotHasKey('foo', get_object_vars($pimple));
+
+        $this->setExpectedException('InvalidArgumentException');
+
+        echo $pimple->foo;
+    }
+
+    /**
+     * Protected services of the pimple instance
+     *
+     * @return string[][]
+     */
+    public function protectedServicesProvider()
+    {
+        return array(
+            array('values'),
+            array('factories'),
+            array('protected'),
+            array('frozen'),
+            array('raw'),
+            array('keys'),
+        );
+    }
 }
