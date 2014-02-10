@@ -109,8 +109,11 @@ class Pimple implements ArrayAccess
 
         $this->frozen[$id] = true;
         $this->raw[$id] = $this->values[$id];
-
-        return $this->values[$id] = $this->values[$id]($this);
+				
+        $value = $this->values[$id]($this);
+				$this->offsetSet($id,$value);
+				
+        return $value;
     }
 
     /**
@@ -122,7 +125,7 @@ class Pimple implements ArrayAccess
      */
     public function offsetExists($id)
     {
-        return array_key_exists($id, $this->values);
+        return isset($this->keys[$id]);
     }
 
     /**
@@ -243,7 +246,8 @@ class Pimple implements ArrayAccess
             $this->factories->attach($extended);
         }
 
-        return $this[$id] = $extended;
+				$this->offsetSet($id,$extended);
+        return $extended;
     }
 
     /**
