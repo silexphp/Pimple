@@ -1,6 +1,13 @@
 Pimple
 ======
 
+.. caution::
+
+    This is the documentation for Pimple 2.x. If you are using Pimple 1.x, read
+    the `Pimple 1.x documentation`_. Reading the Pimple 1.x code is also a good
+    way to learn more about how to create a simple Dependency Injection
+    Container (Pimple 2.x implementation being more focused on performance).
+
 Pimple is a small Dependency Injection Container for PHP 5.3 that consists
 of just one file and one class (about 80 lines of code).
 
@@ -167,4 +174,5 @@ anonymous function with the ``factory()`` method
         return new Session($c['session_storage']);
     });
 
-.. _Download it: https://github.com/fabpot/Pimple
+.. _Download it:              https://raw2.github.com/fabpot/Pimple/master/lib/Pimple.php
+.. _Pimple 1.x documentation: https://github.com/fabpot/Pimple/tree/1.1
