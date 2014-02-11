@@ -34,4 +34,5 @@ namespace Pimple\Tests;
  */
 class Service
 {
+    public $value;
 }
