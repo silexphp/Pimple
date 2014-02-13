@@ -10,6 +10,8 @@
  */
 
 require_once __DIR__.'/../lib/Pimple.php';
+require_once __DIR__.'/../lib/PimpleServiceProviderInterface.php';
 require_once __DIR__.'/Pimple/Tests/Service.php';
 require_once __DIR__.'/Pimple/Tests/Invokable.php';
 require_once __DIR__.'/Pimple/Tests/NonInvokable.php';
+require_once __DIR__.'/Pimple/Tests/PimpleServiceProvider.php';
