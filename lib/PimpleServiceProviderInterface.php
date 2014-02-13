@@ -29,8 +29,9 @@
  *
  * @package pimple
  * @author  Fabien Potencier
+ * @author  Dominik Zogg
  */
-interface ServiceProviderInterface
+interface PimpleServiceProviderInterface
 {
     /**
      * Registers services on the given container.
@@ -38,7 +39,7 @@ interface ServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      *
-     * @param Pimple $container An Container instance
+     * @param Pimple $pimple An Container instance
      */
-    public function register(Pimple $container);
+    public function register(Pimple $pimple);
 }
