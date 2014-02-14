@@ -255,4 +255,23 @@ class Pimple implements ArrayAccess
     {
         return array_keys($this->values);
     }
+
+    /**
+     * Registers a service provider.
+     *
+     * @param PimpleServiceProviderInterface $provider A PimpleServiceProviderInterface instance
+     * @param array                          $values   An array of values that customizes the provider
+     *
+     * @return Pimple
+     */
+    public function register(PimpleServiceProviderInterface $provider, array $values = array())
+    {
+        $provider->register($this);
+
+        foreach ($values as $key => $value) {
+            $this[$key] = $value;
+        }
+
+        return $this;
+    }
 }
