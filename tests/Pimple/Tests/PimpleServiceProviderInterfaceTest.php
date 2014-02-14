@@ -54,4 +54,26 @@ class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotSame($serviceOne, $serviceTwo);
     }
+
+    public function testProviderWithRegisterMethod()
+    {
+        $pimple = new Pimple();
+
+        $pimple->register(new PimpleServiceProvider(), array(
+            'anotherParameter' => 'anotherValue'
+        ));
+
+        $this->assertEquals('value', $pimple['param']);
+        $this->assertEquals('anotherValue', $pimple['anotherParameter']);
+
+        $this->assertInstanceOf('Pimple\Tests\Service', $pimple['service']);
+
+        $serviceOne = $pimple['factory'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
+
+        $serviceTwo = $pimple['factory'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
+
+        $this->assertNotSame($serviceOne, $serviceTwo);
+    }
 }
