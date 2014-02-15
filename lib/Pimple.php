@@ -24,6 +24,8 @@
  * THE SOFTWARE.
  */
 
+use Pimple\ServiceProviderInterface;
+
 /**
  * Pimple main class.
  *
@@ -259,12 +261,12 @@ class Pimple implements ArrayAccess
     /**
      * Registers a service provider.
      *
-     * @param PimpleServiceProviderInterface $provider A PimpleServiceProviderInterface instance
-     * @param array                          $values   An array of values that customizes the provider
+     * @param ServiceProviderInterface $provider A ServiceProviderInterface instance
+     * @param array                    $values   An array of values that customizes the provider
      *
      * @return Pimple
      */
-    public function register(PimpleServiceProviderInterface $provider, array $values = array())
+    public function register(ServiceProviderInterface $provider, array $values = array())
     {
         $provider->register($this);
 
