@@ -26,8 +26,6 @@
 
 namespace Pimple\Tests;
 
-use Pimple;
-
 /**
  * Pimple Test
  *
@@ -38,7 +36,7 @@ class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
 {
     public function testProvider()
     {
-        $pimple = new Pimple();
+        $pimple = new \Pimple();
 
         $pimpleServiceProvider = new PimpleServiceProvider();
         $pimpleServiceProvider->register($pimple);

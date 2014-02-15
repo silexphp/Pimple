@@ -24,6 +24,8 @@
  * THE SOFTWARE.
  */
 
+namespace Pimple;
+
 /**
  * Pimple service provider interface.
  *
@@ -31,7 +33,7 @@
  * @author  Fabien Potencier
  * @author  Dominik Zogg
  */
-interface PimpleServiceProviderInterface
+interface ServiceProviderInterface
 {
     /**
      * Registers services on the given container.
@@ -39,7 +41,7 @@ interface PimpleServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      *
-     * @param Pimple $pimple An Container instance
+     * @param \Pimple $pimple An Container instance
      */
-    public function register(Pimple $pimple);
+    public function register(\Pimple $pimple);
 }
