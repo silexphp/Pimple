@@ -54,19 +54,19 @@ class Pimple implements ArrayAccess
         $this->setValues($values);
     }
 
-	/**
-	 * Sets parameters or an objects
-	 *
-	 * @param array $values
-	 */
-	public function setValues(array $values)
-	{
-		foreach ($values as $key => $value) {
+    /**
+     * Sets parameters or an objects
+     *
+     * @param array $values
+     */
+    public function setValues(array $values)
+    {
+        foreach ($values as $key => $value) {
             $this->offsetSet($key, $value);
         }
-	}
+    }
 
-	/**
+    /**
      * Sets a parameter or an object.
      *
      * Objects must be defined as Closures.

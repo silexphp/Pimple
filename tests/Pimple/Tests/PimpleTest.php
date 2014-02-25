@@ -108,11 +108,11 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($params['param'], $pimple['param']);
     }
 
-	public function testMethodInjection()
+    public function testMethodInjection()
     {
         $params = array("param" => "value");
         $pimple = new Pimple();
-		$pimple->setValues($params);
+        $pimple->setValues($params);
 
         $this->assertSame($params['param'], $pimple['param']);
     }
