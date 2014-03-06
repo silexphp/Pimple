@@ -1,0 +1,39 @@
+---------------------------------------------------------------------------
+
+by GromNaN at 2014-03-05T14:33:23Z
+
+Finely observed.
+
+---------------------------------------------------------------------------
+
+by dominikzogg at 2014-03-06T11:56:32Z
+
+@raphahardt I am not sure, if its wished, that a a key assigned with a null value should return true. if it should return true, your solution would break pimple
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-03-06T12:28:11Z
+
+Closing for the reason explained by @dominikzogg. It was done on purpose to allow `null` values to be valid.
+
+---------------------------------------------------------------------------
+
+by GromNaN at 2014-03-06T13:25:25Z
+
+This array contains only the value `true`.
+https://github.com/fabpot/Pimple/blob/master/lib/Pimple.php#L79
+
+`isset` is already used for `offsetUnset`.
+https://github.com/fabpot/Pimple/blob/master/lib/Pimple.php#L135
+
+---------------------------------------------------------------------------
+
+by stof at 2014-03-06T15:47:58Z
+
+@fabpot this change does not forbids ``null`` values, because it performs the check on ``$this->keys``, not on ``$this->values``
+
+---------------------------------------------------------------------------
+
+by dominikzogg at 2014-03-06T15:49:14Z
+
+@stof @fabpot my fault, had to read it more carefull
