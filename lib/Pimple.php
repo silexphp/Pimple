@@ -45,7 +45,7 @@ class Pimple implements ArrayAccess
     public function __construct(array $values = array())
     {
         foreach ($values as $key => $value) {
-		    $this->offsetSet($key, $value);
+            $this->offsetSet($key, $value);
         }
     }
 
@@ -64,7 +64,7 @@ class Pimple implements ArrayAccess
     public function offsetSet($id, $value)
     {
         $this->values[$id] = $value;
-		$this->keys[$id] = true;
+        $this->keys[$id] = true;
     }
 
     /**
