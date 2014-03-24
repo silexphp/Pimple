@@ -431,4 +431,208 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         });
         $this->assertSame('bar.baz', $pimple['bar']);
     }
+    
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Cannot override frozen service "foo".
+     */
+    public function testAssignmentAliasingService()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        // the aliasing could be this way, but its freeze the original
+        $pimple['bar'] = $pimple['foo'];
+
+        $pimple['foo'] = function () {
+            return 'bar';
+        };
+    }
+
+    public function testRawAliasingService()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        // aliasing a service this way doesnt freeze, but seems a bit ugly and doesnt respect reference
+        $pimple['bar'] = $pimple->raw('foo');
+
+        $pimple['foo'] = function () {
+            return 'baz';
+        };
+
+        $this->assertSame('baz', $pimple['foo']);
+        $this->assertSame('foo', $pimple['bar']); // should be baz
+    }
+
+    public function testAliasingService()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        // the real service alias
+        $pimple->alias('foo', 'bar');
+
+        $pimple['foo'] = function () {
+            return 'baz';
+        };
+
+        $this->assertSame('baz', $pimple['foo']);
+        $this->assertSame('baz', $pimple['bar']);
+    }
+
+    public function testUnsettingAliasedServiceByAlias()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple->alias('foo', 'bar');
+        unset($pimple['bar']); // acts like php unset(): removes only reference
+
+        $this->assertTrue(isset($pimple['foo']));
+        $this->assertFalse(isset($pimple['bar']));
+    }
+
+    public function testUnsettingAliasedServiceByOriginal()
+    {
+        $pimple = new Pimple();
+
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple->alias('foo', 'bar');
+        unset($pimple['foo']);
+
+        $this->assertFalse(isset($pimple['foo']));
+        $this->assertFalse(isset($pimple['bar']));
+    }
+
+    public function testAliasedServicesShouldBeTheSame()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return new Service();
+        };
+        $pimple->alias('foo', 'bar');
+
+        $serviceOne = $pimple['foo'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
+
+        $serviceTwo = $pimple['bar'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
+
+        $this->assertSame($serviceOne, $serviceTwo);
+    }
+
+    public function testAliasedFactoriesShouldBeDifferent()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = $pimple->factory(function () {
+            return new Service();
+        });
+        $pimple->alias('foo', 'bar');
+
+        $serviceOne = $pimple['foo'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceOne);
+
+        $serviceTwo = $pimple['bar'];
+        $this->assertInstanceOf('Pimple\Tests\Service', $serviceTwo);
+
+        $this->assertNotSame($serviceOne, $serviceTwo);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "foo" is not defined.
+     */
+    public function testSettingAliasForUndefinedIdentifier()
+    {
+        $pimple = new Pimple();
+        $pimple->alias('foo', 'bar');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The identifier "foo" has the same name has before.
+     */
+    public function testSettingAliasWithSameName()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple->alias('foo', 'foo');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The name "bar" is already in use.
+     */
+    public function testSettingAliasAlreadyInUseByDefinition()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple['bar'] = function () {
+            return 'bar';
+        };
+        $pimple->alias('foo', 'bar');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The name "bar" is already in use.
+     */
+    public function testSettingAliasAlreadyInUseByOtherAlias()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple['baz'] = function () {
+            return 'baz';
+        };
+        $pimple->alias('foo', 'bar');
+        $pimple->alias('baz', 'bar');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identifier "bar" is not defined.
+     */
+    public function testChainningAliasesNotPossible()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple->alias('foo', 'bar');
+        $pimple->alias('bar', 'baz');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The name "bar" is already in use by "foo" identifier.
+     */
+    public function testDefineServiceAfterAliasNotPossible()
+    {
+        $pimple = new Pimple();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $pimple->alias('foo', 'bar');
+        $pimple['bar'] = function () {
+            return 'bar';
+        };
+    }
+
 }

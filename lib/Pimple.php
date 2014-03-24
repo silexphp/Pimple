@@ -38,6 +38,7 @@ class Pimple implements ArrayAccess
     private $frozen = array();
     private $raw = array();
     private $keys = array();
+    private $aliases = array();
 
     /**
      * Instantiate the container.
@@ -71,6 +72,9 @@ class Pimple implements ArrayAccess
      */
     public function offsetSet($id, $value)
     {
+        if (isset($this->aliases[$id])) {
+            throw new InvalidArgumentException(sprintf('The name "%s" is already in use by "%s" identifier.', $id, $this->aliases[$id]));
+        }
         if (isset($this->frozen[$id])) {
             throw new RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
         }
@@ -90,6 +94,10 @@ class Pimple implements ArrayAccess
      */
     public function offsetGet($id)
     {
+        if (isset($this->aliases[$id])) {
+            $id = $this->aliases[$id]; // the real identifier
+        }
+        
         if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
@@ -122,7 +130,7 @@ class Pimple implements ArrayAccess
      */
     public function offsetExists($id)
     {
-        return isset($this->keys[$id]);
+        return isset($this->keys[$id]) || isset($this->aliases[$id]);
     }
 
     /**
@@ -132,12 +140,20 @@ class Pimple implements ArrayAccess
      */
     public function offsetUnset($id)
     {
-        if (isset($this->keys[$id])) {
-            if (is_object($this->values[$id])) {
-                unset($this->factories[$this->values[$id]], $this->protected[$this->values[$id]]);
+        if (isset($this->aliases[$id])) {
+            unset($this->aliases[$id]); // remove just the refference
+        } else {
+            // remove all aliases
+            while (false !== $alias = array_search($id, $this->aliases, true)) {
+                unset($this->aliases[$alias]);
             }
+            if (isset($this->keys[$id])) {
+                if (is_object($this->values[$id])) {
+                    unset($this->factories[$this->values[$id]], $this->protected[$this->values[$id]]);
+                }
 
-            unset($this->values[$id], $this->frozen[$id], $this->raw[$id], $this->keys[$id]);
+                unset($this->values[$id], $this->frozen[$id], $this->raw[$id], $this->keys[$id]);
+            }
         }
     }
 
@@ -182,6 +198,39 @@ class Pimple implements ArrayAccess
 
         return $callable;
     }
+    
+    /**
+     * Defines a alias for a identifier.
+     * 
+     * This is useful if you want to name services with different names without creating
+     * two (or more) different "same" services, and want reference to original
+     * service be respected.
+     * 
+     * This acts like class_alias() function.
+     * 
+     * The original must exists before aliasing.
+     * 
+     * @param string $original The identifier to be aliased
+     * @param string $alias    The unique identifier to be the reference of original identifier
+     * 
+     * @throws InvalidArgumentException If the original identifier is not defined, 
+     *                                  the name is already in use or original 
+     *                                  and alias are the same
+     */
+    public function alias($original, $alias)
+    {
+        if ($original === $alias) {
+            throw new InvalidArgumentException(sprintf('The identifier "%s" has the same name has before.', $alias));
+        }
+        if (!isset($this->keys[$original])) {
+            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $original));
+        }
+        if (isset($this->keys[$alias]) || isset($this->aliases[$alias])) {
+            throw new InvalidArgumentException(sprintf('The name "%s" is already in use.', $alias));
+        }
+        
+        $this->aliases[$alias] = $original;
+    }
 
     /**
      * Gets a parameter or the closure defining an object.
@@ -194,6 +243,10 @@ class Pimple implements ArrayAccess
      */
     public function raw($id)
     {
+        if (isset($this->aliases[$id])) {
+            $id = $this->aliases[$id];
+        }
+        
         if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
@@ -220,6 +273,10 @@ class Pimple implements ArrayAccess
      */
     public function extend($id, $callable)
     {
+        if (isset($this->aliases[$id])) {
+            $id = $this->aliases[$id];
+        }
+        
         if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
