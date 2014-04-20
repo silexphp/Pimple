@@ -27,7 +27,6 @@
 /**
  * Pimple main class.
  *
- * @package pimple
  * @author  Fabien Potencier
  * @author  Máximo Cuadros <mcuadros@gmail.com>
  */
@@ -35,12 +34,6 @@
 type Factory = (function (Pimple): mixed);
 type Extendable = (function (mixed, Pimple): mixed);
 
-/**
- * Pimple main class.
- *
- * @package pimple
- * @author  Máximo Cuadros
- */
 class Pimple implements ArrayAccess<string, mixed>
 {
     private Set<Factory> $factories = Set {};
