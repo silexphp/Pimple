@@ -1,0 +1,36 @@
+---------------------------------------------------------------------------
+
+by stof at 2014-04-02T12:47:54Z
+
+Why would you add a namespace on the class ? It adds no value (there is no need for a namespace to be able to use it with your own namespaced code) and it makes it incompatible with any code integrating Pimple (as it will be a different class).
+
+IMO, this does not add much value. If you have a script namespacing libraries, it should take care of all culprits of adding a namespace, not just adding the statement on top. Modifying the source code of the library is not a supported usage IMO
+
+---------------------------------------------------------------------------
+
+by vlakarados at 2014-04-02T13:59:20Z
+
+I thought about this too, but this library is not namespaced itself and it is a single file, thus namespacing it, in my opinions, should not be considered as modification of the source code, rather moving it to a deeper scope.
+Consider a case where some project be it autoloading using psr-0, psr-4 or any custom implementation having to place Pimple in the root of the application (physical file location) for it to work out of the box. That would be pretty ugly in comparison of placing this somewhere like `library` or `system/library` or anywhere else, where system classes belong, even vendor ones. There also are cases where not namespaced classes can't be loaded at all by the autoloader (without customizing it).
+
+This pull request does not break any implementation I can think of, the only one case being when the exceptions are overriden by another ones in a different namespace, which is not a correct implementation (and impossible in case where as you say modifying the source code of the library is not a way to go).
+So basically this PR gives developers, which is my case, a possibility to resurrect legacy spagetti code.
+
+If it does no harm and helps pretty much a small portion of the audience are there any reasons not to do it?
+
+Maybe you can come up with a different and better solution to this situation.
+
+---------------------------------------------------------------------------
+
+by stof at 2014-04-02T14:14:33Z
+
+You are altering the class name. It is modifying the library.
+
+And there is nothing in PSR-0 or PSR-4 preventing to load classes from the global namespace. These 2 conventions are mapping class names to paths, and Pimple matches this convention. Wheen installing Pimple through composer, it gets autoloaded by a PSR-0 autoloader for instance.
+There are thousands of users of Pimple out there which have absolutely no issues about the class being in the global namespace, and using PSR autoloading (all Silex projects for instance)
+
+---------------------------------------------------------------------------
+
+by vlakarados at 2014-04-14T09:29:56Z
+
+I can't and don't say you're wrong, but I don't see a reason for this pull request to damage anything while making the class more flexible for the minority of us who's stuck with unmodifiable legacy code, so it's up to you whether this change is needed or not
