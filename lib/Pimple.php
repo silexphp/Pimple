@@ -30,7 +30,7 @@
  * @package pimple
  * @author  Fabien Potencier
  */
-class Pimple implements ArrayAccess
+class Pimple implements \ArrayAccess
 {
     private $values = array();
     private $factories;
@@ -72,7 +72,7 @@ class Pimple implements ArrayAccess
     public function offsetSet($id, $value)
     {
         if (isset($this->frozen[$id])) {
-            throw new RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
+            throw new \RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
         }
 
         $this->values[$id] = $value;
@@ -91,7 +91,7 @@ class Pimple implements ArrayAccess
     public function offsetGet($id)
     {
         if (!isset($this->keys[$id])) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (
@@ -153,7 +153,7 @@ class Pimple implements ArrayAccess
     public function factory($callable)
     {
         if (!is_object($callable) || !method_exists($callable, '__invoke')) {
-            throw new InvalidArgumentException('Service definition is not a Closure or invokable object.');
+            throw new \InvalidArgumentException('Service definition is not a Closure or invokable object.');
         }
 
         $this->factories->attach($callable);
@@ -175,7 +175,7 @@ class Pimple implements ArrayAccess
     public function protect($callable)
     {
         if (!is_object($callable) || !method_exists($callable, '__invoke')) {
-            throw new InvalidArgumentException('Callable is not a Closure or invokable object.');
+            throw new \InvalidArgumentException('Callable is not a Closure or invokable object.');
         }
 
         $this->protected->attach($callable);
@@ -195,7 +195,7 @@ class Pimple implements ArrayAccess
     public function raw($id)
     {
         if (!isset($this->keys[$id])) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (isset($this->raw[$id])) {
@@ -221,15 +221,15 @@ class Pimple implements ArrayAccess
     public function extend($id, $callable)
     {
         if (!isset($this->keys[$id])) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke')) {
-            throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
         }
 
         if (!is_object($callable) || !method_exists($callable, '__invoke')) {
-            throw new InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
+            throw new \InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
         }
 
         $factory = $this->values[$id];
