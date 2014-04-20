@@ -1,0 +1,25 @@
+{
+    "name": "pimple/pimple-hack",
+    "type": "library",
+    "description": "Pimple is a simple Dependency Injection Container for Hack",
+    "keywords": ["dependency injection", "container"],
+    "homepage": "http://pimple.sensiolabs.org",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        }
+    ],
+    "require": {
+        "hhvm": ">=2.5.0"
+    },
+    "autoload": {
+        "psr-0": { "Pimple": "lib/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}
