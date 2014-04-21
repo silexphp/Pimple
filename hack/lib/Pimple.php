@@ -128,7 +128,7 @@ class Pimple implements ArrayAccess<string, mixed>
      *
      * @param string $id The unique identifier for the parameter or object
      *
-     * @return Boolean
+     * @return bool
      */
     public function offsetExists($id): bool
     {
@@ -190,7 +190,7 @@ class Pimple implements ArrayAccess<string, mixed>
      *
      * @throws InvalidArgumentException Service definition has to be a closure of an invokable object
      */
-    public function protect(Factory $callable): Factory 
+    public function protect(Factory $callable): Factory
     {
         $this->protected->add(spl_object_hash($callable));
 
@@ -240,7 +240,7 @@ class Pimple implements ArrayAccess<string, mixed>
 
         $factory = $this->closures->at($id);
         $extended = $c ==> $callable($factory($c), $c);
-     
+
         $hash = spl_object_hash($factory);
         if ($this->factories->contains($hash)) {
             $this->factories->remove(spl_object_hash($factory));
