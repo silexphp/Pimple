@@ -26,6 +26,7 @@
 
 namespace Pimple\Tests;
 
+use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
 class PimpleServiceProvider implements ServiceProviderInterface
@@ -36,9 +37,9 @@ class PimpleServiceProvider implements ServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      *
-     * @param \Pimple $pimple An Container instance
+     * @param Container $pimple An Container instance
      */
-    public function register(\Pimple $pimple)
+    public function register(Container $pimple)
     {
         $pimple['param'] = 'value';
 
