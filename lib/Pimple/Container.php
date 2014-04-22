@@ -120,7 +120,7 @@ class Container implements \ArrayAccess
      *
      * @param string $id The unique identifier for the parameter or object
      *
-     * @return Boolean
+     * @return bool
      */
     public function offsetExists($id)
     {
