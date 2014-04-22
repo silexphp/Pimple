@@ -24,6 +24,4 @@
  * THE SOFTWARE.
  */
 
-use Pimple\Container;
-
-class Pimple extends Container {}
+class_alias('Pimple\Container', 'Pimple');
