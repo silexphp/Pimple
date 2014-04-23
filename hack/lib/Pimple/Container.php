@@ -24,17 +24,21 @@
  * THE SOFTWARE.
  */
 
+namespace Pimple;
+
+use ArrayAccess;
+use InvalidArgumentException;
+
+type Factory = (function (Container): mixed);
+type Extendable = (function (mixed, Container): mixed);
+
 /**
- * Pimple main class.
+ * Container main class.
  *
  * @author  Fabien Potencier
  * @author  Máximo Cuadros <mcuadros@gmail.com>
  */
-
-type Factory = (function (Pimple): mixed);
-type Extendable = (function (mixed, Pimple): mixed);
-
-class Pimple implements ArrayAccess<string, mixed>
+class Container implements ArrayAccess<string, mixed>
 {
     private Set<Factory> $factories = Set {};
     private Set<Factory> $protected = Set {};
@@ -69,7 +73,7 @@ class Pimple implements ArrayAccess<string, mixed>
      * @param  string           $id    The unique identifier for the parameter or object
      * @param  mixed            $value The value of the parameter or a closure to define an object
      *
-     * @return Pimple
+     * @return Container
      *
      * @throws RuntimeException Prevent override of a frozen service
      */
@@ -140,7 +144,7 @@ class Pimple implements ArrayAccess<string, mixed>
      *
      * @param string $id The unique identifier for the parameter or object
      *
-     * @return Pimple
+     * @return Container
      */
     public function offsetUnset($id): this
     {
@@ -260,5 +264,24 @@ class Pimple implements ArrayAccess<string, mixed>
     public function keys(): Vector<string>
     {
         return $this->values->keys();
+    }
+
+    /**
+     * Registers a service provider.
+     *
+     * @param ServiceProviderInterface $provider A ServiceProviderInterface instance
+     * @param array                    $values   An array of values that customizes the provider
+     *
+     * @return static
+     */
+    public function register(ServiceProviderInterface $provider, array<string, mixed> $values = array()): this
+    {
+        $provider->register($this);
+
+        foreach ($values as $key => $value) {
+            $this->offsetSet($key, $value);
+        }
+        
+        return $this;
     }
 }
