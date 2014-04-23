@@ -281,7 +281,7 @@ class Container implements ArrayAccess<string, mixed>
         foreach ($values as $key => $value) {
             $this->offsetSet($key, $value);
         }
-        
+
         return $this;
     }
 }
