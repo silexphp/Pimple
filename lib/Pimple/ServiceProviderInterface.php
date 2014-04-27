@@ -24,4 +24,24 @@
  * THE SOFTWARE.
  */
 
-class_alias('Pimple\Container', 'Pimple');
+namespace Pimple;
+
+/**
+ * Pimple service provider interface.
+ *
+ * @package pimple
+ * @author  Fabien Potencier
+ * @author  Dominik Zogg
+ */
+interface ServiceProviderInterface
+{
+    /**
+     * Registers services on the given container.
+     *
+     * This method should only be used to configure services and parameters.
+     * It should not get services.
+     *
+     * @param Container $pimple An Container instance
+     */
+    public function register(Container $pimple);
+}
