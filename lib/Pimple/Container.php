@@ -124,7 +124,7 @@ class Container implements \ArrayAccess
      */
     public function offsetExists($id)
     {
-        return array_key_exists($id, $this->values);
+        return isset($this->keys[$id]);
     }
 
     /**
