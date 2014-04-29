@@ -24,13 +24,14 @@
  * THE SOFTWARE.
  */
 
+namespace Pimple;
+
 /**
- * Pimple main class.
+ * Container main class.
  *
- * @package pimple
  * @author  Fabien Potencier
  */
-class Pimple implements \ArrayAccess
+class Container implements \ArrayAccess
 {
     private $values = array();
     private $factories;
@@ -65,9 +66,9 @@ class Pimple implements \ArrayAccess
      * as function names (strings) are callable (creating a function with
      * the same name as an existing parameter would break your container).
      *
-     * @param  string           $id    The unique identifier for the parameter or object
-     * @param  mixed            $value The value of the parameter or a closure to define an object
-     * @throws RuntimeException Prevent override of a frozen service
+     * @param  string            $id    The unique identifier for the parameter or object
+     * @param  mixed             $value The value of the parameter or a closure to define an object
+     * @throws \RuntimeException Prevent override of a frozen service
      */
     public function offsetSet($id, $value)
     {
@@ -86,7 +87,7 @@ class Pimple implements \ArrayAccess
      *
      * @return mixed The value of the parameter or an object
      *
-     * @throws InvalidArgumentException if the identifier is not defined
+     * @throws \InvalidArgumentException if the identifier is not defined
      */
     public function offsetGet($id)
     {
@@ -118,7 +119,7 @@ class Pimple implements \ArrayAccess
      *
      * @param string $id The unique identifier for the parameter or object
      *
-     * @return Boolean
+     * @return bool
      */
     public function offsetExists($id)
     {
@@ -148,7 +149,7 @@ class Pimple implements \ArrayAccess
      *
      * @return callable The passed callable
      *
-     * @throws InvalidArgumentException Service definition has to be a closure of an invokable object
+     * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
      */
     public function factory($callable)
     {
@@ -170,7 +171,7 @@ class Pimple implements \ArrayAccess
      *
      * @return callable The passed callable
      *
-     * @throws InvalidArgumentException Service definition has to be a closure of an invokable object
+     * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
      */
     public function protect($callable)
     {
@@ -190,7 +191,7 @@ class Pimple implements \ArrayAccess
      *
      * @return mixed The value of the parameter or the closure defining an object
      *
-     * @throws InvalidArgumentException if the identifier is not defined
+     * @throws \InvalidArgumentException if the identifier is not defined
      */
     public function raw($id)
     {
@@ -216,7 +217,7 @@ class Pimple implements \ArrayAccess
      *
      * @return callable The wrapped callable
      *
-     * @throws InvalidArgumentException if the identifier is not defined or not a service definition
+     * @throws \InvalidArgumentException if the identifier is not defined or not a service definition
      */
     public function extend($id, $callable)
     {
@@ -254,5 +255,24 @@ class Pimple implements \ArrayAccess
     public function keys()
     {
         return array_keys($this->values);
+    }
+
+    /**
+     * Registers a service provider.
+     *
+     * @param ServiceProviderInterface $provider A ServiceProviderInterface instance
+     * @param array                    $values   An array of values that customizes the provider
+     *
+     * @return static
+     */
+    public function register(ServiceProviderInterface $provider, array $values = array())
+    {
+        $provider->register($this);
+
+        foreach ($values as $key => $value) {
+            $this[$key] = $value;
+        }
+
+        return $this;
     }
 }

@@ -26,6 +26,11 @@ Creating a container is a matter of instating the ``Pimple`` class
 As many other dependency injection containers, Pimple is able to manage two
 different kind of data: *services* and *parameters*.
 
+.. note::
+
+    As of Pimple 2.1, you can also use the namespaced version of Pimple via the
+    ``Pimple\Container`` class (``Pimple`` being just a deprecated alias.)
+
 Defining Parameters
 -------------------
 
@@ -123,43 +128,31 @@ raw access to this function, you can use the ``raw()`` method
 
     $sessionFunction = $container->raw('session');
 
-Packaging a Container for reusability
--------------------------------------
+Extending a Container
+---------------------
 
-If you use the same libraries over and over, you might want to create reusable
-containers. Creating a reusable container is as simple as creating a class
-that extends ``Pimple``, and configuring it in the constructor
+.. versionadded:: 2.1
+
+    Support for extending a container was introduced in Pimple 2.1.
+
+If you use the same libraries over and over, you might want to reuse some
+services from one project to the other; package your services into a
+**provider** by implementing ``Pimple\\ServiceProviderInterface``:
 
 .. code-block:: php
 
-    class SomeContainer extends Pimple
+    class FooProvider implements Pimple\ServiceProviderInterface
     {
-        public function __construct()
+        public function register(Container $pimple)
         {
-            parent::__construct();
-
-            $this['parameter'] = 'foo';
-            $this['object'] = function () { return stdClass(); };
+            // register some services and parameters
+            // on $pimple
         }
     }
 
-Using this container from your own is as easy as it can get
+Then, the provider can be easily registered on a Container:
 
-.. code-block:: php
-
-    $container = new Pimple();
-
-    // define your project parameters and services
-    // ...
-
-    // embed the SomeContainer container
-    $container['embedded'] = function () { return new SomeContainer(); };
-
-    // configure it
-    $container['embedded']['parameter'] = 'bar';
-
-    // use it
-    $container['embedded']['object']->...;
+    $pimple->register(new FooProvider());
 
 Defining Factory Services
 -------------------------

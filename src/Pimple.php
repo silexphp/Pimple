@@ -24,15 +24,4 @@
  * THE SOFTWARE.
  */
 
-namespace Pimple\Tests;
-
-class Invokable
-{
-    public function __invoke($value = null)
-    {
-        $service = new Service();
-        $service->value = $value;
-
-        return $service;
-    }
-}
+class_alias('Pimple\Container', 'Pimple');
