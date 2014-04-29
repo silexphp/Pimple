@@ -15,21 +15,22 @@ one file and one class (about 80 lines of code).
 
 .. code-block:: php
 
-    require_once '/path/to/Pimple.php';
+    require_once '/path/to/Pimple/Container.php';
 
-Creating a container is a matter of instating the ``Pimple`` class
+Creating a container is a matter of instating the ``Container`` class
 
 .. code-block:: php
 
-    $container = new Pimple();
+    $container = new Container();
 
 As many other dependency injection containers, Pimple is able to manage two
 different kind of data: *services* and *parameters*.
 
 .. note::
 
-    As of Pimple 2.1, you can also use the namespaced version of Pimple via the
-    ``Pimple\Container`` class (``Pimple`` being just a deprecated alias.)
+    In Pimple 2.0, the class ``Pimple\Container`` was named ``Pimple`` (a class
+    alias is automatically registered to keep backward compatibility, but you
+    should upgrade your code.)
 
 Defining Parameters
 -------------------
@@ -137,9 +138,11 @@ Extending a Container
 
 If you use the same libraries over and over, you might want to reuse some
 services from one project to the other; package your services into a
-**provider** by implementing ``Pimple\\ServiceProviderInterface``:
+**provider** by implementing ``Pimple\ServiceProviderInterface``:
 
 .. code-block:: php
+
+    use Pimple\Container;
 
     class FooProvider implements Pimple\ServiceProviderInterface
     {
