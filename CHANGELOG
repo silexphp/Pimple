@@ -1,6 +1,8 @@
 * 2.1.0 (2014-XX-XX)
 
- * n/a
+ * moved the Pimple to Pimple\Container (with a BC layer -- Pimple is now a
+   deprecated alias which will be removed in Pimple 3.0)
+ * added Pimple\ServiceProviderInterface (and Pimple::register())
 
 * 2.0.0 (2014-02-10)
 
