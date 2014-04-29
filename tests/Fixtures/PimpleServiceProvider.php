@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace Pimple\Tests;
+namespace Pimple\Tests\Fixtures;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
