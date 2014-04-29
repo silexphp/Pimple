@@ -1,8 +1,11 @@
 language: php
 
 env:
-  - PIMPLE_EXT=no
-  - PIMPLE_EXT=yes
+  matrix:
+    - PIMPLE_EXT=no
+    - PIMPLE_EXT=yes
+  global:
+    - REPORT_EXIT_STATUS=1
 
 php:
   - 5.3
