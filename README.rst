@@ -172,3 +172,12 @@ anonymous function with the ``factory()`` method
 
 .. _Download it:              https://raw2.github.com/fabpot/Pimple/master/lib/Pimple.php
 .. _Pimple 1.x documentation: https://github.com/fabpot/Pimple/tree/1.1
+
+Pimple 2 PHP Extension
+----------------------
+
+Pimple 2 has been implemented as a PHP extension written in C, providing additional performance. 
+
+For installation, `follow these instructions 
+<https://github.com/fabpot/Pimple/blob/master/ext/pimple/README.md>`_.
+
