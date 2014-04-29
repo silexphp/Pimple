@@ -29,7 +29,6 @@ namespace Pimple;
 /**
  * Pimple service provider interface.
  *
- * @package pimple
  * @author  Fabien Potencier
  * @author  Dominik Zogg
  */

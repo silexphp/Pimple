@@ -27,9 +27,6 @@
 namespace Pimple\Tests;
 
 /**
- * Pimple Test Service
- *
- * @package pimple
  * @author  Igor Wiedler <igor@wiedler.ch>
  */
 class Service

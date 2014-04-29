@@ -29,7 +29,6 @@ namespace Pimple;
 /**
  * Container main class.
  *
- * @package pimple
  * @author  Fabien Potencier
  */
 class Container implements \ArrayAccess

@@ -29,9 +29,6 @@ namespace Pimple\Tests;
 use Pimple;
 
 /**
- * Pimple Test
- *
- * @package pimple
  * @author  Dominik Zogg <dominik.zogg@gmail.com>
  */
 class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
