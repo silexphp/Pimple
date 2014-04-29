@@ -1,0 +1,79 @@
+---------------------------------------------------------------------------
+
+by dominikzogg at 2014-04-28T07:19:16Z
+
+@fabpot: with psr-0 require `\Pimple` nothing will be loaded if i do the alias within the class, or am i wrong?
+
+---------------------------------------------------------------------------
+
+by dominikzogg at 2014-04-28T07:23:43Z
+
+@fabpot could be third parameter => autoload = false could help within the alias file
+
+---------------------------------------------------------------------------
+
+by davedevelopment at 2014-04-28T07:34:50Z
+
+@dominikzogg
+
+I think Fabien meant:
+
+``` php
+<?php // lib/Pimple.php
+
+class_alias('Pimple\Container', 'Pimple');
+
+```
+
+One drawback to class_alias is that it wont get picked up by optimised autoloaders?
+
+---------------------------------------------------------------------------
+
+by dominikzogg at 2014-04-28T07:37:45Z
+
+@davedevelopment ah, yeah will change it
+
+---------------------------------------------------------------------------
+
+by davedevelopment at 2014-04-28T08:41:06Z
+
+I suppose if those class loaders simply assume for the optimisation, rather than analysing files it will work.
+
+---------------------------------------------------------------------------
+
+by dominikzogg at 2014-04-28T11:14:18Z
+
+@fabpot @davedevelopment done
+
+---------------------------------------------------------------------------
+
+by dominikzogg at 2014-04-28T11:17:01Z
+
+@fabpot i would like to change bootstrap.php to
+``` {.php}
+<?php
+
+$loader = require __DIR__.'/../vendor/autoload.php';
+$loader->add('Pimple\Tests', __DIR__);
+```
+
+cause it would test if the autoloading with the alias works
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-04-28T11:30:04Z
+
+@dominikzogg that would also simplify the bootstrap file, :+1:
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-04-28T11:31:39Z
+
+I would even go further and remove the bootstrap file altogether and replace it with the autoloader in phpunit.xml.dist. For this to work, you should move the tests under a Tests sub-namespace under the main Pimple namespace. That would make Pimple directory structure more similar to Symfony and it makes sense now that Pimple is namespaced.
+
+---------------------------------------------------------------------------
+
+by stof at 2014-04-28T13:30:19Z
+
+the alternative is to use ``autoload-dev`` to register a namespace in the autoloader when the package is the root, without needing to change the file locations (the structure in Symfony was done to keep tests in the subtree splits).
+Note that this requires an uptodate composer, so you will need to run ``composer self-update`` on Travis (for today as they plan to deploy the updated environment [tomorrow](http://blog.travis-ci.com/2014-04-28-upcoming-build-environment-updates/))
