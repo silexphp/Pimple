@@ -1,0 +1,50 @@
+---------------------------------------------------------------------------
+
+by stof at 2014-04-17T12:23:20Z
+
+you should update the Travis config to make it run the PHPUnit testsuite against both the PHP and C implementations (have a look at the Twig repo to see how it is done)
+
+---------------------------------------------------------------------------
+
+by romainneutron at 2014-04-17T12:38:55Z
+
+What about updating the travis conf to run the PHPUnit test suite against the extension ?
+
+---------------------------------------------------------------------------
+
+by stof at 2014-04-17T12:44:05Z
+
+@romainneutron see my comment 20 minutes before yours :)
+
+---------------------------------------------------------------------------
+
+by romainneutron at 2014-04-17T12:46:10Z
+
+woops ! I've actually missed comments you wrote here (outside the source code) ^^
+
+---------------------------------------------------------------------------
+
+by stof at 2014-04-17T12:46:25Z
+
+@jpauli do we need the phpt testsuite ? It kinds of duplicate the PHPUnit testsuite. Given that the PHP and C implementations should be equivalent, it would make sense to use the same testsuite for both.
+
+---------------------------------------------------------------------------
+
+by jpauli at 2014-04-18T13:06:59Z
+
+Yes we need both tests.
+phpt tests are for bugs I track when I develop, I need them.
+PHPUnit tests are for API compatibility check
+
+---------------------------------------------------------------------------
+
+by jpauli at 2014-04-18T13:07:38Z
+
+I dont know Travis.
+Will see that with romainneutron
+
+---------------------------------------------------------------------------
+
+by stof at 2014-04-18T13:08:56Z
+
+see https://github.com/fabpot/Twig/blob/master/.travis.yml as you need approximately the same config (it simply needs to be adapted for extension names)
