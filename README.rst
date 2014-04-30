@@ -28,9 +28,9 @@ different kind of data: *services* and *parameters*.
 
 .. note::
 
-    In Pimple 2.0, the class ``Pimple\Container`` was named ``Pimple`` (a class
+    In Pimple 1.0, the class ``Pimple\Container`` was named ``Pimple`` (a class
     alias is automatically registered to keep backward compatibility, but you
-    should upgrade your code.)
+    should upgrade your code).
 
 Defining Parameters
 -------------------
