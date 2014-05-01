@@ -170,5 +170,5 @@ anonymous function with the ``factory()`` method
         return new Session($c['session_storage']);
     });
 
-.. _Download it:              https://raw2.github.com/fabpot/Pimple/master/lib/Pimple.php
+.. _Download it:              https://github.com/fabpot/Pimple/raw/master/src/Pimple/Container.php
 .. _Pimple 1.x documentation: https://github.com/fabpot/Pimple/tree/1.1
