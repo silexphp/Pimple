@@ -177,6 +177,8 @@ services from one project to the other; package your services into a
 
 Then, the provider can be easily registered on a Container:
 
+.. code-block:: php
+
     $pimple->register(new FooProvider());
 
 Defining Factory Services
