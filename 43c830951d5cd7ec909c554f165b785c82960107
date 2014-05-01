@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2014-04-29T17:02:59Z
+
+Do we need to do the same for Twig?
+
+---------------------------------------------------------------------------
+
+by stof at 2014-04-29T17:04:28Z
+
+Twig does not run a phpt testsuite in Travis. It odoes not have it. The Twig extension is tested only through the PHPUnit tests of the library
+
+---------------------------------------------------------------------------
+
+by stof at 2014-04-29T17:10:38Z
+
+hmm, looks like it does not work. The exit code is still ``0``.
+
+---------------------------------------------------------------------------
+
+by stof at 2014-04-29T18:47:33Z
+
+actually, it works but only on PHP 5.5+. The PHP test runner has a bug in 5.4 and older regarding the exit code reporting
