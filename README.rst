@@ -11,26 +11,32 @@ Pimple
 Pimple is a small Dependency Injection Container for PHP that consists of just
 one file and one class (about 80 lines of code).
 
-`Download it`_, require it in your code, and you're good to go
+To include Pimple in your project, add it to your ``composer.json`` file:
 
-.. code-block:: php
+.. code-block:: javascript
 
-    require_once '/path/to/Pimple/Container.php';
+    {
+        "require": {
+            "pimple/pimple": "~2.1"
+        }
+    }
 
 Creating a container is a matter of instating the ``Container`` class
 
 .. code-block:: php
 
-    $container = new Container();
+    use Pimple\Container;
 
-As many other dependency injection containers, Pimple is able to manage two
-different kind of data: *services* and *parameters*.
+    $container = new Container();
 
 .. note::
 
     In Pimple 2.0, the class ``Pimple\Container`` was named ``Pimple`` (a class
     alias is automatically registered to keep backward compatibility, but you
     should upgrade your code.)
+
+As many other dependency injection containers, Pimple is able to manage two
+different kind of data: *services* and *parameters*.
 
 Defining Parameters
 -------------------
@@ -170,5 +176,4 @@ anonymous function with the ``factory()`` method
         return new Session($c['session_storage']);
     });
 
-.. _Download it:              https://raw2.github.com/fabpot/Pimple/master/lib/Pimple.php
 .. _Pimple 1.x documentation: https://github.com/fabpot/Pimple/tree/1.1
