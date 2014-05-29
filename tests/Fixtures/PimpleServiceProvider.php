@@ -39,9 +39,10 @@ class PimpleServiceProvider implements ServiceProviderInterface
      *
      * @param Container $pimple An Container instance
      */
-    public function register(Container $pimple)
+    public function register(Container $pimple, array $options = array())
     {
-        $pimple['param'] = 'value';
+        $pimple['foo'] = 'value';
+        $pimple['bar'] = $options['bar'];
 
         $pimple['service'] = function () {
             return new Service();

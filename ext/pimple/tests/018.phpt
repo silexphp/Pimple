@@ -7,7 +7,7 @@ Test register()
 
 class Foo implements Pimple\ServiceProviderInterface
 {
-    public function register(Pimple\Container $p)
+    public function register(Pimple\Container $p, array $options = array())
     {
         var_dump($p);
     }
@@ -20,4 +20,4 @@ var_dump($p[42]);
 --EXPECTF--
 object(Pimple\Container)#1 (0) {
 }
-string(3) "bar"
+NULL

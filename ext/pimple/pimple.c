@@ -134,7 +134,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_register, 0, 0, 1)
 ZEND_ARG_OBJ_INFO(0, provider, Pimple\\ServiceProviderInterface, 0)
-ZEND_ARG_ARRAY_INFO(0, values, 1)
+ZEND_ARG_ARRAY_INFO(0, options, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_pimpleclosure___invoke, 0, 0, 1)
@@ -143,6 +143,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_serviceprovider_register, 0, 0, 1)
 ZEND_ARG_OBJ_INFO(0, pimple, Pimple\\Container, 0)
+ZEND_ARG_ARRAY_INFO(0, options, 1)
 ZEND_END_ARG_INFO()
 
 static const zend_function_entry pimple_ce_functions[] = {
@@ -763,29 +764,16 @@ PHP_METHOD(Pimple, register)
 	zval *retval = NULL;
 	zval key;
 
-	HashTable *array = NULL;
-	HashPosition pos;
+	zval *options = NULL;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|h", &provider, pimple_serviceprovider_ce, &array) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|a!", &provider, pimple_serviceprovider_ce, &options) == FAILURE) {
 		return;
 	}
 
-	zend_call_method_with_1_params(&provider, Z_OBJCE_P(provider), NULL, "register", &retval, getThis());
+	zend_call_method_with_2_params(&provider, Z_OBJCE_P(provider), NULL, "register", &retval, getThis(), options);
 
 	if (retval) {
 		zval_ptr_dtor(&retval);
-	}
-
-	if (!array) {
-		return;
-	}
-
-	zend_hash_internal_pointer_reset_ex(array, &pos);
-
-	while(zend_hash_get_current_data_ex(array, (void **)&data, &pos) == SUCCESS) {
-		zend_hash_get_current_key_zval_ex(array, &key, &pos);
-		pimple_object_write_dimension(getThis(), &key, *data TSRMLS_CC);
-		zend_hash_move_forward_ex(array, &pos);
 	}
 
 	RETVAL_ZVAL(getThis(), 1, 0);

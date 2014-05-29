@@ -261,17 +261,13 @@ class Container implements \ArrayAccess
      * Registers a service provider.
      *
      * @param ServiceProviderInterface $provider A ServiceProviderInterface instance
-     * @param array                    $values   An array of values that customizes the provider
+     * @param array                    $options  An array of options that customizes the provider
      *
      * @return static
      */
-    public function register(ServiceProviderInterface $provider, array $values = array())
+    public function register(ServiceProviderInterface $provider, array $options = array())
     {
-        $provider->register($this);
-
-        foreach ($values as $key => $value) {
-            $this[$key] = $value;
-        }
+        $provider->register($this, $options);
 
         return $this;
     }
