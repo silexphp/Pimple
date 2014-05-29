@@ -40,7 +40,8 @@ interface ServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      *
-     * @param Container $pimple An Container instance
+     * @param Container $pimple  An Container instance
+     * @param array     $options An array of options that customizes the provider
      */
-    public function register(Container $pimple);
+    public function register(Container $pimple, array $options = array());
 }

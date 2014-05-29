@@ -38,9 +38,11 @@ class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
         $pimple = new Container();
 
         $pimpleServiceProvider = new Fixtures\PimpleServiceProvider();
-        $pimpleServiceProvider->register($pimple);
+        $pimpleServiceProvider->register($pimple, array('bar' => 'value'));
 
-        $this->assertEquals('value', $pimple['param']);
+        $this->assertEquals('value', $pimple['foo']);
+        $this->assertEquals('value', $pimple['bar']);
+
         $this->assertInstanceOf('Pimple\Tests\Fixtures\Service', $pimple['service']);
 
         $serviceOne = $pimple['factory'];
@@ -57,11 +59,11 @@ class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
         $pimple = new Container();
 
         $pimple->register(new Fixtures\PimpleServiceProvider(), array(
-            'anotherParameter' => 'anotherValue'
+            'bar' => 'value'
         ));
 
-        $this->assertEquals('value', $pimple['param']);
-        $this->assertEquals('anotherValue', $pimple['anotherParameter']);
+        $this->assertEquals('value', $pimple['foo']);
+        $this->assertEquals('value', $pimple['bar']);
 
         $this->assertInstanceOf('Pimple\Tests\Fixtures\Service', $pimple['service']);
 
