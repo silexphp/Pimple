@@ -764,13 +764,12 @@ PHP_METHOD(Pimple, register)
 	zval key;
 
 	HashTable *array = NULL;
-	HashPosition pos;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|h", &provider, pimple_serviceprovider_ce, &array) == FAILURE) {
 		return;
 	}
 
-	zend_call_method_with_1_params(&provider, Z_OBJCE_P(provider), NULL, "register", &retval, getThis());
+	zend_call_method_with_2_params(&provider, Z_OBJCE_P(provider), NULL, "register", &retval, getThis(), array);
 
 	if (retval) {
 		zval_ptr_dtor(&retval);
@@ -778,14 +777,6 @@ PHP_METHOD(Pimple, register)
 
 	if (!array) {
 		return;
-	}
-
-	zend_hash_internal_pointer_reset_ex(array, &pos);
-
-	while(zend_hash_get_current_data_ex(array, (void **)&data, &pos) == SUCCESS) {
-		zend_hash_get_current_key_zval_ex(array, &key, &pos);
-		pimple_object_write_dimension(getThis(), &key, *data TSRMLS_CC);
-		zend_hash_move_forward_ex(array, &pos);
 	}
 
 	RETVAL_ZVAL(getThis(), 1, 0);
