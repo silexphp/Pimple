@@ -431,4 +431,33 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         });
         $this->assertSame('bar.baz', $pimple['bar']);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testRegisteringInvalidPass()
+    {
+        $pimple = new Container();
+
+        $pimple->pass('foo');
+    }
+
+    public function testRegisterPassAndCompile()
+    {
+        $pimple = new Container();
+
+        $cb = function ($pimple) {
+            $pimple['foo'] = 'bar';
+        };
+
+        $pimple->pass($cb);
+
+        $this->assertFalse($pimple->offsetExists('foo'));
+
+        $pimple->compile();
+
+        $this->assertEquals('bar', $pimple['foo']);
+    }
+
+
 }

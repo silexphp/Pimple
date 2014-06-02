@@ -39,6 +39,7 @@ class Container implements \ArrayAccess
     private $frozen = array();
     private $raw = array();
     private $keys = array();
+    private $passes = array();
 
     /**
      * Instantiate the container.
@@ -274,5 +275,33 @@ class Container implements \ArrayAccess
         }
 
         return $this;
+    }
+
+    /**
+     * Registers a callable as compile pass
+     *
+     * @param callable $callable
+     *
+     * @throws \InvalidArgumentException if the callback is not a callable
+     */
+    public function pass($callable)
+    {
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException('Pass is not a Closure or invokable object.');
+        }
+
+        $this->passes[] = $callable;
+    }
+
+    /**
+     * Compiles the Container by executing all passes
+     */
+    public function compile()
+    {
+        foreach ($this->passes as $callable) {
+            $callable($this);
+        }
+
+        $this->passes = array();
     }
 }
