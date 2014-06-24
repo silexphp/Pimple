@@ -1,4 +1,8 @@
-* 2.1.0 (2014-XX-XX)
+* 2.1.1 (2014-XX-XX)
+
+ * n/a
+
+* 2.1.0 (2014-06-24)
 
  * moved the Pimple to Pimple\Container (with a BC layer -- Pimple is now a
    deprecated alias which will be removed in Pimple 3.0)
