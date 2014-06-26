@@ -114,8 +114,8 @@ parameter
 
     $container['random'] = $container->protect(function () { return rand(); });
 
-Modifying Services after Deletion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Modifying Services after Definition
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In some cases you may want to modify a service definition after it has been
 defined. You can use the ``extend()`` method to define additional code to
