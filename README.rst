@@ -114,8 +114,8 @@ parameter
 
     $container['random'] = $container->protect(function () { return rand(); });
 
-Modifying services after creation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Modifying Services after Definition
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In some cases you may want to modify a service definition after it has been
 defined. You can use the ``extend()`` method to define additional code to
@@ -136,7 +136,7 @@ be run on your service just after it is created
 The first argument is the name of the object, the second is a function that
 gets access to the object instance and the container.
 
-Fetching the service creation function
+Fetching the Service Creation Function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When you access an object, Pimple automatically calls the anonymous function
