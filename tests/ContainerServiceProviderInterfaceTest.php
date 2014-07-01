@@ -26,14 +26,16 @@
 
 namespace Pimple\tests;
 
+use Pimple\Container;
+
 /**
  * @author  Dominik Zogg <dominik.zogg@gmail.com>
  */
-class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
+class ContainerServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
 {
     public function testProvider()
     {
-        $pimple = new \Pimple();
+        $pimple = new Container();
 
         $pimpleServiceProvider = new Fixtures\PimpleServiceProvider();
         $pimpleServiceProvider->register($pimple);
@@ -52,7 +54,7 @@ class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
 
     public function testProviderWithRegisterMethod()
     {
-        $pimple = new \Pimple();
+        $pimple = new Container();
 
         $pimple->register(new Fixtures\PimpleServiceProvider(), array(
             'anotherParameter' => 'anotherValue'
