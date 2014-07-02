@@ -10,7 +10,7 @@ Barnacle be a small Dependency Injection Container fer PHP.
 Installation
 ------------
 
-T' include Barnacle in yer project, add it to your ``composer.json`` file:
+T' include Barnacle in yer project, add it to yer ``composer.json`` file:
 
 .. code-block:: javascript
 
@@ -24,7 +24,7 @@ T' include Barnacle in yer project, add it to your ``composer.json`` file:
 Usage
 -----
 
-Creatin' a container is a matter of instantiating the ``Container`` class
+Creatin' a container is a matter of instantiating th' ``Container`` class
 
 .. code-block:: php
 
@@ -33,8 +33,8 @@ Creatin' a container is a matter of instantiating the ``Container`` class
     $container = new Container();
 
 
-As many other dependency injection containers, Barnacle be able to manage two
-different kind of data: *services* and *parameters*.
+As many other dependency injection containers, Barnacle be able t' manage two
+different kindsa data: *services* and *parameters*.
 
 Definin' Parameters
 ~~~~~~~~~~~~~~~~~~~
@@ -51,7 +51,7 @@ Definin' Services
 ~~~~~~~~~~~~~~~~~
 
 A service be an object that does somethin' as part of a larger system.
-Examples of services be: Database connection, templating engine, mailer. Almost
+Examples of services be: Database connection, templatin' engine, mailer. Almost
 any object could be a service.
 
 Services be defined by anonymous functions that return an instance of an
@@ -71,10 +71,10 @@ object
 Avast ye that th' anonymous function has access to the current container
 instance, allowing references to other services or parameters.
 
-As objects are only created when you get them, the order of the definitions
-does not matter, and there is no performance penalty.
+As objects be only created when ye get them, th' order of th' definitions
+not be matterin', and there be no performance penalty.
 
-Using the defined services is also very easy
+Usin' th' defined services be also very easy
 
 .. code-block:: php
 
