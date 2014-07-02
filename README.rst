@@ -1,63 +1,45 @@
-Pimple
+Barnacle
 ======
 
 .. caution::
 
-    This is the documentation for Pimple 2.x. If you are using Pimple 1.x, read
-    the `Pimple 1.x documentation`_. Reading the Pimple 1.x code is also a good
-    way to learn more about how to create a simple Dependency Injection
-    Container (Pimple 2.x implementation being more focused on performance).
+    This be th' documentation fer Barnacle, a pirate DIC plundered from th' ship fabpot/Pimple
 
-Pimple is a small Dependency Injection Container for PHP that consists of just
-one file and one class (about 80 lines of code).
+Barnacle be a small Dependency Injection Container fer PHP.
 
 Installation
 ------------
 
-To include Pimple in your project, add it to your ``composer.json`` file:
+T' include Barnacle in yer project, add it to your ``composer.json`` file:
 
 .. code-block:: javascript
 
     {
         "require": {
-            "pimple/pimple": "~2.1"
+            "delboy1978uk/barnacle": "dev-mater"
         }
     }
 
-Pimple is also available as a PHP C extension:
-
-.. code-block:: bash
-
-    $ cd ext/pimple
-    $ phpize
-    $ ./configure
-    $ make
-    $ make install
 
 Usage
 -----
 
-Creating a container is a matter of instating the ``Container`` class
+Creatin' a container is a matter of instantiating the ``Container`` class
 
 .. code-block:: php
 
-    use Pimple\Container;
+    use Barnacle\Container;
 
     $container = new Container();
 
-.. note::
 
-    In Pimple 2.0, the class ``Pimple\Container`` was named ``Pimple`` (a class
-    alias is automatically registered to keep backward compatibility, but you
-    should upgrade your code.)
-
-As many other dependency injection containers, Pimple is able to manage two
+As many other dependency injection containers, Barnacle be able to manage two
 different kind of data: *services* and *parameters*.
 
-Defining Parameters
+Definin' Parameters
 ~~~~~~~~~~~~~~~~~~~
 
-Defining a parameter is as simple as using the Pimple instance as an array
+Definin' a parameter is as simple as using th' Barnacle instance as an array
 
 .. code-block:: php
 
@@ -65,14 +47,14 @@ Defining a parameter is as simple as using the Pimple instance as an array
     $container['cookie_name'] = 'SESSION_ID';
     $container['session_storage_class'] = 'SessionStorage';
 
-Defining Services
+Definin' Services
 ~~~~~~~~~~~~~~~~~
 
-A service is an object that does something as part of a larger system.
-Examples of services: Database connection, templating engine, mailer. Almost
+A service be an object that does somethin' as part of a larger system.
+Examples of services be: Database connection, templating engine, mailer. Almost
 any object could be a service.
 
-Services are defined by anonymous functions that return an instance of an
+Services be defined by anonymous functions that return an instance of an
 object
 
 .. code-block:: php
@@ -86,7 +68,7 @@ object
         return new Session($c['session_storage']);
     };
 
-Notice that the anonymous function has access to the current container
+Avast ye that th' anonymous function has access to the current container
 instance, allowing references to other services or parameters.
 
 As objects are only created when you get them, the order of the definitions
@@ -103,23 +85,23 @@ Using the defined services is also very easy
     // $storage = new SessionStorage('SESSION_ID');
     // $session = new Session($storage);
 
-Protecting Parameters
+Protectin' Parameters
 ~~~~~~~~~~~~~~~~~~~~~
 
-Because Pimple sees anonymous functions as service definitions, you need to
-wrap anonymous functions with the ``protect()`` method to store them as
+Because Barnacle spies anonymous functions as service definitions, ye need t'
+wrap anonymous functions with th' ``protect()`` method to store them as
 parameter
 
 .. code-block:: php
 
     $container['random'] = $container->protect(function () { return rand(); });
 
-Modifying Services after Definition
+Modifyin' Services after Definition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In some cases you may want to modify a service definition after it has been
-defined. You can use the ``extend()`` method to define additional code to
-be run on your service just after it is created
+In some cases ye may want to modify a service definition after it has been
+defined. Ye can use the ``extend()`` method t' define additional code to
+be run on yer service just after tis created
 
 .. code-block:: php
 
@@ -133,15 +115,15 @@ be run on your service just after it is created
         return $mail;
     });
 
-The first argument is the name of the object, the second is a function that
-gets access to the object instance and the container.
+Th' first argument is th' name of th' object, th' second is a function that
+gets access t' th' object instance and th' container.
 
-Fetching the Service Creation Function
+Fetchin' the Service Creation Function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When you access an object, Pimple automatically calls the anonymous function
-that you defined, which creates the service object for you. If you want to get
-raw access to this function, you can use the ``raw()`` method
+When ye access an object, Barnacle automatically calls the anonymous function
+that ye defined, which creates th' feckin' service object fer ye. If ye want to get
+raw access t' this function, ye can use th' ``raw()`` method
 
 .. code-block:: php
 
@@ -151,22 +133,18 @@ raw access to this function, you can use the ``raw()`` method
 
     $sessionFunction = $container->raw('session');
 
-Extending a Container
+Extendin' a Container
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. versionadded:: 2.1
-
-    Support for extending a container was introduced in Pimple 2.1.
-
-If you use the same libraries over and over, you might want to reuse some
+If ye use th' same libraries over and over, ye might want to reuse some
 services from one project to the other; package your services into a
-**provider** by implementing ``Pimple\ServiceProviderInterface``:
+**provider** by implementing ``Barnacle\ServiceProviderInterface``:
 
 .. code-block:: php
 
-    use Pimple\Container;
+    use Barnacle\Container;
 
-    class FooProvider implements Pimple\ServiceProviderInterface
+    class FooProvider implements Barnacle\ServiceProviderInterface
     {
         public function register(Container $pimple)
         {
@@ -175,18 +153,18 @@ services from one project to the other; package your services into a
         }
     }
 
-Then, the provider can be easily registered on a Container:
+Then, th' provider can be easily registered on a Container:
 
 .. code-block:: php
 
     $pimple->register(new FooProvider());
 
-Defining Factory Services
+Definin' Factory Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, each time you get a service, Pimple returns the **same instance**
-of it. If you want a different instance to be returned for all calls, wrap your
-anonymous function with the ``factory()`` method
+By default, each time ye get a service, Barnacle returns th' **same instance**
+of it. If ye want a different instance t' be returned for all calls, wrap your
+anonymous function with th' ``factory()`` method
 
 .. code-block:: php
 
@@ -194,4 +172,4 @@ anonymous function with the ``factory()`` method
         return new Session($c['session_storage']);
     });
 
-.. _Pimple 1.x documentation: https://github.com/fabpot/Pimple/tree/1.1
+
