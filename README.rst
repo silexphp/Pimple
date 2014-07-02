@@ -1,11 +1,9 @@
 Barnacle
 ======
 
-.. caution::
-
-    This be th' documentation fer Barnacle, a pirate DIC plundered from th' ship fabpot/Pimple
-
-Barnacle be a small Dependency Injection Container fer PHP.
+This be th' documentation fer Barnacle, a pirate DIC plundered from th' ship 
+fabpot/Pimple in order that our pirate crew can learn about Dependency Injection 
+Containers fer PHP.
 
 Installation
 ------------
@@ -43,7 +41,7 @@ Definin' a parameter is as simple as using th' Barnacle instance as an array
 
 .. code-block:: php
 
-    // define some parameters
+    // definin' some parameters
     $container['cookie_name'] = 'SESSION_ID';
     $container['session_storage_class'] = 'SessionStorage';
 
@@ -59,7 +57,7 @@ object
 
 .. code-block:: php
 
-    // define some services
+    // definin' some services
     $container['session_storage'] = function ($c) {
         return new $c['session_storage_class']($c['cookie_name']);
     };
@@ -78,10 +76,10 @@ Usin' th' defined services be also very easy
 
 .. code-block:: php
 
-    // get the session object
+    // get th' session object
     $session = $container['session'];
 
-    // the above call is roughly equivalent to the following code:
+    // th' above call is roughly equivalent to th' followin' code:
     // $storage = new SessionStorage('SESSION_ID');
     // $session = new Session($storage);
 
@@ -146,10 +144,10 @@ services from one project to the other; package your services into a
 
     class FooProvider implements Barnacle\ServiceProviderInterface
     {
-        public function register(Container $pimple)
+        public function register(Container $barnacle)
         {
-            // register some services and parameters
-            // on $pimple
+            // register some services an' parameters
+            // on $barnacle
         }
     }
 
@@ -157,7 +155,7 @@ Then, th' provider can be easily registered on a Container:
 
 .. code-block:: php
 
-    $pimple->register(new FooProvider());
+    $barnacle->register(new FooProvider());
 
 Definin' Factory Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~
