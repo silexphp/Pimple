@@ -1,3 +1,7 @@
+* 3.0.0 (2014-XX-XX)
+
+ * removed the Pimple class alias (use Pimple\Container instead)
+
 * 2.1.1 (2014-07-24)
 
  * fixed compiler warnings for the C extension
