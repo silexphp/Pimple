@@ -1,4 +1,4 @@
-* 3.0.0 (2014-XX-XX)
+* 3.0.0 (2014-07-24)
 
  * removed the Pimple class alias (use Pimple\Container instead)
 
