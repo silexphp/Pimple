@@ -151,7 +151,7 @@ run on your service just after it is created:
         $storage->...();
 
         return $storage;
-    };
+    });
 
 The first argument is the name of the service to extend, the second a function
 that gets access to the object instance and the container.
