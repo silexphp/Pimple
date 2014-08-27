@@ -184,6 +184,12 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($pimple->raw('foo'));
     }
 
+    public function testFluentRegister()
+    {
+        $pimple = new Container;
+        $this->assertSame($pimple, $pimple->register($this->getMock('Pimple\ServiceProviderInterface')));
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Identifier "foo" is not defined.
