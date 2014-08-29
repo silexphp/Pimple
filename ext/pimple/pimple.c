@@ -776,16 +776,14 @@ PHP_METHOD(Pimple, register)
 		zval_ptr_dtor(&retval);
 	}
 
-	if (!array) {
-		return;
-	}
+	if (array) {
+		zend_hash_internal_pointer_reset_ex(array, &pos);
 
-	zend_hash_internal_pointer_reset_ex(array, &pos);
-
-	while(zend_hash_get_current_data_ex(array, (void **)&data, &pos) == SUCCESS) {
-		zend_hash_get_current_key_zval_ex(array, &key, &pos);
-		pimple_object_write_dimension(getThis(), &key, *data TSRMLS_CC);
-		zend_hash_move_forward_ex(array, &pos);
+		while(zend_hash_get_current_data_ex(array, (void **)&data, &pos) == SUCCESS) {
+			zend_hash_get_current_key_zval_ex(array, &key, &pos);
+			pimple_object_write_dimension(getThis(), &key, *data TSRMLS_CC);
+			zend_hash_move_forward_ex(array, &pos);
+		}
 	}
 }
 
