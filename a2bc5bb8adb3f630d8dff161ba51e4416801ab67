@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by henrikbjorn at 2014-08-27T14:09:38Z
+
+The failing test is something with protects and not related to this test.
+
+---------------------------------------------------------------------------
+
+by stof at 2014-08-27T14:14:58Z
+
+yeah, it is #148
+
+---------------------------------------------------------------------------
+
+by henrikbjorn at 2014-08-29T08:43:04Z
+
+ping @jpauli
+
+If you would be so kind and look at the code and give your comments.
