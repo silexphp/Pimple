@@ -210,6 +210,24 @@ class Container implements \ArrayAccess
     }
 
     /**
+     * Gets a parameter, the closure defining an object or the object if the closure has already been invoked.
+     *
+     * @param string $id The unique identifier for the parameter or object
+     *
+     * @return mixed The value of the parameter, the closure defining an object or the object
+     *
+     * @throws \InvalidArgumentException if the identifier is not defined
+     */
+    public function value($id)
+    {
+        if (!isset($this->keys[$id])) {
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+        }
+
+        return $this->values[$id];
+    }
+
+    /**
      * Extends an object definition.
      *
      * Useful when you want to extend an existing object definition,

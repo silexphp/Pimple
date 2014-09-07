@@ -177,6 +177,15 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($definition, $pimple->raw('service'));
     }
 
+    public function testValue()
+    {
+        $pimple = new Container();
+        $pimple['service'] = $definition = function () { return 'foo'; };
+        $this->assertSame($definition, $pimple->value('service'));
+        $pimple['service'];
+        $this->assertSame('foo', $pimple->value('service'));
+    }
+
     public function testRawHonorsNullValues()
     {
         $pimple = new Container();
