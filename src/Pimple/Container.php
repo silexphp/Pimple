@@ -146,18 +146,6 @@ class Container implements \ArrayAccess
     }
 
     /**
-     * Check if $value is a object callable.
-     *
-     * @param mixed $value
-     *
-     * @return bool
-     */
-    private function isObjectCallable($value)
-    {
-        return is_object($value) && method_exists($value, '__invoke');
-    }
-
-    /**
      * Marks a callable as being a factory service.
      *
      * @param callable $callable A service definition to be used as a factory
@@ -289,5 +277,17 @@ class Container implements \ArrayAccess
         }
 
         return $this;
+    }
+
+    /**
+     * Check if $callable is a object callable.
+     *
+     * @param callable $callable
+     *
+     * @return bool
+     */
+    private function isObjectCallable($callable)
+    {
+        return is_object($callable) && method_exists($callable, '__invoke');
     }
 }
