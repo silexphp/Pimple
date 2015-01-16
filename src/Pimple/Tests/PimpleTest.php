@@ -186,7 +186,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testFluentRegister()
     {
-        $pimple = new Container;
+        $pimple = new Container();
         $this->assertSame($pimple, $pimple->register($this->getMock('Pimple\ServiceProviderInterface')));
     }
 
@@ -340,7 +340,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         return array(
           array(123),
-          array(new Fixtures\NonInvokable())
+          array(new Fixtures\NonInvokable()),
         );
     }
 
@@ -356,7 +356,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
                 return $service;
             }),
-            array(new Fixtures\Invokable())
+            array(new Fixtures\Invokable()),
         );
     }
 
