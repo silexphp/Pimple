@@ -156,7 +156,7 @@ class Container implements \ArrayAccess
      */
     public function factory($callable)
     {
-        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+        if (!$this->isObjectCallable($callable)) {
             throw new \InvalidArgumentException('Service definition is not a Closure or invokable object.');
         }
 
@@ -178,7 +178,7 @@ class Container implements \ArrayAccess
      */
     public function protect($callable)
     {
-        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+        if (!$this->isObjectCallable($callable)) {
             throw new \InvalidArgumentException('Callable is not a Closure or invokable object.');
         }
 
@@ -228,11 +228,11 @@ class Container implements \ArrayAccess
             throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke')) {
+        if (!$this->isObjectCallable($this->values[$id])) {
             throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
         }
 
-        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+        if (!$this->isObjectCallable($callable)) {
             throw new \InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
         }
 
@@ -277,5 +277,17 @@ class Container implements \ArrayAccess
         }
 
         return $this;
+    }
+
+    /**
+     * Check if $callable is a object callable.
+     *
+     * @param callable $callable
+     *
+     * @return bool
+     */
+    private function isObjectCallable($callable)
+    {
+        return is_object($callable) && method_exists($callable, '__invoke');
     }
 }
