@@ -23,7 +23,8 @@ Alternatively, Pimple is also available as a PHP C extension:
 
 .. code-block:: bash
 
-    $ cd ext/pimple
+    $ git clone https://github.com/silexphp/Pimple
+    $ cd Pimple/ext/pimple
     $ phpize
     $ ./configure
     $ make
