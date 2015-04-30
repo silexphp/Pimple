@@ -110,6 +110,9 @@ class Container implements \ArrayAccess
 
         $raw = $this->values[$id];
         $val = $this->values[$id] = $raw($this);
+        if ($val instanceof PimpleAwarenessInterface || $val instanceof PimpleAwarenessTrait) {
+            $val->setDependencyInjectionContainer($this);
+        }
         $this->raw[$id] = $raw;
 
         $this->frozen[$id] = true;
