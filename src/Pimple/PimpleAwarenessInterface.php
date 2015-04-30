@@ -39,6 +39,7 @@ interface PimpleAwarenessInterface
      * * Set the Dependency Injection Container. This will happen automatically when Pimple is instantiating a class
      * checking if the class is an instance of this interface. This makes a lot more sense for PHP 5.3
      * From PHP 5.4 onwards is much easier to use the trait.
+     *
      * @param Container $pimple An Container instance
      */
     public function setDependencyInjectionContainer(Container $pimple);

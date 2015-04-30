@@ -43,6 +43,7 @@ trait PimpleAwarenessTrait
     /**
      * Set the Dependency Injection Container. This will happen automatically when Pimple is instantiating a class
      * checking if the class is an instance of this trait.
+     *
      * @param Container $pimple An Container instance
      */
     public function setDependencyInjectionContainer(Container $pimple)
