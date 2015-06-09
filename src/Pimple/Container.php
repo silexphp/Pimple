@@ -156,7 +156,7 @@ class Container implements \ArrayAccess
      */
     public function factory($callable)
     {
-        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+        if (!method_exists($callable, '__invoke')) {
             throw new \InvalidArgumentException('Service definition is not a Closure or invokable object.');
         }
 
@@ -178,7 +178,7 @@ class Container implements \ArrayAccess
      */
     public function protect($callable)
     {
-        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+        if (!method_exists($callable, '__invoke')) {
             throw new \InvalidArgumentException('Callable is not a Closure or invokable object.');
         }
 
