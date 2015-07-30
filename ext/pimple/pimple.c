@@ -34,6 +34,7 @@
 #include "pimple_compat.h"
 #include "zend_interfaces.h"
 #include "zend.h"
+#include "Zend/zend_closures.h"
 #include "ext/spl/spl_exceptions.h"
 #include "Zend/zend_exceptions.h"
 #include "main/php_output.h"
@@ -44,6 +45,7 @@ static zend_object_handlers pimple_object_handlers;
 static zend_class_entry *pimple_closure_ce;
 static zend_class_entry *pimple_serviceprovider_ce;
 static zend_object_handlers pimple_closure_object_handlers;
+static zend_internal_function pimple_closure_invoker_function;
 
 #define FETCH_DIM_HANDLERS_VARS 	pimple_object *pimple_obj = NULL; \
 									ulong index; \
@@ -78,12 +80,12 @@ static zend_object_handlers pimple_closure_object_handlers;
 #define PIMPLE_CALL_CB	do { \
 			zend_fcall_info_argn(&fci TSRMLS_CC, 1, &object); \
 			fci.size           = sizeof(fci); \
-			fci.object_ptr     = retval->fcc->object_ptr; \
+			fci.object_ptr     = retval->fcc.object_ptr; \
 			fci.function_name  = retval->value; \
 			fci.no_separation  = 1; \
 			fci.retval_ptr_ptr = &retval_ptr_ptr; \
 \
-			zend_call_function(&fci, retval->fcc TSRMLS_CC); \
+			zend_call_function(&fci, &retval->fcc TSRMLS_CC); \
 			efree(fci.params); \
 			if (EG(exception)) { \
 				return EG(uninitialized_zval_ptr); \
@@ -136,10 +138,6 @@ ZEND_ARG_OBJ_INFO(0, provider, Pimple\\ServiceProviderInterface, 0)
 ZEND_ARG_ARRAY_INFO(0, values, 1)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_pimpleclosure___invoke, 0, 0, 1)
-ZEND_ARG_INFO(0, callarg)
-ZEND_END_ARG_INFO()
-
 ZEND_BEGIN_ARG_INFO_EX(arginfo_serviceprovider_register, 0, 0, 1)
 ZEND_ARG_OBJ_INFO(0, pimple, Pimple\\Container, 0)
 ZEND_END_ARG_INFO()
@@ -157,11 +155,6 @@ static const zend_function_entry pimple_ce_functions[] = {
 	PHP_ME(Pimple, offsetGet,       arginfo_offsetget,       ZEND_ACC_PUBLIC)
 	PHP_ME(Pimple, offsetExists,    arginfo_offsetexists,    ZEND_ACC_PUBLIC)
 	PHP_ME(Pimple, offsetUnset,     arginfo_offsetunset,     ZEND_ACC_PUBLIC)
-	PHP_FE_END
-};
-
-static const zend_function_entry pimple_closure_ce_functions[] = {
-	PHP_ME(PimpleClosure, __invoke,     arginfo_pimpleclosure___invoke,    ZEND_ACC_PRIVATE)
 	PHP_FE_END
 };
 
@@ -193,10 +186,6 @@ static void pimple_free_object_storage(pimple_object *obj TSRMLS_DC)
 
 static void pimple_free_bucket(pimple_bucket_value *bucket)
 {
-	if (bucket->fcc) {
-		efree(bucket->fcc);
-		bucket->fcc = NULL;
-	}
 	if (bucket->raw) {
 		zval_ptr_dtor(&bucket->raw);
 	}
@@ -222,6 +211,15 @@ static zend_function *pimple_closure_get_constructor(zval *obj TSRMLS_DC)
 	zend_error(E_ERROR, "Pimple\\ContainerClosure is an internal class and cannot be instantiated");
 
 	return NULL;
+}
+
+static int pimple_closure_get_closure(zval *obj, zend_class_entry **ce_ptr, union _zend_function **fptr_ptr, zval **zobj_ptr TSRMLS_DC)
+{
+	*zobj_ptr = obj;
+	*ce_ptr   = Z_OBJCE_P(obj);
+	*fptr_ptr = (zend_function *)&pimple_closure_invoker_function;
+
+	return SUCCESS;
 }
 
 static zend_object_value pimple_object_create(zend_class_entry *ce TSRMLS_DC)
@@ -252,7 +250,6 @@ static void pimple_object_write_dimension(zval *object, zval *offset, zval *valu
 	pimple_bucket_value pimple_value = {0}, *found_value = NULL;
 	ulong hash;
 
-	pimple_init_bucket(&pimple_value);
 	pimple_zval_to_pimpleval(value, &pimple_value TSRMLS_CC);
 
 	if (!offset) {/* $p[] = 'foo' when not overloaded */
@@ -451,22 +448,16 @@ static int pimple_zval_is_valid_callback(zval *_zval, pimple_bucket_value *_pimp
 		return FAILURE;
 	}
 
-	if (_pimple_bucket_value->fcc->called_scope) {
+	if (_pimple_bucket_value->fcc.called_scope) {
 		return SUCCESS;
 	}
 
-	if (Z_OBJ_HANDLER_P(_zval, get_closure) && Z_OBJ_HANDLER_P(_zval, get_closure)(_zval, &_pimple_bucket_value->fcc->calling_scope, &_pimple_bucket_value->fcc->function_handler, &_pimple_bucket_value->fcc->object_ptr TSRMLS_CC) == SUCCESS) {
-		_pimple_bucket_value->fcc->called_scope = _pimple_bucket_value->fcc->calling_scope;
+	if (Z_OBJ_HANDLER_P(_zval, get_closure) && Z_OBJ_HANDLER_P(_zval, get_closure)(_zval, &_pimple_bucket_value->fcc.calling_scope, &_pimple_bucket_value->fcc.function_handler, &_pimple_bucket_value->fcc.object_ptr TSRMLS_CC) == SUCCESS) {
+		_pimple_bucket_value->fcc.called_scope = _pimple_bucket_value->fcc.calling_scope;
 		return SUCCESS;
 	} else {
 		return FAILURE;
 	}
-}
-
-static void pimple_init_bucket(pimple_bucket_value *bucket)
-{
-	memset(bucket, 0, sizeof(pimple_bucket_value));
-	bucket->fcc = ecalloc(1, sizeof(zend_fcall_info_cache));
 }
 
 static int pimple_zval_to_pimpleval(zval *_zval, pimple_bucket_value *_pimple_bucket_value TSRMLS_DC)
@@ -500,8 +491,6 @@ PHP_METHOD(Pimple, protect)
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &protected) == FAILURE) {
 		return;
 	}
-
-	pimple_init_bucket(&bucket);
 
 	if (pimple_zval_is_valid_callback(protected, &bucket TSRMLS_CC) == FAILURE) {
 		pimple_free_bucket(&bucket);
@@ -612,8 +601,6 @@ PHP_METHOD(Pimple, extend)
 			zend_error(E_WARNING, "Unsupported offset type");
 	}
 
-	pimple_init_bucket(&bucket);
-
 	if (pimple_zval_is_valid_callback(callable, &bucket TSRMLS_CC) == FAILURE) {
 		pimple_free_bucket(&bucket);
 		zend_throw_exception(spl_ce_InvalidArgumentException, "Extension service definition is not a Closure or invokable object.", 0 TSRMLS_CC);
@@ -631,7 +618,6 @@ PHP_METHOD(Pimple, extend)
 	Z_ADDREF_P(value->value);
 
 	if (zend_hash_index_exists(&pobj->factories, value->handle_num)) {
-		pimple_init_bucket(&bucket);
 		pimple_zval_to_pimpleval(pimple_closure_obj, &bucket TSRMLS_CC);
 		zend_hash_index_del(&pobj->factories, value->handle_num);
 		zend_hash_index_update(&pobj->factories, bucket.handle_num, (void *)&bucket, sizeof(pimple_bucket_value), NULL);
@@ -687,8 +673,6 @@ PHP_METHOD(Pimple, factory)
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &factory) == FAILURE) {
 		return;
 	}
-
-	pimple_init_bucket(&bucket);
 
 	if (pimple_zval_is_valid_callback(factory, &bucket TSRMLS_CC) == FAILURE) {
 		pimple_free_bucket(&bucket);
@@ -792,7 +776,7 @@ PHP_METHOD(Pimple, register)
 
 PHP_METHOD(Pimple, __construct)
 {
-	zval *values = NULL, **pData = NULL, offset = {0};
+	zval *values = NULL, **pData = NULL, offset;
 	HashPosition pos;
 	char *str_index = NULL;
 	zend_uint str_length;
@@ -806,6 +790,7 @@ PHP_METHOD(Pimple, __construct)
 	while (zend_hash_has_more_elements_ex(Z_ARRVAL_P(values), &pos) == SUCCESS) {
 			zend_hash_get_current_data_ex(Z_ARRVAL_P(values), (void **)&pData, &pos);
 			zend_hash_get_current_key_ex(Z_ARRVAL_P(values), &str_index, &str_length, &num_index, 0, &pos);
+			INIT_ZVAL(offset);
 			if (zend_hash_get_current_key_type_ex(Z_ARRVAL_P(values), &pos) == HASH_KEY_IS_LONG) {
 				ZVAL_LONG(&offset, num_index);
 			} else {
@@ -824,7 +809,7 @@ PHP_METHOD(Pimple, __construct)
   };
 
  */
-PHP_METHOD(PimpleClosure, __invoke)
+PHP_METHOD(PimpleClosure, invoker)
 {
 	pimple_closure_object *pcobj = NULL;
 	zval *arg = NULL, *retval = NULL, *newretval = NULL;
@@ -866,6 +851,7 @@ PHP_METHOD(PimpleClosure, __invoke)
 
 	efree(fci.params);
 	zval_ptr_dtor(&retval);
+
 	RETVAL_ZVAL(newretval, 1 ,1);
 }
 
@@ -873,7 +859,7 @@ PHP_MINIT_FUNCTION(pimple)
 {
 	zend_class_entry tmp_pimple_ce, tmp_pimple_closure_ce, tmp_pimple_serviceprovider_iface_ce;
 	INIT_NS_CLASS_ENTRY(tmp_pimple_ce, PIMPLE_NS, "Container", pimple_ce_functions);
-	INIT_NS_CLASS_ENTRY(tmp_pimple_closure_ce, PIMPLE_NS, "ContainerClosure", pimple_closure_ce_functions);
+	INIT_NS_CLASS_ENTRY(tmp_pimple_closure_ce, PIMPLE_NS, "ContainerClosure", NULL);
 	INIT_NS_CLASS_ENTRY(tmp_pimple_serviceprovider_iface_ce, PIMPLE_NS, "ServiceProviderInterface", pimple_serviceprovider_iface_ce_functions);
 
 	tmp_pimple_ce.create_object         = pimple_object_create;
@@ -887,24 +873,19 @@ PHP_MINIT_FUNCTION(pimple)
 
 	pimple_serviceprovider_ce = zend_register_internal_interface(&tmp_pimple_serviceprovider_iface_ce TSRMLS_CC);
 
-	pimple_closure_object_handlers = std_object_handlers;
-	pimple_object_handlers         = std_object_handlers;
+	memcpy(&pimple_closure_object_handlers, zend_get_std_object_handlers(), sizeof(*zend_get_std_object_handlers()));
+	pimple_object_handlers                     = std_object_handlers;
+	pimple_closure_object_handlers.get_closure = pimple_closure_get_closure;
 
-	return SUCCESS;
-}
+	pimple_closure_invoker_function.function_name     = "Pimple closure internal invoker";
+	pimple_closure_invoker_function.fn_flags         |= ZEND_ACC_CLOSURE;
+	pimple_closure_invoker_function.handler           = ZEND_MN(PimpleClosure_invoker);
+	pimple_closure_invoker_function.num_args          = 1;
+	pimple_closure_invoker_function.required_num_args = 1;
+	pimple_closure_invoker_function.scope             = pimple_closure_ce;
+	pimple_closure_invoker_function.type              = ZEND_INTERNAL_FUNCTION;
+	pimple_closure_invoker_function.module            = &pimple_module_entry;
 
-PHP_MSHUTDOWN_FUNCTION(pimple)
-{
-	return SUCCESS;
-}
-
-PHP_RINIT_FUNCTION(pimple)
-{
-	return SUCCESS;
-}
-
-PHP_RSHUTDOWN_FUNCTION(pimple)
-{
 	return SUCCESS;
 }
 
@@ -928,9 +909,9 @@ zend_module_entry pimple_module_entry = {
 	"pimple",
 	NULL,
 	PHP_MINIT(pimple),
-	PHP_MSHUTDOWN(pimple),
-	PHP_RINIT(pimple),
-	PHP_RSHUTDOWN(pimple),
+	NULL,
+	NULL,
+	NULL,
 	PHP_MINFO(pimple),
 	PIMPLE_VERSION,
 	STANDARD_MODULE_PROPERTIES

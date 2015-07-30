@@ -47,10 +47,9 @@ extern zend_module_entry pimple_module_entry;
 #define PIMPLE_DEFAULT_ZVAL_CACHE_NUM   5
 #define PIMPLE_DEFAULT_ZVAL_VALUES_NUM 10
 
+zend_module_entry *get_module(void);
+
 PHP_MINIT_FUNCTION(pimple);
-PHP_MSHUTDOWN_FUNCTION(pimple);
-PHP_RINIT_FUNCTION(pimple);
-PHP_RSHUTDOWN_FUNCTION(pimple);
 PHP_MINFO_FUNCTION(pimple);
 
 PHP_METHOD(Pimple, __construct);
@@ -65,18 +64,18 @@ PHP_METHOD(Pimple, offsetUnset);
 PHP_METHOD(Pimple, offsetGet);
 PHP_METHOD(Pimple, offsetExists);
 
-PHP_METHOD(PimpleClosure, __invoke);
+PHP_METHOD(PimpleClosure, invoker);
 
 typedef struct _pimple_bucket_value {
 	zval *value; /* Must be the first element */
 	zval *raw;
-	zend_fcall_info_cache *fcc;
 	zend_object_handle handle_num;
 	enum {
 		PIMPLE_IS_PARAM   = 0,
 		PIMPLE_IS_SERVICE = 2
 	} type;
 	zend_bool initialized;
+	zend_fcall_info_cache fcc;
 } pimple_bucket_value;
 
 typedef struct _pimple_object {
@@ -97,7 +96,6 @@ static const char sensiolabs_logo[] = "<img src=\"data:image/png;base64,iVBORw0K
 static int pimple_zval_to_pimpleval(zval *_zval, pimple_bucket_value *_pimple_bucket_value TSRMLS_DC);
 static int pimple_zval_is_valid_callback(zval *_zval, pimple_bucket_value *_pimple_bucket_value TSRMLS_DC);
 
-static void pimple_init_bucket(pimple_bucket_value *bucket);
 static void pimple_bucket_dtor(pimple_bucket_value *bucket);
 static void pimple_free_bucket(pimple_bucket_value *bucket);
 
@@ -111,6 +109,7 @@ static void pimple_free_object_storage(pimple_object *obj TSRMLS_DC);
 static void pimple_closure_free_object_storage(pimple_closure_object *obj TSRMLS_DC);
 static zend_object_value pimple_closure_object_create(zend_class_entry *ce TSRMLS_DC);
 static zend_function *pimple_closure_get_constructor(zval * TSRMLS_DC);
+static int pimple_closure_get_closure(zval *obj, zend_class_entry **ce_ptr, union _zend_function **fptr_ptr, zval **zobj_ptr TSRMLS_DC);
 
 #ifdef ZTS
 #define PIMPLE_G(v) TSRMG(pimple_globals_id, zend_pimple_globals *, v)
