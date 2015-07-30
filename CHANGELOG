@@ -1,6 +1,7 @@
-* 3.0.1 (2014-XX-XX)
+* 3.0.1 (2015-07-30)
 
- * n/a
+ * simplified some code
+ * fixed a segfault in the C extension
 
 * 3.0.0 (2014-07-24)
 
