@@ -1,0 +1,19 @@
+---------------------------------------------------------------------------
+
+by GromNaN at 2015-06-10T06:33:48Z
+
+This test can be completely removed if it is replaced by the [`callable` typehint](http://php.net/manual/en/language.types.callable.php).
+This requires PHP 5.4
+
+---------------------------------------------------------------------------
+
+by krzysiekpiasecki at 2015-06-10T07:00:26Z
+
+- It doesn't brake tests and still handles only callable objects and closures,
+- 'Real' callable 'validation' only during getting element.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-06-10T08:08:29Z
+
+@GromNaN Pimple does not accept any callable here, to avoid issues when storing string parameters in case they match the name of a function (and so become callables)
