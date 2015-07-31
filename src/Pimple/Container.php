@@ -146,19 +146,33 @@ class Container implements \ArrayAccess
     }
 
     /**
+     *
+     * Test if object is callable
+     *
+     * @param callable $callable The object to be tested
+     *
+     * @param string $message The exception message
+     * 
+     * @throws \InvalidArgumentException Object has to be a invokable
+     *
+     */
+    private function testCallableObject($object, $message)
+    {
+        if (!method_exists($object, '__invoke')) {
+            throw new \InvalidArgumentException($message);
+        }
+    }
+
+    /**
      * Marks a callable as being a factory service.
      *
      * @param callable $callable A service definition to be used as a factory
      *
      * @return callable The passed callable
-     *
-     * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
      */
     public function factory($callable)
     {
-        if (!method_exists($callable, '__invoke')) {
-            throw new \InvalidArgumentException('Service definition is not a Closure or invokable object.');
-        }
+        $this->testCallableObject($callable, 'Service definition is not a Closure or invokable object.');
 
         $this->factories->attach($callable);
 
@@ -173,14 +187,10 @@ class Container implements \ArrayAccess
      * @param callable $callable A callable to protect from being evaluated
      *
      * @return callable The passed callable
-     *
-     * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
      */
     public function protect($callable)
     {
-        if (!method_exists($callable, '__invoke')) {
-            throw new \InvalidArgumentException('Callable is not a Closure or invokable object.');
-        }
+        $this->testCallableObject($callable, 'Callable is not a Closure or invokable object.');
 
         $this->protected->attach($callable);
 
