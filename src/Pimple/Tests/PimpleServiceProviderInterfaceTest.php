@@ -57,7 +57,7 @@ class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
         $pimple = new Container();
 
         $pimple->register(new Fixtures\PimpleServiceProvider(), array(
-            'anotherParameter' => 'anotherValue'
+            'anotherParameter' => 'anotherValue',
         ));
 
         $this->assertEquals('value', $pimple['param']);

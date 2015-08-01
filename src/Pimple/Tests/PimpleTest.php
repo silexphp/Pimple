@@ -99,7 +99,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorInjection()
     {
-        $params = array("param" => "value");
+        $params = array('param' => 'value');
         $pimple = new Container($params);
 
         $this->assertSame($params['param'], $pimple['param']);
@@ -334,7 +334,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Provider for invalid service definitions
+     * Provider for invalid service definitions.
      */
     public function badServiceDefinitionProvider()
     {
@@ -345,7 +345,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Provider for service definitions
+     * Provider for service definitions.
      */
     public function serviceDefinitionProvider()
     {
