@@ -1,7 +1,7 @@
 <?php
 
 if (!class_exists('Pimple\Container')) {
-    require_once __DIR__ . '/../../../lib/Pimple.php';
+    require_once __DIR__ . '/../../../src/Pimple/Container.php';
 } else {
     echo "pimple-c extension detected, using...\n\n";
 }
