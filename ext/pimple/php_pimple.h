@@ -41,7 +41,7 @@ extern zend_module_entry pimple_module_entry;
 #include "TSRM.h"
 #endif
 
-#define PIMPLE_VERSION "3.0.1-DEV"
+#define PIMPLE_VERSION "3.0.2"
 #define PIMPLE_NS "Pimple"
 
 #define PIMPLE_DEFAULT_ZVAL_CACHE_NUM   5
