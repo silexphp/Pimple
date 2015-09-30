@@ -145,6 +145,31 @@ class Container implements \ArrayAccess
             unset($this->values[$id], $this->frozen[$id], $this->raw[$id], $this->keys[$id]);
         }
     }
+    
+    /**
+     * Resets a parameter or an object.
+     *
+     * The value will be recreated on the next access.
+     *
+     * @param string $id The unique identifier for the parameter or object
+     *
+     * @throws \InvalidArgumentException if the identifier is not defined
+     */
+    public function offsetReset($id)
+    {
+        if (!isset($this->keys[$id])) {
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+        }
+
+        if (isset($this->raw[$id])) {
+            $this->values[$id] = $this->raw[$id];
+            unset($this->raw[$id]);
+        }
+
+        if (isset($this->frozen[$id])) {
+            unset($this->frozen[$id]);
+        }
+    }
 
     /**
      * Marks a callable as being a factory service.
