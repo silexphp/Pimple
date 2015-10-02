@@ -145,7 +145,7 @@ class Container implements \ArrayAccess
             unset($this->values[$id], $this->frozen[$id], $this->raw[$id], $this->keys[$id]);
         }
     }
-    
+
     /**
      * Resets a parameter or an object.
      *
