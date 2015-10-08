@@ -437,4 +437,49 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         });
         $this->assertSame('bar.baz', $pimple['bar']);
     }
+
+    /**
+     * @dataProvider badCallableProvider
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Initializer is not a Closure or invokable object.
+     */
+    public function testAddInitializerFailsForInvalidCallback($initializer)
+    {
+        $pimple = new Container();
+        $pimple->appendInitializer($initializer);
+    }
+
+    /**
+     * Provider for invalid service definitions.
+     */
+    public function badCallableProvider()
+    {
+        return array(
+            array(null),
+            array(123),
+            array(new Fixtures\NonInvokable()),
+        );
+    }
+
+    public function testInitializer()
+    {
+        $pimple = new Container();
+
+        $pimple['foo'] = function () {
+            return new \stdClass();
+        };
+        $pimple->appendInitializer(function ($object) {
+            $object->foo = 'bar';
+            $object->first = 1;
+        });
+        $pimple->appendInitializer(function ($object) {
+            $object->foo = 'baz';
+            $object->second = 2;
+        });
+
+        $original = $pimple['foo'];
+        $this->assertSame('baz', $original->foo);
+        $this->assertSame(1, $original->first);
+        $this->assertSame(2, $original->second);
+    }
 }

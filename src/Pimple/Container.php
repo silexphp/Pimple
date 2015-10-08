@@ -39,6 +39,7 @@ class Container implements \ArrayAccess
     private $frozen = array();
     private $raw = array();
     private $keys = array();
+    private $initializers = array();
 
     /**
      * Instantiate the container.
@@ -113,7 +114,14 @@ class Container implements \ArrayAccess
         $val = $this->values[$id] = $raw($this);
         $this->raw[$id] = $raw;
 
-        $this->frozen[$id] = true;
+        if (!isset($this->frozen[$id])) {
+            $this->frozen[$id] = true;
+            if (is_object($val)) {
+                foreach ($this->initializers as $initializer) {
+                    $initializer($val);
+                }
+            }
+        }
 
         return $val;
     }
@@ -278,5 +286,21 @@ class Container implements \ArrayAccess
         }
 
         return $this;
+    }
+
+    /**
+     * Adds an initializer to be called after objects are created.
+     *
+     * Useful when you want to do some work with some object after it is
+     * created, without necessarily loading, changing or extending that object.
+     *
+     * @throws \InvalidArgumentException if the initializer is not callable
+     */
+    public function appendInitializer($callable)
+    {
+        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
+            throw new \InvalidArgumentException('Initializer is not a Closure or invokable object.');
+        }
+        $this->initializers[] = $callable;
     }
 }
