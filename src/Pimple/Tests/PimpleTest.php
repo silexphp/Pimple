@@ -443,7 +443,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Initializer is not a Closure or invokable object.
      */
-    public function testAddInitializerFailsForInvalidCallback($initializer)
+    public function testAppendInitializerFailsForInvalidCallback($initializer)
     {
         $pimple = new Container();
         $pimple->appendInitializer($initializer);
