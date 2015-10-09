@@ -114,12 +114,11 @@ class Container implements \ArrayAccess
         $val = $this->values[$id] = $raw($this);
         $this->raw[$id] = $raw;
 
-        if (!isset($this->frozen[$id])) {
-            $this->frozen[$id] = true;
-            if (is_object($val)) {
-                foreach ($this->initializers as $initializer) {
-                    $initializer($val);
-                }
+        $this->frozen[$id] = true;
+
+        if (is_object($val)) {
+            foreach ($this->initializers as $initializer) {
+                $initializer($val);
             }
         }
 
