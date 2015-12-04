@@ -29,7 +29,7 @@ namespace Pimple\Tests\Fixtures;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-class PimpleServiceProvider implements ServiceProviderInterface
+class ServiceProvider implements ServiceProviderInterface
 {
     /**
      * Registers services on the given container.
