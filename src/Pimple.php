@@ -63,27 +63,19 @@ class Pimple implements ArrayAccess
      */
     public function offsetSet($id, $value)
     {
-        if ($value instanceof \Closure) {
-            $reflectionFunction = new \ReflectionFunction($value);
-            $reflectionParameters = $reflectionFunction->getParameters();
-            if (count($reflectionParameters) === 1) {
-                if ($reflectionParameters[0]->getName() === '__share__') {
-                    $this->container->offsetSet($id, $value(null));
-                    
-                    return;
-                } elseif ($reflectionParameters[0]->getName() === '__protect__') {
-                    $this->container->offsetSet($id, $this->container->protect($value(null)));
-                    
-                    return;
-                }
-            }
+        if ($value instanceof PimpleShared) {
+            $this->container->offsetSet($id, $value->getCallable());
 
-            $this->container->offsetSet($id, $this->container->factory($value));
-            
             return;
         }
 
-        if (is_object($value) && method_exists($value, '__invoke')) {
+        if ($value instanceof PimpleProtected) {
+            $this->container->offsetSet($id, $this->container->protect($value->getCallable()));
+
+            return;
+        }
+
+        if ($value instanceof \Closure || (is_object($value) && method_exists($value, '__invoke'))) {
             $this->container->offsetSet($id, $this->container->factory($value));
 
             return;
@@ -142,9 +134,7 @@ class Pimple implements ArrayAccess
             throw new InvalidArgumentException('Service definition is not a Closure or invokable object.');
         }
 
-        return function ($__share__) use ($callable) {
-            return $callable;
-        };
+        return new PimpleShared($callable);
     }
 
     /**
@@ -162,9 +152,7 @@ class Pimple implements ArrayAccess
             throw new InvalidArgumentException('Callable is not a Closure or invokable object.');
         }
 
-        return function ($__protect__) use ($callable) {
-            return $callable;
-        };
+        return new PimpleProtected($callable);
     }
 
     /**
