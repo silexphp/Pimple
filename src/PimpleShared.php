@@ -24,6 +24,9 @@
  * THE SOFTWARE.
  */
 
+/**
+ * @internal
+ */
 class PimpleShared
 {
     /**
