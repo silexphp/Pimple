@@ -32,7 +32,7 @@ use Pimple\Tests\Fixtures\NonInvokable;
 use Pimple\Tests\Fixtures\Service;
 
 /**
- * Pimple Test
+ * Pimple Test.
  *
  * @package pimple
  * @author  Igor Wiedler <igor@wiedler.ch>
@@ -105,7 +105,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorInjection()
     {
-        $params = array("param" => "value");
+        $params = array('param' => 'value');
         $pimple = new Pimple($params);
 
         $this->assertSame($params['param'], $pimple['param']);
@@ -306,18 +306,18 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Provider for invalid service definitions
+     * Provider for invalid service definitions.
      */
     public function badServiceDefinitionProvider()
     {
         return array(
             array(123),
-            array(new NonInvokable())
+            array(new NonInvokable()),
         );
     }
 
     /**
-     * Provider for service definitions
+     * Provider for service definitions.
      */
     public function serviceDefinitionProvider()
     {
@@ -328,7 +328,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
 
                 return $service;
             }),
-            array(new Invokable())
+            array(new Invokable()),
         );
     }
 }
