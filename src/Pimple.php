@@ -27,7 +27,6 @@
 /**
  * Pimple main class.
  *
- * @package pimple
  * @author  Fabien Potencier
  */
 class Pimple implements ArrayAccess

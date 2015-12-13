@@ -34,7 +34,6 @@ use Pimple\Tests\Fixtures\Service;
 /**
  * Pimple Test.
  *
- * @package pimple
  * @author  Igor Wiedler <igor@wiedler.ch>
  */
 class PimpleTest extends \PHPUnit_Framework_TestCase
