@@ -69,12 +69,6 @@ class Pimple implements ArrayAccess
             return;
         }
 
-        if ($value instanceof PimpleProtected) {
-            $this->container->offsetSet($id, $this->container->protect($value->getCallable()));
-
-            return;
-        }
-
         if ($value instanceof \Closure || (is_object($value) && method_exists($value, '__invoke'))) {
             $this->container->offsetSet($id, $this->container->factory($value));
 
@@ -152,7 +146,9 @@ class Pimple implements ArrayAccess
             throw new InvalidArgumentException('Callable is not a Closure or invokable object.');
         }
 
-        return new PimpleProtected($callable);
+        return function ($c) use ($callable) {
+            return $callable;
+        };
     }
 
     /**
