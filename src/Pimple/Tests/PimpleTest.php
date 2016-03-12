@@ -437,4 +437,33 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         });
         $this->assertSame('bar.baz', $pimple['bar']);
     }
+
+    public function testGetReturnsTheSameAsOffsetGet()
+    {
+        $pimple = new Container();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $this->assertEquals($pimple['foo'], $pimple->get('foo'));
+    }
+
+    public function testHasReturnsTheSameAsOffsetExists()
+    {
+        $pimple = new Container();
+        $pimple['foo'] = function () {
+            return 'foo';
+        };
+        $this->assertEquals(isset($pimple['foo']), $pimple->has('foo'));
+        $this->assertEquals(isset($pimple['bar']), $pimple->has('bar'));
+    }
+
+    /**
+     * @expectedException \Pimple\Exception\NotFoundException
+     * @expectedExceptionMessage Identifier "bar" is not defined.
+     */
+    public function testGetShouldThrowExceptionWhenIdentifierIsNotDefined()
+    {
+        $pimple = new Container();
+        $pimple->get('bar');
+    }
 }

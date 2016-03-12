@@ -26,12 +26,17 @@
 
 namespace Pimple;
 
+use Interop\Container\ContainerInterface;
+use Pimple\Exception\InvalidArgumentException;
+use Pimple\Exception\NotFoundException;
+use Pimple\Exception\RuntimeException;
+
 /**
  * Container main class.
  *
  * @author  Fabien Potencier
  */
-class Container implements \ArrayAccess
+class Container implements \ArrayAccess, ContainerInterface
 {
     private $values = array();
     private $factories;
@@ -58,6 +63,22 @@ class Container implements \ArrayAccess
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function get($id)
+    {
+        return $this->offsetGet($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has($id)
+    {
+        return $this->offsetExists($id);
+    }
+
+    /**
      * Sets a parameter or an object.
      *
      * Objects must be defined as Closures.
@@ -69,12 +90,12 @@ class Container implements \ArrayAccess
      * @param string $id    The unique identifier for the parameter or object
      * @param mixed  $value The value of the parameter or a closure to define an object
      *
-     * @throws \RuntimeException Prevent override of a frozen service
+     * @throws RuntimeException Prevent override of a frozen service
      */
     public function offsetSet($id, $value)
     {
         if (isset($this->frozen[$id])) {
-            throw new \RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
+            throw new RuntimeException(sprintf('Cannot override frozen service "%s".', $id));
         }
 
         $this->values[$id] = $value;
@@ -88,12 +109,12 @@ class Container implements \ArrayAccess
      *
      * @return mixed The value of the parameter or an object
      *
-     * @throws \InvalidArgumentException if the identifier is not defined
+     * @throws NotFoundException if the identifier is not defined
      */
     public function offsetGet($id)
     {
         if (!isset($this->keys[$id])) {
-            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new NotFoundException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (
@@ -153,12 +174,12 @@ class Container implements \ArrayAccess
      *
      * @return callable The passed callable
      *
-     * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
+     * @throws InvalidArgumentException Service definition has to be a closure of an invokable object
      */
     public function factory($callable)
     {
         if (!method_exists($callable, '__invoke')) {
-            throw new \InvalidArgumentException('Service definition is not a Closure or invokable object.');
+            throw new InvalidArgumentException('Service definition is not a Closure or invokable object.');
         }
 
         $this->factories->attach($callable);
@@ -175,12 +196,12 @@ class Container implements \ArrayAccess
      *
      * @return callable The passed callable
      *
-     * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
+     * @throws InvalidArgumentException Service definition has to be a closure of an invokable object
      */
     public function protect($callable)
     {
         if (!method_exists($callable, '__invoke')) {
-            throw new \InvalidArgumentException('Callable is not a Closure or invokable object.');
+            throw new InvalidArgumentException('Callable is not a Closure or invokable object.');
         }
 
         $this->protected->attach($callable);
@@ -195,12 +216,12 @@ class Container implements \ArrayAccess
      *
      * @return mixed The value of the parameter or the closure defining an object
      *
-     * @throws \InvalidArgumentException if the identifier is not defined
+     * @throws InvalidArgumentException if the identifier is not defined
      */
     public function raw($id)
     {
         if (!isset($this->keys[$id])) {
-            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (isset($this->raw[$id])) {
@@ -221,20 +242,20 @@ class Container implements \ArrayAccess
      *
      * @return callable The wrapped callable
      *
-     * @throws \InvalidArgumentException if the identifier is not defined or not a service definition
+     * @throws InvalidArgumentException if the identifier is not defined or not a service definition
      */
     public function extend($id, $callable)
     {
         if (!isset($this->keys[$id])) {
-            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke')) {
-            throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
+            throw new InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
         }
 
         if (!is_object($callable) || !method_exists($callable, '__invoke')) {
-            throw new \InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
+            throw new InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
         }
 
         $factory = $this->values[$id];
