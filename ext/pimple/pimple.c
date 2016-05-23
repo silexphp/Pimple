@@ -419,7 +419,7 @@ static zval *pimple_object_read_dimension(zval *object, zval *offset, int type T
 	}
 
 	if (zend_hash_index_exists(&pimple_obj->factories, retval->handle_num)) {
-		/* Service is a factory, call it everytime and never cache its result */
+		/* Service is a factory, call it every time and never cache its result */
 		PIMPLE_CALL_CB
 		Z_DELREF_P(retval_ptr_ptr); /* fetch dim addr will increment refcount */
 		return retval_ptr_ptr;
@@ -603,7 +603,7 @@ PHP_METHOD(Pimple, extend)
 
 	if (pimple_zval_is_valid_callback(callable, &bucket TSRMLS_CC) == FAILURE) {
 		pimple_free_bucket(&bucket);
-		zend_throw_exception(spl_ce_InvalidArgumentException, "Extension service definition is not a Closure or invokable object.", 0 TSRMLS_CC);
+		zend_throw_exception(spl_ce_InvalidArgumentException, "Extension service definition is not a callable.", 0 TSRMLS_CC);
 		RETURN_NULL();
 	}
 	pimple_free_bucket(&bucket);
