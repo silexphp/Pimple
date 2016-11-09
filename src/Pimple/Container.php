@@ -298,6 +298,7 @@ class Container implements \ArrayAccess
     /**
      * @param $alias
      * @param $service
+     *
      * @return $this
      */
     public function alias($alias, $service)

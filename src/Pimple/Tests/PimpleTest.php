@@ -437,17 +437,17 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         });
         $this->assertSame('bar.baz', $pimple['bar']);
     }
-    
+
     public function testDefiningAnAliasToService()
     {
         $pimple = new Container();
-        
+
         $pimple['long.service.name'] = function () {
             return 'foo';
         };
-        
+
         $pimple->alias('service', 'long.service.name');
-        
+
         $this->assertSame('foo', $pimple['service']);
     }
 
@@ -458,9 +458,9 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function testDefiningAnAliasToAnInvalidIdentifier()
     {
         $pimple = new Container();
-        
+
         $pimple->alias('foo', 'bar.long.service.name');
-        
+
         $pimple->offsetGet('foo');
     }
 }
