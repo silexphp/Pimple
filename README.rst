@@ -136,6 +136,14 @@ like so:
 
 Note that if the environment variable is not set, the parameter will be set
 to `null` and it will be cached for one request.
+You can, however, define default values if you like:
+
+.. code-block:: php
+
+    // define some parameters
+    $container['runtime_param']      = 'env(RUNTIME_PARAM)';
+    $container['env(RUNTIME_PARAM)'] = 'default_value';
+
 
 Protecting Parameters
 ~~~~~~~~~~~~~~~~~~~~~

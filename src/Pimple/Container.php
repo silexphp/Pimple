@@ -314,6 +314,10 @@ class Container implements \ArrayAccess
             return $this->envCache[$name] = $env;
         }
 
+        if ($this->offsetExists("env($name)")) {
+            return $this->envCache[$name] = $this->offsetGet("env($name)");
+        }
+
         return null;
     }
 }
