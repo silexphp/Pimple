@@ -122,6 +122,21 @@ You can now easily change the cookie name by overriding the
 ``session_storage_class`` parameter instead of redefining the service
 definition.
 
+Defining Parameters for Environment Variables
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes you want your application to read parameters from environment
+variables. To do that, simply wrap your parameter into the `env()` keyword
+like so:
+
+.. code-block:: php
+
+    // define some parameters
+    $container['runtime_param'] = 'env(RUNTIME_PARAM)';
+
+Note that if the environment variable is not set, the parameter will be set
+to `null` and it will be cached for one request.
+
 Protecting Parameters
 ~~~~~~~~~~~~~~~~~~~~~
 
