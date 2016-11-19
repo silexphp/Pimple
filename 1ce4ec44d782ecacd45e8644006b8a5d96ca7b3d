@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by hkdobrev at 2016-07-26T19:41:56Z
+
+@fabpot @igorw What do you think about this? I think by now it's essential to test on PHP 7 and I don't see any stopper with merging it.
+
+---------------------------------------------------------------------------
+
+by stof at 2016-07-27T09:34:19Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by hkdobrev at 2016-10-03T08:44:25Z
+
+@fabpot I'm sorry to ping you about this, but it's been a while. What do you think? Thanks!
+
+---------------------------------------------------------------------------
+
+by hkdobrev at 2016-11-18T21:59:33Z
+
+👋  I've updated the pull request to test Pimple on PHP 7.1 as well 😺  Cheers!
