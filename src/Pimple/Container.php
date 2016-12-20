@@ -271,11 +271,11 @@ class Container implements \ArrayAccess
      */
     public function register(ServiceProviderInterface $provider, array $values = array())
     {
-        $provider->register($this);
-
         foreach ($values as $key => $value) {
             $this[$key] = $value;
         }
+
+        $provider->register($this);
 
         return $this;
     }
