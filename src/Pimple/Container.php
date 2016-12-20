@@ -29,7 +29,7 @@ namespace Pimple;
 /**
  * Container main class.
  *
- * @author  Fabien Potencier
+ * @author Fabien Potencier
  */
 class Container implements \ArrayAccess
 {
@@ -45,7 +45,7 @@ class Container implements \ArrayAccess
      *
      * Objects and parameters can be passed as argument to the constructor.
      *
-     * @param array $values The parameters or objects.
+     * @param array $values the parameters or objects.
      */
     public function __construct(array $values = array())
     {
