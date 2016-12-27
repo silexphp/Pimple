@@ -33,6 +33,7 @@
 class Pimple implements ArrayAccess
 {
     protected $values = array();
+    protected $keys = array();
 
     /**
      * Instantiate the container.
@@ -43,7 +44,9 @@ class Pimple implements ArrayAccess
      */
     public function __construct(array $values = array())
     {
-        $this->values = $values;
+        foreach ($values as $key => $value) {
+            $this->offsetSet($key, $value);
+        }
     }
 
     /**
@@ -61,6 +64,7 @@ class Pimple implements ArrayAccess
     public function offsetSet($id, $value)
     {
         $this->values[$id] = $value;
+        $this->keys[$id] = true;
     }
 
     /**
@@ -74,7 +78,7 @@ class Pimple implements ArrayAccess
      */
     public function offsetGet($id)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -92,7 +96,7 @@ class Pimple implements ArrayAccess
      */
     public function offsetExists($id)
     {
-        return array_key_exists($id, $this->values);
+        return isset($this->keys[$id]);
     }
 
     /**
@@ -102,7 +106,7 @@ class Pimple implements ArrayAccess
      */
     public function offsetUnset($id)
     {
-        unset($this->values[$id]);
+        unset($this->values[$id], $this->keys[$id]);
     }
 
     /**
@@ -161,7 +165,7 @@ class Pimple implements ArrayAccess
      */
     public function raw($id)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
@@ -183,7 +187,7 @@ class Pimple implements ArrayAccess
      */
     public function extend($id, $callable)
     {
-        if (!array_key_exists($id, $this->values)) {
+        if (!isset($this->keys[$id])) {
             throw new InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
