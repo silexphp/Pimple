@@ -230,6 +230,28 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($serviceOne->value, $serviceTwo->value);
     }
 
+    /**
+     * This callable notation is not supported below 5.4 but should still be allowed.
+     * 
+     * @dataProvider serviceDefinitionProvider
+     * @requires PHP 5.4
+     */
+    public function testExtendWithCallable($service)
+    {
+        $pimple = new Container();
+        $pimple['callable_service'] = $service;
+        $pimple->extend('callable_service', array($this, 'callableExtension'));
+        $service = $pimple['callable_service'];
+        $this->assertEquals(684, $service->value);
+    }
+
+    public function callableExtension($service)
+    {
+        $service->value = 684;
+
+        return $service;
+    }
+
     public function testExtendDoesNotLeakWithFactories()
     {
         if (extension_loaded('pimple')) {
@@ -324,7 +346,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider badServiceDefinitionProvider
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Extension service definition is not a Closure or invokable object.
+     * @expectedExceptionMessage Extension service definition is not a callable.
      */
     public function testExtendFailsForInvalidServiceDefinitions($service)
     {

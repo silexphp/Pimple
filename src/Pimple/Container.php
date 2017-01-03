@@ -233,8 +233,8 @@ class Container implements \ArrayAccess
             throw new \InvalidArgumentException(sprintf('Identifier "%s" does not contain an object definition.', $id));
         }
 
-        if (!is_object($callable) || !method_exists($callable, '__invoke')) {
-            throw new \InvalidArgumentException('Extension service definition is not a Closure or invokable object.');
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException('Extension service definition is not a callable.');
         }
 
         $factory = $this->values[$id];
