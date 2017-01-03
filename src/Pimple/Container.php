@@ -152,6 +152,51 @@ class Container implements \ArrayAccess
     }
 
     /**
+     * Sets a parameter or an object.
+     *
+     * @param  string $id The unique identifier for the parameter or object
+     * @param  mixed $value The value of the parameter or a closure to define an object
+     * @throws FrozenServiceException Prevent override of a frozen service
+     * @since 3.4
+     */
+    public function __set($id, $value) {
+        $this->offsetSet($id, $value);
+    }
+
+    /**
+     * Gets a parameter or an object.
+     *
+     * @param string $id The unique identifier for the parameter or object
+     * @return mixed The value of the parameter or an object
+     * @throws UnknownIdentifierException if the identifier is not defined
+     * @since 3.4
+     */
+    public function __get($id) {
+        return $this->offsetGet($id);
+    }
+
+    /**
+     * Checks if a parameter or an object is set.
+     *
+     * @param string $id The unique identifier for the parameter or object
+     * @return bool
+     * @since 3.4
+     */
+    public function __isset($id) {
+        return $this->offsetExists($id);
+    }
+
+    /**
+     * Unsets a parameter or an object.
+     *
+     * @param string $id The unique identifier for the parameter or object
+     * @since 3.4
+     */
+    public function __unset($id) {
+        $this->offsetUnset($id);
+    }
+
+    /**
      * Marks a callable as being a factory service.
      *
      * @param callable $callable A service definition to be used as a factory
