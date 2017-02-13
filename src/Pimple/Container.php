@@ -26,6 +26,8 @@
 
 namespace Pimple;
 
+use Pimple\Exception\NotFoundException;
+
 /**
  * Container main class.
  *
@@ -93,7 +95,7 @@ class Container implements \ArrayAccess
     public function offsetGet($id)
     {
         if (!isset($this->keys[$id])) {
-            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new NotFoundException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (
