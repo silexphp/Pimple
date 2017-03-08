@@ -47,7 +47,7 @@ class Container implements \ArrayAccess
      *
      * Objects and parameters can be passed as argument to the constructor.
      *
-     * @param array $values The parameters or objects.
+     * @param array $values The parameters or objects
      */
     public function __construct(array $values = array())
     {
