@@ -26,8 +26,6 @@
 
 namespace Pimple;
 
-use Pimple\Exception\NotFoundException;
-
 /**
  * Container main class.
  *
@@ -47,7 +45,7 @@ class Container implements \ArrayAccess
      *
      * Objects and parameters can be passed as argument to the constructor.
      *
-     * @param array $values The parameters or objects
+     * @param array $values The parameters or objects.
      */
     public function __construct(array $values = array())
     {
@@ -95,7 +93,7 @@ class Container implements \ArrayAccess
     public function offsetGet($id)
     {
         if (!isset($this->keys[$id])) {
-            throw new NotFoundException(sprintf('Identifier "%s" is not defined.', $id));
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
         if (

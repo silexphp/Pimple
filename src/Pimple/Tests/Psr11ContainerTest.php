@@ -26,28 +26,29 @@
 
 namespace Pimple\Tests;
 
+use Pimple\Container;
 use Pimple\Psr11Container;
-use Psr\Container\ContainerInterface;
 
 class Psr11ContainerTest extends \PHPUnit_Framework_TestCase
 {
     public function testItIsStandardCompliant()
     {
-        $container = new Psr11Container();
+        $container = new Psr11Container(new Container());
         $this->assertInstanceOf('\Psr\Container\ContainerInterface', $container);
     }
 
     public function testItCanGetServices()
     {
-        $container = new Psr11Container();
+        $container = new Container();
+        $psr11Container = new Psr11Container($container);
 
         $serviceSet = new \stdClass();
 
-        $container['service-id'] = function (ContainerInterface $container) use ($serviceSet) {
+        $container['service-id'] = function (Container $container) use ($serviceSet) {
             return $serviceSet;
         };
 
-        $serviceRetrieved = $container->get('service-id');
+        $serviceRetrieved = $psr11Container->get('service-id');
 
         $this->assertSame($serviceSet, $serviceRetrieved);
     }
@@ -55,15 +56,16 @@ class Psr11ContainerTest extends \PHPUnit_Framework_TestCase
     public function testItCanThrowANotFoundException()
     {
         $this->setExpectedException('\Psr\Container\NotFoundExceptionInterface');
-        $container = new Psr11Container();
+        $container = new Psr11Container(new Container());
         $container->get('service-id');
     }
 
     public function testItCanTellIfItHasServices()
     {
-        $container = new Psr11Container();
-        $this->assertFalse($container->has('service-id'));
+        $container = new Container();
+        $psr11Container = new Psr11Container($container);
+        $this->assertFalse($psr11Container->has('service-id'));
         $container['service-id'] = new \stdClass();
-        $this->assertTrue($container->has('service-id'));
+        $this->assertTrue($psr11Container->has('service-id'));
     }
 }

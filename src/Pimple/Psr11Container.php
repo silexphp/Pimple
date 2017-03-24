@@ -29,8 +29,21 @@ namespace Pimple;
 use Pimple\Exception\NotFoundException;
 use Psr\Container\ContainerInterface;
 
-class Psr11Container extends Container implements \ArrayAccess, ContainerInterface
+class Psr11Container implements ContainerInterface
 {
+    /**
+     * @var Container
+     */
+    private $container;
+
+    /**
+     * @param Container $container
+     */
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +53,7 @@ class Psr11Container extends Container implements \ArrayAccess, ContainerInterfa
             throw new NotFoundException(sprintf('Identifier "%s" is not defined.', $id));
         }
 
-        return $this->offsetGet($id);
+        return $this->container->offsetGet($id);
     }
 
     /**
@@ -48,6 +61,6 @@ class Psr11Container extends Container implements \ArrayAccess, ContainerInterfa
      */
     public function has($id)
     {
-        return $this->offsetExists($id);
+        return $this->container->offsetExists($id);
     }
 }
