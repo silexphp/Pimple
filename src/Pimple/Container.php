@@ -250,6 +250,18 @@ class Container implements \ArrayAccess
 
         return $this[$id] = $extended;
     }
+    
+    /**
+     * A shortcut method to define instances in the container.
+     * 
+     * @param object $object The instance
+     */
+    public function instance($object)
+    {
+        return function () use ($object) {
+            return $object;
+        }
+    }
 
     /**
      * Returns all defined value names.
