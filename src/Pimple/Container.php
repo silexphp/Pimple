@@ -39,6 +39,7 @@ class Container implements \ArrayAccess
     private $frozen = array();
     private $raw = array();
     private $keys = array();
+    private $aliases = array();
 
     /**
      * Instantiate the container.
@@ -92,6 +93,20 @@ class Container implements \ArrayAccess
      */
     public function offsetGet($id)
     {
+        if (isset($this->aliases[$id])) {
+            try {
+                return $this->offsetGet($this->aliases[$id]);
+            } catch (\InvalidArgumentException $e) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Tryied to get the aliased service "%s" but its identifier "%s" was not defined.',
+                        $id,
+                        $this->aliases[$id]
+                    )
+                );
+            }
+        }
+
         if (!isset($this->keys[$id])) {
             throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
         }
@@ -276,6 +291,19 @@ class Container implements \ArrayAccess
         foreach ($values as $key => $value) {
             $this[$key] = $value;
         }
+
+        return $this;
+    }
+
+    /**
+     * @param $alias
+     * @param $service
+     *
+     * @return $this
+     */
+    public function alias($alias, $service)
+    {
+        $this->aliases[$alias] = $service;
 
         return $this;
     }

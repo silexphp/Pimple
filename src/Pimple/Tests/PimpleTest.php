@@ -437,4 +437,30 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         });
         $this->assertSame('bar.baz', $pimple['bar']);
     }
+
+    public function testDefiningAnAliasToService()
+    {
+        $pimple = new Container();
+
+        $pimple['long.service.name'] = function () {
+            return 'foo';
+        };
+
+        $pimple->alias('service', 'long.service.name');
+
+        $this->assertSame('foo', $pimple['service']);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Tryied to get the aliased service "foo" but its identifier "bar.long.service.name" was not defined.
+     */
+    public function testDefiningAnAliasToAnInvalidIdentifier()
+    {
+        $pimple = new Container();
+
+        $pimple->alias('foo', 'bar.long.service.name');
+
+        $pimple->offsetGet('foo');
+    }
 }
