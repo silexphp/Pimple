@@ -18,7 +18,8 @@
         "symfony/phpunit-bridge": "^3.2"
     },
     "autoload": {
-        "psr-0": { "Pimple": "src/" }
+        "psr-0": { "Pimple": "src/" },
+        "psr-4": { "Pimple\\": "src/Pimple/" }
     },
     "extra": {
         "branch-alias": {
