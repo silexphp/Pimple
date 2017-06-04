@@ -40,6 +40,9 @@
 #include "main/php_output.h"
 #include "SAPI.h"
 
+#include "pimple_psr.h"
+#include "pimple_exceptions.h"
+
 static zend_class_entry *pimple_ce;
 static zend_object_handlers pimple_object_handlers;
 static zend_class_entry *pimple_closure_ce;
@@ -163,6 +166,26 @@ static const zend_function_entry pimple_serviceprovider_iface_ce_functions[] = {
 	PHP_FE_END
 };
 
+/**
+ * Pass a single string parameter to exception constructor and throw
+ */
+static void pimple_throw_exception_string(zend_class_entry *ce, const char *message, zend_uint message_len TSRMLS_DC)
+{
+	zval *exception, *param;
+
+	ALLOC_INIT_ZVAL(exception);
+	object_init_ex(exception, ce);
+
+	ALLOC_INIT_ZVAL(param);
+	ZVAL_STRINGL(param, message, message_len, 1);
+
+	zend_call_method_with_1_params(&exception, ce, &ce->constructor, "__construct", NULL, param);
+
+	zend_throw_exception_object(exception TSRMLS_CC);
+
+	zval_ptr_dtor(&param);
+}
+
 static void pimple_closure_free_object_storage(pimple_closure_object *obj TSRMLS_DC)
 {
 	zend_object_std_dtor(&obj->zobj TSRMLS_CC);
@@ -264,7 +287,7 @@ static void pimple_object_write_dimension(zval *object, zval *offset, zval *valu
 		zend_hash_quick_find(&pimple_obj->values, Z_STRVAL_P(offset), Z_STRLEN_P(offset)+1, hash, (void **)&found_value);
 		if (found_value && found_value->type == PIMPLE_IS_SERVICE && found_value->initialized == 1) {
 			pimple_free_bucket(&pimple_value);
-			zend_throw_exception_ex(spl_ce_RuntimeException, 0 TSRMLS_CC, "Cannot override frozen service \"%s\".", Z_STRVAL_P(offset));
+			pimple_throw_exception_string(pimple_ce_FrozenServiceException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 			return;
 		}
 		if (zend_hash_quick_update(&pimple_obj->values, Z_STRVAL_P(offset), Z_STRLEN_P(offset)+1, hash, (void *)&pimple_value, sizeof(pimple_bucket_value), NULL) == FAILURE) {
@@ -284,7 +307,8 @@ static void pimple_object_write_dimension(zval *object, zval *offset, zval *valu
 		zend_hash_index_find(&pimple_obj->values, index, (void **)&found_value);
 		if (found_value && found_value->type == PIMPLE_IS_SERVICE && found_value->initialized == 1) {
 			pimple_free_bucket(&pimple_value);
-			zend_throw_exception_ex(spl_ce_RuntimeException, 0 TSRMLS_CC, "Cannot override frozen service \"%ld\".", index);
+			convert_to_string(offset);
+			pimple_throw_exception_string(pimple_ce_FrozenServiceException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 			return;
 		}
 		if (zend_hash_index_update(&pimple_obj->values, index, (void *)&pimple_value, sizeof(pimple_bucket_value), NULL) == FAILURE) {
@@ -385,7 +409,8 @@ static zval *pimple_object_read_dimension(zval *object, zval *offset, int type T
 	switch (Z_TYPE_P(offset)) {
 	case IS_STRING:
 		if (zend_symtable_find(&pimple_obj->values, Z_STRVAL_P(offset), Z_STRLEN_P(offset)+1, (void **)&retval) == FAILURE) {
-			zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Identifier \"%s\" is not defined.", Z_STRVAL_P(offset));
+			pimple_throw_exception_string(pimple_ce_UnknownIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
+
 			return EG(uninitialized_zval_ptr);
 		}
 	break;
@@ -419,7 +444,7 @@ static zval *pimple_object_read_dimension(zval *object, zval *offset, int type T
 	}
 
 	if (zend_hash_index_exists(&pimple_obj->factories, retval->handle_num)) {
-		/* Service is a factory, call it everytime and never cache its result */
+		/* Service is a factory, call it every time and never cache its result */
 		PIMPLE_CALL_CB
 		Z_DELREF_P(retval_ptr_ptr); /* fetch dim addr will increment refcount */
 		return retval_ptr_ptr;
@@ -494,7 +519,7 @@ PHP_METHOD(Pimple, protect)
 
 	if (pimple_zval_is_valid_callback(protected, &bucket TSRMLS_CC) == FAILURE) {
 		pimple_free_bucket(&bucket);
-		zend_throw_exception(spl_ce_InvalidArgumentException, "Callable is not a Closure or invokable object.", 0 TSRMLS_CC);
+		zend_throw_exception(pimple_ce_ExpectedInvokableException, "Callable is not a Closure or invokable object.", 0 TSRMLS_CC);
 		return;
 	}
 
@@ -526,7 +551,7 @@ PHP_METHOD(Pimple, raw)
 	switch (Z_TYPE_P(offset)) {
 		case IS_STRING:
 			if (zend_symtable_find(&pobj->values, Z_STRVAL_P(offset), Z_STRLEN_P(offset)+1, (void *)&value) == FAILURE) {
-				zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Identifier \"%s\" is not defined.", Z_STRVAL_P(offset));
+				pimple_throw_exception_string(pimple_ce_UnknownIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
 		break;
@@ -571,11 +596,11 @@ PHP_METHOD(Pimple, extend)
 	switch (Z_TYPE_P(offset)) {
 		case IS_STRING:
 			if (zend_symtable_find(&pobj->values, Z_STRVAL_P(offset), Z_STRLEN_P(offset)+1, (void *)&value) == FAILURE) {
-				zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Identifier \"%s\" is not defined.", Z_STRVAL_P(offset));
+				pimple_throw_exception_string(pimple_ce_UnknownIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
 			if (value->type != PIMPLE_IS_SERVICE) {
-				zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Identifier \"%s\" does not contain an object definition.", Z_STRVAL_P(offset));
+				pimple_throw_exception_string(pimple_ce_InvalidServiceIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
 		break;
@@ -588,11 +613,13 @@ PHP_METHOD(Pimple, extend)
 				index = Z_LVAL_P(offset);
 			}
 			if (zend_hash_index_find(&pobj->values, index, (void *)&value) == FAILURE) {
-				zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Identifier \"%ld\" is not defined.", index);
+				convert_to_string(offset);
+				pimple_throw_exception_string(pimple_ce_UnknownIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
 			if (value->type != PIMPLE_IS_SERVICE) {
-				zend_throw_exception_ex(spl_ce_InvalidArgumentException, 0 TSRMLS_CC, "Identifier \"%ld\" does not contain an object definition.", index);
+				convert_to_string(offset);
+				pimple_throw_exception_string(pimple_ce_InvalidServiceIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
 		break;
@@ -603,7 +630,7 @@ PHP_METHOD(Pimple, extend)
 
 	if (pimple_zval_is_valid_callback(callable, &bucket TSRMLS_CC) == FAILURE) {
 		pimple_free_bucket(&bucket);
-		zend_throw_exception(spl_ce_InvalidArgumentException, "Extension service definition is not a Closure or invokable object.", 0 TSRMLS_CC);
+		zend_throw_exception(pimple_ce_ExpectedInvokableException, "Extension service definition is not a Closure or invokable object.", 0 TSRMLS_CC);
 		RETURN_NULL();
 	}
 	pimple_free_bucket(&bucket);
@@ -676,7 +703,7 @@ PHP_METHOD(Pimple, factory)
 
 	if (pimple_zval_is_valid_callback(factory, &bucket TSRMLS_CC) == FAILURE) {
 		pimple_free_bucket(&bucket);
-		zend_throw_exception(spl_ce_InvalidArgumentException, "Service definition is not a Closure or invokable object.", 0 TSRMLS_CC);
+		zend_throw_exception(pimple_ce_ExpectedInvokableException, "Service definition is not a Closure or invokable object.", 0 TSRMLS_CC);
 		return;
 	}
 
@@ -858,6 +885,10 @@ PHP_METHOD(PimpleClosure, invoker)
 PHP_MINIT_FUNCTION(pimple)
 {
 	zend_class_entry tmp_pimple_ce, tmp_pimple_closure_ce, tmp_pimple_serviceprovider_iface_ce;
+
+	PHP_MINIT(pimple_psr)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(pimple_exceptions)(INIT_FUNC_ARGS_PASSTHRU);
+
 	INIT_NS_CLASS_ENTRY(tmp_pimple_ce, PIMPLE_NS, "Container", pimple_ce_functions);
 	INIT_NS_CLASS_ENTRY(tmp_pimple_closure_ce, PIMPLE_NS, "ContainerClosure", NULL);
 	INIT_NS_CLASS_ENTRY(tmp_pimple_serviceprovider_iface_ce, PIMPLE_NS, "ServiceProviderInterface", pimple_serviceprovider_iface_ce_functions);

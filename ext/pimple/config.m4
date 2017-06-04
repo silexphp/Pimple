@@ -45,7 +45,7 @@ if test "$PHP_PIMPLE" != "no"; then
 
   dnl # --with-pimple -> check for lib and symbol presence
   dnl LIBNAME=pimple # you may want to change this
-  dnl LIBSYMBOL=pimple # you most likely want to change this 
+  dnl LIBSYMBOL=pimple # you most likely want to change this
 
   dnl PHP_CHECK_LIBRARY($LIBNAME,$LIBSYMBOL,
   dnl [
@@ -59,5 +59,5 @@ if test "$PHP_PIMPLE" != "no"; then
   dnl
   dnl PHP_SUBST(PIMPLE_SHARED_LIBADD)
 
-  PHP_NEW_EXTENSION(pimple, pimple.c, $ext_shared)
+  PHP_NEW_EXTENSION(pimple, pimple.c pimple_psr.c pimple_exceptions.c, $ext_shared)
 fi
