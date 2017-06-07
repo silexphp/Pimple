@@ -37,4 +37,8 @@ extern PHPAPI zend_class_entry *pimple_ce_UnknownIdentifierException;
 
 PHP_MINIT_FUNCTION(pimple_exceptions);
 
+PHP_METHOD(FrozenServiceException, __construct);
+PHP_METHOD(InvalidServiceIdentifierException, __construct);
+PHP_METHOD(UnknownIdentifierException, __construct);
+
 #endif /* PIMPLE_EXCEPTIONS_H */
