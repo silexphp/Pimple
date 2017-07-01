@@ -201,4 +201,4 @@ raw access to this function, you can use the ``raw()`` method:
     $sessionFunction = $container->raw('session');
 
 .. _Pimple 1.x documentation: https://github.com/silexphp/Pimple/tree/1.1
-.. README_zh.rst_  README_zh.rst
+.. README_zh.rst_  https://github.com/52fhy/Pimple/blob/master/README_zh.rst
