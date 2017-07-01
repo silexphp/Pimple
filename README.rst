@@ -10,8 +10,6 @@ Pimple
 
 Pimple is a small Dependency Injection Container for PHP.
 
-中文文档：`查看 <https://github.com/52fhy/Pimple/blob/master/README_zh.rst>`_。
-
 Installation
 ------------
 
