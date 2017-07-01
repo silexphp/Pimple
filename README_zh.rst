@@ -179,5 +179,10 @@ that gets access to the object instance and the container.
     };
 
     $sessionFunction = $container->raw('session');
+	
+文章阅读
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PHP容器--Pimple运行流程浅析 - 飞鸿影~ - 博客园
+http://www.cnblogs.com/52fhy/p/7102083.html
 
 .. _Pimple 1.x documentation: https://github.com/silexphp/Pimple/tree/1.1
