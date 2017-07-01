@@ -180,7 +180,7 @@ that gets access to the object instance and the container.
 
     $sessionFunction = $container->raw('session');
 	
-文章阅读
+相关文章阅读
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PHP容器--Pimple运行流程浅析 - 飞鸿影~ - 博客园
 http://www.cnblogs.com/52fhy/p/7102083.html
