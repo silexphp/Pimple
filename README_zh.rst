@@ -8,8 +8,8 @@ Pimple是一个简单的PHP依赖注入容器(Dependency Injection Container)。
 
 安装
 ------------
-
-在您的项目中使用Pimple之前，将其添加到您的``composer.json``文件中：
+ 
+在您的项目中使用Pimple之前，将其添加到您的 ``composer.json`` 文件中：
 
 .. code-block:: bash
 
@@ -76,7 +76,7 @@ Pimple是一个简单的PHP依赖注入容器(Dependency Injection Container)。
 定义工厂服务
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-默认情况下，每次获得服务时，Pimple返回相同的实例 。如果要为所有调用返回不同的实例，请使用该``factory()``方法包装匿名函数：
+默认情况下，每次获得服务时，Pimple返回相同的实例 。如果要为所有调用返回不同的实例，请使用该 ``factory()`` 方法包装匿名函数：
 
 .. code-block:: php
 
@@ -85,7 +85,7 @@ Pimple是一个简单的PHP依赖注入容器(Dependency Injection Container)。
     });
 
 	
-现在，每次调用``$container['session']``返回会话的新实例。
+现在，每次调用 ``$container['session']`` 返回会话的新实例。
 
 
 定义参数
@@ -107,13 +107,13 @@ Pimple是一个简单的PHP依赖注入容器(Dependency Injection Container)。
         return new $c['session_storage_class']($c['cookie_name']);
     };
 
-
-现在可以通过覆盖``session_storage_class``参数来轻松地更改cookie名称， 而不是重新定义服务定义。
+ 
+现在可以通过覆盖 ``session_storage_class`` 参数来轻松地更改cookie名称， 而不是重新定义服务定义。
 
 保护参数
 ~~~~~~~~~~~~~~~~~~~~~
 
-因为Pimple将匿名函数视为服务定义，所以您需要使用``protect()``方法将匿名函数包装为参数：
+因为Pimple将匿名函数视为服务定义，所以您需要使用 ``protect()`` 方法将匿名函数包装为参数：
 
 .. code-block:: php
 
@@ -124,7 +124,7 @@ Pimple是一个简单的PHP依赖注入容器(Dependency Injection Container)。
 定义后修改服务
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-在某些情况下，您可能希望在定义服务定义后修改服务定义。您可以使用``extend()``方法在创建服务之后定义要运行的其他代码：
+在某些情况下，您可能希望在定义服务定义后修改服务定义。您可以使用 ``extend()`` 方法在创建服务之后定义要运行的其他代码：
 
 .. code-block:: php
 
@@ -146,7 +146,7 @@ that gets access to the object instance and the container.
 扩展容器
 ~~~~~~~~~~~~~~~~~~~~~
 
-如果您一遍又一遍地使用相同的库，您可能希望将一个项目中的一些服务重用到下一个项目; 通过实现接口``Pimple\ServiceProviderInterface``，可以将您的服务打包为一个服务提供者(**provider**) :
+如果您一遍又一遍地使用相同的库，您可能希望将一个项目中的一些服务重用到下一个项目; 通过实现接口 ``Pimple\ServiceProviderInterface`` ，可以将您的服务打包为一个服务提供者(**provider**) :
 
 .. code-block:: php
 
@@ -170,7 +170,7 @@ that gets access to the object instance and the container.
 获取服务创建功能
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-当您访问对象时，Pimple会自动调用您定义的匿名函数，这将为您创建服务对象。如果您想要访问此功能的原始访问权限，可以使用以下``raw()`` 方法：
+当您访问对象时，Pimple会自动调用您定义的匿名函数，这将为您创建服务对象。如果您想要访问此功能的原始访问权限，可以使用以下 ``raw()`` 方法：
 
 .. code-block:: php
 
