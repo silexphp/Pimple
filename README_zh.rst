@@ -29,7 +29,7 @@ Pimple是一个简单的PHP依赖注入容器(Dependency Injection Container)。
 用法
 -----
 
-创建一个``Container``实例：
+创建一个 ``Container`` 实例：
 
 .. code-block:: php
 
@@ -37,7 +37,7 @@ Pimple是一个简单的PHP依赖注入容器(Dependency Injection Container)。
 
     $container = new Container();
 
-与许多其他依赖注入容器一样，Pimple管理两种不同类型的数据：**services**和**parameters**。
+与许多其他依赖注入容器一样，Pimple管理两种不同类型的数据： **services** 和 **parameters** 。
 
 
 定义服务
@@ -146,7 +146,7 @@ that gets access to the object instance and the container.
 扩展容器
 ~~~~~~~~~~~~~~~~~~~~~
 
-如果您一遍又一遍地使用相同的库，您可能希望将一个项目中的一些服务重用到下一个项目; 通过实现接口 ``Pimple\ServiceProviderInterface`` ，可以将您的服务打包为一个服务提供者(**provider**) :
+如果您一遍又一遍地使用相同的库，您可能希望将一个项目中的一些服务重用到下一个项目; 通过实现接口 ``Pimple\ServiceProviderInterface`` ，可以将您的服务打包为一个服务提供者( **provider** ) :
 
 .. code-block:: php
 
