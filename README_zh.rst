@@ -2,7 +2,7 @@ Pimple
 ======
 
 .. 注意::
-	这是Pimple 3.x的文档。如果您使用Pimple 1.x，请阅读 `Pimple 1.x documentation`_ 文档。阅读Pimple 1.x代码也是了解更多关于如何创建简单的依赖注入容器（Pimple的更新版本更侧重于性能）的好方法。
+	这是Pimple 3.x的文档。如果您使用Pimple 1.x，请阅读 Pimple 1.x documentation_ 文档。阅读Pimple 1.x代码也是了解更多关于如何创建简单的依赖注入容器（Pimple的更新版本更侧重于性能）的好方法。
 
 Pimple是一个简单的PHP依赖注入容器(Dependency Injection Container)。
 
@@ -184,5 +184,6 @@ that gets access to the object instance and the container.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PHP容器--Pimple运行流程浅析 - 飞鸿影~ - 博客园
 http://www.cnblogs.com/52fhy/p/7102083.html
+
 
 .. _Pimple 1.x documentation: https://github.com/silexphp/Pimple/tree/1.1
