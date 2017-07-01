@@ -10,6 +10,8 @@ Pimple
 
 Pimple is a small Dependency Injection Container for PHP.
 
+中文文档：README_zh.rst_
+
 Installation
 ------------
 
@@ -199,3 +201,4 @@ raw access to this function, you can use the ``raw()`` method:
     $sessionFunction = $container->raw('session');
 
 .. _Pimple 1.x documentation: https://github.com/silexphp/Pimple/tree/1.1
+.. README_zh.rst_  README_zh.rst
