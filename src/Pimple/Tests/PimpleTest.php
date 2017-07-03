@@ -29,7 +29,10 @@ namespace Pimple\Tests;
 use Pimple\Container;
 
 /**
- * @author  Igor Wiedler <igor@wiedler.ch>
+ * @author Igor Wiedler <igor@wiedler.ch>
+ * group legacy is here just to avoid deprecation notices when running the tests with the C extension
+ * the annotation should be removed in 4.0
+ * @group legacy
  */
 class PimpleTest extends \PHPUnit_Framework_TestCase
 {

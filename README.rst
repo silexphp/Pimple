@@ -19,17 +19,6 @@ Before using Pimple in your project, add it to your ``composer.json`` file:
 
     $ ./composer.phar require pimple/pimple "~3.0"
 
-Alternatively, Pimple is also available as a PHP C extension:
-
-.. code-block:: bash
-
-    $ git clone https://github.com/silexphp/Pimple
-    $ cd Pimple/ext/pimple
-    $ phpize
-    $ ./configure
-    $ make
-    $ make install
-
 Usage
 -----
 
