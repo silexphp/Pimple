@@ -24,6 +24,7 @@ before_script:
 script:
   - cd ext/pimple
   - if [ "$PIMPLE_EXT" == "yes" ]; then yes n | make test | tee output ; grep -E 'Tests failed +. +0' output; fi
+  - if [ "$PIMPLE_EXT" == "yes" ]; then export SYMFONY_DEPRECATIONS_HELPER=weak; fi
   - cd ../..
   - ./vendor/bin/simple-phpunit
 
