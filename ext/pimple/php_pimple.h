@@ -50,6 +50,13 @@ extern zend_module_entry pimple_module_entry;
 #define PIMPLE_DEFAULT_ZVAL_CACHE_NUM   5
 #define PIMPLE_DEFAULT_ZVAL_VALUES_NUM 10
 
+#define PIMPLE_DEPRECATE do { \
+	int er = EG(error_reporting); \
+	EG(error_reporting) = 0;\
+	php_error(E_DEPRECATED, "The Pimple C extension is deprecated since version 3.1 and will be removed in 4.0."); \
+	EG(error_reporting) = er; \
+} while (0);
+
 zend_module_entry *get_module(void);
 
 PHP_MINIT_FUNCTION(pimple);
