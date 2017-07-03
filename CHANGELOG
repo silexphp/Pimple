@@ -1,5 +1,6 @@
 * 3.1.0 (2017-XX-XX)
 
+ * deprecated the C extension
  * added support for PSR-11 exceptions
 
 * 3.0.2 (2015-09-11)

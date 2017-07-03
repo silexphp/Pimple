@@ -29,7 +29,7 @@ namespace Pimple\Tests;
 use Pimple\Container;
 
 /**
- * @author  Igor Wiedler <igor@wiedler.ch>
+ * @author Igor Wiedler <igor@wiedler.ch>
  */
 class PimpleTest extends \PHPUnit_Framework_TestCase
 {
