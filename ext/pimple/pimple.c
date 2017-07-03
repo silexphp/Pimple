@@ -924,7 +924,13 @@ PHP_METHOD(Pimple, __construct)
 	zend_uint str_length;
 	ulong num_index;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|a!", &values) == FAILURE || !values) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|a!", &values) == FAILURE) {
+		return;
+	}
+
+	PIMPLE_DEPRECATE
+
+	if (!values) {
 		return;
 	}
 
