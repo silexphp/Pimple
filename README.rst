@@ -17,7 +17,7 @@ Before using Pimple in your project, add it to your ``composer.json`` file:
 
 .. code-block:: bash
 
-    $ ./composer.phar require pimple/pimple "~3.0"
+    $ ./composer.phar require pimple/pimple "^3.0"
 
 Usage
 -----
