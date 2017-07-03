@@ -1,0 +1,126 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2017-06-02T14:56:32Z
+
+Also, the C extension must be updated as well.
+
+---------------------------------------------------------------------------
+
+by stof at 2017-06-03T09:11:38Z
+
+Implementing PSR-11 breaks BC: it makes Pimple incompatible with Silex due to a conflict on the `get` method. This has already been discussed in at least 10 previous PR.
+
+---------------------------------------------------------------------------
+
+by skalpa at 2017-06-03T09:18:59Z
+
+@stof Yes I know, I saw some of them, but this is not what this PR is about.
+
+It just adds pimple-specific exception classes that implement `Psr\Container\ContainerExceptionInterface` (see what I said about the optimization it brings to PSR-11 wrappers). The `Pimple\Container` API is not changed.
+
+---------------------------------------------------------------------------
+
+by skalpa at 2017-06-04T06:34:45Z
+
+@fabpot I updated the C extension and fixed the typos/CS. The builds pass except the HHVM build, but that's due to #226.
+
+- I had never seriously worked on a zend C extension before today, so hopefully it's not too bad
+- I saw there were `.phpt` tests. Should I add some, even though the changes are covered by the PHPUnit tests ?
+- Please send my thanks to jpauli, some of his articles helped make the experience more enjoyable than I expected :smile:
+
+I'll handle your last comment once you help me understand it.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2017-06-04T15:05:58Z
+
+Some files have been converted to 0755 instead of 0644, that should be reverted.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2017-06-04T15:08:21Z
+
+You also need to bump the version to 3.1.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2017-06-04T15:08:36Z
+
+@jpauli Can you take some time to review the C extension changes? Thanks.
+
+---------------------------------------------------------------------------
+
+by jpauli at 2017-06-05T09:24:47Z
+
+I would suggest such changes for consistency of the C API, and to fix compilation warnings :
+
+https://github.com/jpauli/Pimple/commit/411dd06d1e73957c8861e9e31be60d9df2a79536
+
+---------------------------------------------------------------------------
+
+by skalpa at 2017-06-07T08:07:51Z
+
+@jpauli I added the PHP methods declarations to the include file as you suggested, but I can't change the variables declarations to `static` as these variables are used from multiple files.
+
+For instance, `pimple_ce_UnknownIdentifierException` is initialized in [pimple_exceptions.c](https://github.com/skalpa/Pimple/blob/9e58413846dd4705f6af2366f4de8ba1d577c295/ext/pimple/pimple_exceptions.c#L131) but is used by [pimple.c](https://github.com/skalpa/Pimple/blob/9e58413846dd4705f6af2366f4de8ba1d577c295/ext/pimple/pimple.c#L411-L414) afterwards.
+
+If I declare the variable `static` from the include file:
+- each `.c` file has its own `pimple_ce_UnknownIdentifierException` variable
+- the one in `pimple.c` stays `NULL`
+- the `pimple_throw_exception_string(pimple_ce_UnknownIdentifierException)` of `pimple.c#L412` segfaults (that happens when running the `phpt` tests)
+
+AFAIK the only way I could make the variables static would be by merging all the files I wrote and putting everything in `pimple.c`.
+
+Also, what compilation warnings do you get? I'm [not getting anything here](https://gist.github.com/skalpa/43a011c050a05f1fb05aa8efdfbcb0f3).
+
+---------------------------------------------------------------------------
+
+by glensc at 2017-06-29T12:05:49Z
+
+@skalpa @jpauli somewhy replied in gist comment, not here:
+https://gist.github.com/skalpa/43a011c050a05f1fb05aa8efdfbcb0f3#gistcomment-2116769
+
+but you could also use `#include` trick to keep symbols in single file and use that "master" `.c` file for compilation:
+
+`a.c`:
+```
+// a's implementation
+```
+
+`b.c`:
+```
+// b's implementation
+```
+
+`c.c`:
+```
+#include "a.c"
+#include "b.c"
+```
+
+compilation
+```
+gcc c.c
+```
+
+---------------------------------------------------------------------------
+
+by glensc at 2017-06-29T12:11:26Z
+
+also, [visibility flags](https://gcc.gnu.org/wiki/Visibility) (doc [here](https://gcc.gnu.org/onlinedocs/gcc-4.7.1/gcc/Function-Attributes.html)) may help, but then the code would be gcc specific
+
+[version map](https://gcc.gnu.org/wiki/SymbolVersioning) (doc [here](https://gcc.gnu.org/onlinedocs/gcc-4.7.2/gcc/Link-Options.html)) with `global:*` and `local:*` can also be used to control symbols visibility in resulting DSO.
+
+---------------------------------------------------------------------------
+
+by skalpa at 2017-06-29T12:17:24Z
+
+@glensc Thanks a lot, I didn't get a notification when he commented on the gist. I was actually going to ping him again in the forthcoming days. I'll take care of it ASAP.
+
+Thanks again 👍
+
+---------------------------------------------------------------------------
+
+by skalpa at 2017-06-29T18:15:52Z
+
+@fabpot I'll merge the 3 `.c` files tonight, as jpauli suggested [here](https://gist.github.com/skalpa/43a011c050a05f1fb05aa8efdfbcb0f3). You'll be able to merge the PR after that.
