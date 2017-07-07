@@ -187,4 +187,34 @@ raw access to this function, you can use the ``raw()`` method:
 
     $sessionFunction = $container->raw('session');
 
+PSR-11 compatibility
+--------------------
+
+For historical reasons, the ``Container`` class does not implement the PSR-11
+``ContainerInterface``. However, Pimple provides a helper class that will let
+you decouple your code from the Pimple container class.
+
+The PSR-11 container class
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``Pimple\Psr11\Container`` class lets you access the content of an
+underlying Pimple container using ``Psr\Container\ContainerInterface``
+methods:
+
+.. code-block:: php
+
+    use Pimple\Container;
+    use Pimple\Psr11\Container as PsrContainer;
+
+    $container = new Container();
+    $container['service'] = function ($c) {
+        return new Service();
+    };
+    $psr11 = new PsrContainer($container);
+
+    $controller = function (PsrContainer $container) {
+        $service = $container->get('service');
+    };
+    $controller($psr11);
+
 .. _Pimple 1.x documentation: https://github.com/silexphp/Pimple/tree/1.1
