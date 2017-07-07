@@ -187,4 +187,55 @@ raw access to this function, you can use the ``raw()`` method:
 
     $sessionFunction = $container->raw('session');
 
+Referencing a Collection of Services Lazily
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Passing a collection of services instances in an array may prove inefficient
+if the class that consumes the collection only needs to iterate over it at a
+later stage, when one of its method is called. It can also lead to problems
+if there is a circular dependency between one of the services stored in the
+collection and the class that consumes it.
+
+The ``ServiceIterator`` class helps you solve these issues. It receives a
+list of service names during instantiation and will retrieve the services
+when iterated over:
+
+.. code-block:: php
+
+    use Pimple\Container;
+    use Pimple\ServiceIterator;
+
+    class AuthorizationService
+    {
+        private $voters;
+
+        public function __construct($voters)
+        {
+            $this->voters = $voters;
+        }
+
+        public function canAccess($resource)
+        {
+            foreach ($this->voters as $voter) {
+                if (true === $voter->canAccess($resource) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    $container = new Container();
+
+    $container['voter1'] = function ($c) {
+        return new SomeVoter();
+    }
+    $container['voter2'] = function ($c) {
+        return new SomeOtherVoter($c['auth']);
+    }
+    $container['auth'] = function ($c) {
+        return new AuthorizationService(new ServiceIterator($c, array('voter1', 'voter2'));
+    }
+
 .. _Pimple 1.x documentation: https://github.com/silexphp/Pimple/tree/1.1
