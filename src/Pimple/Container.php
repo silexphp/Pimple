@@ -34,7 +34,7 @@ use Pimple\Exception\UnknownIdentifierException;
 /**
  * Container main class.
  *
- * @author  Fabien Potencier
+ * @author Fabien Potencier
  */
 class Container implements \ArrayAccess
 {
@@ -46,7 +46,7 @@ class Container implements \ArrayAccess
     private $keys = array();
 
     /**
-     * Instantiate the container.
+     * Instantiates the container.
      *
      * Objects and parameters can be passed as argument to the constructor.
      *
@@ -74,7 +74,7 @@ class Container implements \ArrayAccess
      * @param string $id    The unique identifier for the parameter or object
      * @param mixed  $value The value of the parameter or a closure to define an object
      *
-     * @throws \RuntimeException Prevent override of a frozen service
+     * @throws FrozenServiceException Prevent override of a frozen service
      */
     public function offsetSet($id, $value)
     {
@@ -93,7 +93,7 @@ class Container implements \ArrayAccess
      *
      * @return mixed The value of the parameter or an object
      *
-     * @throws \InvalidArgumentException if the identifier is not defined
+     * @throws UnknownIdentifierException If the identifier is not defined
      */
     public function offsetGet($id)
     {
@@ -158,7 +158,7 @@ class Container implements \ArrayAccess
      *
      * @return callable The passed callable
      *
-     * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
+     * @throws ExpectedInvokableException Service definition has to be a closure or an invokable object
      */
     public function factory($callable)
     {
@@ -180,7 +180,7 @@ class Container implements \ArrayAccess
      *
      * @return callable The passed callable
      *
-     * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
+     * @throws ExpectedInvokableException Service definition has to be a closure or an invokable object
      */
     public function protect($callable)
     {
@@ -200,7 +200,7 @@ class Container implements \ArrayAccess
      *
      * @return mixed The value of the parameter or the closure defining an object
      *
-     * @throws \InvalidArgumentException if the identifier is not defined
+     * @throws UnknownIdentifierException If the identifier is not defined
      */
     public function raw($id)
     {
@@ -226,7 +226,10 @@ class Container implements \ArrayAccess
      *
      * @return callable The wrapped callable
      *
-     * @throws \InvalidArgumentException if the identifier is not defined or not a service definition
+     * @throws UnknownIdentifierException        If the identifier is not defined
+     * @throws FrozenServiceException            If the service is frozen
+     * @throws InvalidServiceIdentifierException If the identifier belongs to a parameter
+     * @throws ExpectedInvokableException        If the extension callable is not a closure or an invokable object
      */
     public function extend($id, $callable)
     {
