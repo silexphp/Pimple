@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by stof at 2017-07-05T14:04:43Z
+
+As the new PSR-11 container is purely a wrapper around Pimple, I would not bother implementing it in C. Maintenance will be easier if it stays in userland only (and all the performance-sensitive code is in `Pimple\Container` anyway)
+
+---------------------------------------------------------------------------
+
+by fabpot at 2017-07-05T14:09:00Z
+
+I agree with @stof, especially now that the C version is deprecated anyway.
+
+---------------------------------------------------------------------------
+
+by skalpa at 2017-07-07T12:20:58Z
+
+Just to be the devil's advocate: the advantage of the C implementation is that it came with absolutely no performance cost as opposed to the userland implementation that requires an additional PHP method call (in C I could directly call `pimple_object_read_dimension` and bypass the `offsetGet` PHP method).
+
+Anyway, I'm :+1:  to not having to maintain it, so I removed the C implementation and amended the documentation.
+
+Should be good to go.
