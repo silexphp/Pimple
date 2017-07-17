@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by stof at 2017-07-05T14:06:25Z
+
+As this class is a consumer of `Pimple\Container`, I suggest removing the C implementation entirely, to avoid having to maintain it. Projects depending on Pimple will have the userland implementation anyway.
+
+---------------------------------------------------------------------------
+
+by skalpa at 2017-07-07T15:38:48Z
+
+The C implementation has been removed and the documentation added, it's ready to review.
