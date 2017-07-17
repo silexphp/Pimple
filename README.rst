@@ -187,4 +187,59 @@ raw access to this function, you can use the ``raw()`` method:
 
     $sessionFunction = $container->raw('session');
 
+Using the PSR-11 ServiceLocator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes, a service needs access to several other services without being sure
+that all of them will actually be used. In those cases, you may want the
+instantiation of the services to be lazy.
+
+The traditional solution is to inject the entire service container to get only
+the services really needed. However, this is not recommended because it gives
+services a too broad access to the rest of the application and it hides their
+actual dependencies.
+
+The ``ServiceLocator`` is intended to solve this problem by giving access to a
+set of predefined services while instantiating them only when actually needed.
+
+It also allows you to make your services available under a different name than
+the one used to register them. For instance, you may want to use an object
+that expects an instance of ``EventDispatcherInterface`` to be available under
+the name ``event_dispatcher`` while your event dispatcher has been
+registered under the name ``dispatcher``:
+
+.. code-block:: php
+
+    use Monolog\Logger;
+    use Pimple\Psr11\ServiceLocator;
+    use Psr\Container\ContainerInterface;
+    use Symfony\Component\EventDispatcher\EventDispatcher;
+
+    class MyService
+    {
+        /**
+         * "logger" must be an instance of Psr\Log\LoggerInterface
+         * "event_dispatcher" must be an instance of Symfony\Component\EventDispatcher\EventDispatcherInterface
+         */
+        private $services;
+
+        public function __construct(ContainerInterface $services)
+        {
+            $this->services = $services;
+        }
+    }
+
+    $container['logger'] = function ($c) {
+        return new Monolog\Logger();
+    };
+    $container['dispatcher'] = function () {
+        return new EventDispatcher();
+    };
+
+    $container['service'] = function ($c) {
+        $locator = new ServiceLocator($c, array('logger', 'event_dispatcher' => 'dispatcher'));
+
+        return new MyService($locator);
+    };
+
 .. _Pimple 1.x documentation: https://github.com/silexphp/Pimple/tree/1.1
