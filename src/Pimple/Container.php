@@ -241,7 +241,7 @@ class Container implements \ArrayAccess
             throw new FrozenServiceException($id);
         }
 
-        if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke')) {
+        if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke') || isset($this->protected[$this->values[$id]])) {
             throw new InvalidServiceIdentifierException($id);
         }
 

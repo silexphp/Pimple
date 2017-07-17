@@ -714,7 +714,8 @@ PHP_METHOD(Pimple, extend)
 				pimple_throw_exception_string(pimple_ce_UnknownIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
-			if (value->type != PIMPLE_IS_SERVICE) {
+
+			if (value->type != PIMPLE_IS_SERVICE || zend_hash_index_exists(&pobj->protected, value->handle_num)) {
 				pimple_throw_exception_string(pimple_ce_InvalidServiceIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
@@ -732,7 +733,7 @@ PHP_METHOD(Pimple, extend)
 				pimple_throw_exception_string(pimple_ce_UnknownIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
-			if (value->type != PIMPLE_IS_SERVICE) {
+			if (value->type != PIMPLE_IS_SERVICE || zend_hash_index_exists(&pobj->protected, value->handle_num)) {
 				convert_to_string(offset);
 				pimple_throw_exception_string(pimple_ce_InvalidServiceIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();

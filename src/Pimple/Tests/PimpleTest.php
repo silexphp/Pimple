@@ -392,6 +392,20 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \Pimple\Exception\InvalidServiceIdentifierException
+     * @expectedExceptionMessage Identifier "foo" does not contain an object definition.
+     */
+    public function testExtendFailsIfEntryIsProtected()
+    {
+        $pimple = new Container();
+        $pimple['foo'] = $pimple->protect(function () {
+            return 'bar';
+        });
+
+        $pimple->extend('foo', function () {});
+    }
+
+    /**
      * @dataProvider badServiceDefinitionProvider
      * @expectedException \Pimple\Exception\ExpectedInvokableException
      * @expectedExceptionMessage Extension service definition is not a Closure or invokable object.
