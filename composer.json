@@ -25,5 +25,8 @@
         "branch-alias": {
             "dev-master": "3.2.x-dev"
         }
+    },
+    "provide": {
+        "psr/container-implementation": "1.0"
     }
 }
