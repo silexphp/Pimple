@@ -26,7 +26,7 @@
 
 namespace Pimple\Psr11;
 
-use Pimple\Container;
+use Pimple\Container as PimpleContainer;
 use Pimple\Exception\UnknownIdentifierException;
 use Psr\Container\ContainerInterface;
 
@@ -41,10 +41,10 @@ class ServiceLocator implements ContainerInterface
     private $aliases = array();
 
     /**
-     * @param Container $container The Container instance used to locate services
-     * @param array     $ids       Array of service ids that can be located. String keys can be used to define aliases
+     * @param PimpleContainer $container The Container instance used to locate services
+     * @param array           $ids       Array of service ids that can be located. String keys can be used to define aliases
      */
-    public function __construct(Container $container, array $ids)
+    public function __construct(PimpleContainer $container, array $ids)
     {
         $this->container = $container;
 
