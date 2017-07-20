@@ -392,17 +392,21 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Pimple\Exception\InvalidServiceIdentifierException
-     * @expectedExceptionMessage Identifier "foo" does not contain an object definition.
+     * @group legacy
+     * @expectedDeprecation How Pimple behaves when extending protected closures will be fixed in Pimple 4. Are you sure "foo" should be protected?
      */
-    public function testExtendFailsIfEntryIsProtected()
+    public function testExtendingProtectedClosureDeprecation()
     {
         $pimple = new Container();
         $pimple['foo'] = $pimple->protect(function () {
             return 'bar';
         });
 
-        $pimple->extend('foo', function () {});
+        $pimple->extend('foo', function ($value) {
+            return $value.'-baz';
+        });
+
+        $this->assertSame('bar-baz', $pimple['foo']);
     }
 
     /**
