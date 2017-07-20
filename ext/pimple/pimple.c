@@ -715,9 +715,15 @@ PHP_METHOD(Pimple, extend)
 				RETURN_NULL();
 			}
 
-			if (value->type != PIMPLE_IS_SERVICE || zend_hash_index_exists(&pobj->protected, value->handle_num)) {
+			if (value->type != PIMPLE_IS_SERVICE) {
 				pimple_throw_exception_string(pimple_ce_InvalidServiceIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
+			}
+			if (zend_hash_index_exists(&pobj->protected, value->handle_num)) {
+				int er = EG(error_reporting);
+				EG(error_reporting) = 0;
+				php_error(E_DEPRECATED, "How Pimple behaves when extending protected closures will be fixed in Pimple 4. Are you sure \"%s\" should be protected?", Z_STRVAL_P(offset));
+				EG(error_reporting) = er;
 			}
 		break;
 		case IS_DOUBLE:
@@ -733,10 +739,16 @@ PHP_METHOD(Pimple, extend)
 				pimple_throw_exception_string(pimple_ce_UnknownIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
 			}
-			if (value->type != PIMPLE_IS_SERVICE || zend_hash_index_exists(&pobj->protected, value->handle_num)) {
+			if (value->type != PIMPLE_IS_SERVICE) {
 				convert_to_string(offset);
 				pimple_throw_exception_string(pimple_ce_InvalidServiceIdentifierException, Z_STRVAL_P(offset), Z_STRLEN_P(offset) TSRMLS_CC);
 				RETURN_NULL();
+			}
+			if (zend_hash_index_exists(&pobj->protected, value->handle_num)) {
+				int er = EG(error_reporting);
+				EG(error_reporting) = 0;
+				php_error(E_DEPRECATED, "How Pimple behaves when extending protected closures will be fixed in Pimple 4. Are you sure \"%ld\" should be protected?", index);
+				EG(error_reporting) = er;
 			}
 		break;
 		case IS_NULL:
