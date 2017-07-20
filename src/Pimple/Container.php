@@ -241,8 +241,12 @@ class Container implements \ArrayAccess
             throw new FrozenServiceException($id);
         }
 
-        if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke') || isset($this->protected[$this->values[$id]])) {
+        if (!is_object($this->values[$id]) || !method_exists($this->values[$id], '__invoke')) {
             throw new InvalidServiceIdentifierException($id);
+        }
+
+        if (isset($this->protected[$this->values[$id]])) {
+            @trigger_error(sprintf('How Pimple behaves when extending protected closures will be fixed in Pimple 4. Are you sure "%s" should be protected?', $id), E_USER_DEPRECATED);
         }
 
         if (!is_object($callable) || !method_exists($callable, '__invoke')) {
