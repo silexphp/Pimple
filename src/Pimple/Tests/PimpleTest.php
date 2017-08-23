@@ -41,6 +41,23 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $pimple['param']);
     }
 
+    public function testWithEnvString()
+    {
+        $pimple = new Container();
+        $pimple['param'] = 'env(ENV_VALUE)';
+
+        $this->assertNull($pimple['param']);
+
+        putenv('ENV_VALUE=foobar');
+
+        $this->assertEquals('foobar', $pimple['param']);
+
+        // Test default value
+        $pimple['other_param'] = 'env(I_DO_NOT_EXIST)';
+        $pimple['env(I_DO_NOT_EXIST)'] = 'default_value';
+        $this->assertEquals('default_value', $pimple['other_param']);
+    }
+
     public function testWithClosure()
     {
         $pimple = new Container();

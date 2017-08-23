@@ -44,6 +44,7 @@ class Container implements \ArrayAccess
     private $frozen = array();
     private $raw = array();
     private $keys = array();
+    private $envCache = array();
 
     /**
      * Instantiates the container.
@@ -107,6 +108,18 @@ class Container implements \ArrayAccess
             || isset($this->protected[$this->values[$id]])
             || !method_exists($this->values[$id], '__invoke')
         ) {
+
+            // Support for environment variables
+            if (is_scalar($this->values[$id])
+                && 0 === strpos($this->values[$id], 'env(')
+                && ')' === substr($this->values[$id], -1)
+                && 'env()' !== $this->values[$id]
+            ) {
+                $env = substr($this->values[$id], 4, -1);
+
+                return $this->getEnv($env);
+            }
+
             return $this->values[$id];
         }
 
@@ -294,5 +307,33 @@ class Container implements \ArrayAccess
         }
 
         return $this;
+    }
+
+    /**
+     * Fetches a variable from the environment.
+     *
+     * @param string $name The name of the environment variable
+     *
+     * @return scalar|null The value to use for the provided environment variable name or null if it does not exist
+     */
+    protected function getEnv($name)
+    {
+        if (isset($this->envCache[$name]) || array_key_exists($name, $this->envCache)) {
+            return $this->envCache[$name];
+        }
+
+        if (isset($_ENV[$name])) {
+            return $this->envCache[$name] = $_ENV[$name];
+        }
+
+        if (false !== $env = getenv($name)) {
+            return $this->envCache[$name] = $env;
+        }
+
+        if ($this->offsetExists("env($name)")) {
+            return $this->envCache[$name] = $this->offsetGet("env($name)");
+        }
+
+        return null;
     }
 }
