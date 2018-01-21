@@ -1,0 +1,83 @@
+---------------------------------------------------------------------------
+
+by glensc at 2018-01-19T00:10:35Z
+
+the performance impact is non-existent. why even bother to sacrifice readability?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2018-01-19T06:50:21Z
+
+Indeed, that does not change anything in terms of performance. So, I'm going to close this one. Thanks for your pull request.
+
+---------------------------------------------------------------------------
+
+by yriveiro at 2018-01-19T09:48:37Z
+
+@rullzer did a benchmark that shows an improvement, i will not say if it's enough or if it worth the work, but he shows numbers and an explanation of his research.
+
+@glensc did an statement that the performance impact is non-existent without number or any explanation and @fabpot (creator of pimple) agree with @glensc , no explanation no number.
+
+My question here is: why we don't have any kind of performance gain if we execute less opcodes?
+
+I really want to know, because I have and application that runs in 50 machines with tons of threads, if this makes me save 0.5% of cpu time per second in each CPU, all together it's a big number ...
+
+---------------------------------------------------------------------------
+
+by rullzer at 2018-01-19T10:10:26Z
+
+I did not benchmark this yet. But at nextcloud we use pimple pretty intensively so any speedup is welcome ;)
+
+But well it up to the maintiners of course.
+
+I could try next week to see the real world impact of this in Nextcloud.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2018-01-19T10:13:03Z
+
+If someone can prove that it makes things faster, I would be happy to merge this. /cc @nicolas-grekas, @jpauli
+
+---------------------------------------------------------------------------
+
+by jpauli at 2018-01-19T10:17:13Z
+
+It is faster, if it is run several hundreds/thousands of times per request.
+
+If such a code is run once per request, it is irrelevant
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2018-01-19T10:18:56Z
+
+Most functions *do not* benefit from root-prefixes.
+A short list of them *do*: see https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/3048 for background. But of course, the benefit exists only in tight loops, where calls are make x10k times.
+
+---------------------------------------------------------------------------
+
+by yriveiro at 2018-01-19T10:45:25Z
+
+If exists a workflow who benefits from this micro-optimization and don't harm the normal workflows, should be merge.
+
+I'm in the @jpauli scenario, with a ton of thread running my PHP application. But like @fabpot said, numbers are important.
+
+@rullzer if you can give us perf data from real world, would be nice ;)
+
+---------------------------------------------------------------------------
+
+by rullzer at 2018-01-20T08:50:26Z
+
+I ran some numbers, a default propfind in Nextcloud on my test setup does 2016 calls to `Pimple\Container::offsetGet`.
+
+This requests takes there about 165ms.
+
+According to blackfire the time spend in `Pimple\Container::offsetGet`
+
+Before: 19.36 ms
+After: 17.93 ms
+
+Diff: 1.43 ms
+
+Now I know I'll probably also me measuring a bit of noise. But >1ms on a 165ms requiest seems not insignificant.
+
+Disclaimer: I tested this on my development machine. Which probably means: hot cache, hot opcache, fast SSD, fast RAM, fast CPU etc.
