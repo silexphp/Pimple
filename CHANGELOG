@@ -1,6 +1,6 @@
-* 3.2.3 (2017-XX-XX)
+* 3.2.3 (2017-01-21)
 
- * n/a
+ * prefixed all function calls with \ for extra speed
 
 * 3.2.2 (2017-07-23)
 
