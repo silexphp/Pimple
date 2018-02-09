@@ -8,7 +8,6 @@ env:
     - REPORT_EXIT_STATUS=1
 
 php:
-  - 5.3
   - 5.4
   - 5.5
   - 5.6
@@ -30,6 +29,12 @@ script:
 
 matrix:
   include:
+    - php: 5.3
+      dist: precise
+      env: PIMPLE_EXT=yes
+    - php: 5.3
+      dist: precise
+      env: PIMPLE_EXT=no
     - php: hhvm
       dist: trusty
       env: PIMPLE_EXT=no
