@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Pimple, a simple Dependency Injection Container",
     "keywords": ["dependency injection", "container"],
-    "homepage": "http://pimple.sensiolabs.org",
+    "homepage": "https://pimple.symfony.com",
     "license": "MIT",
     "authors": [
         {
