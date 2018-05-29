@@ -30,13 +30,14 @@ use Pimple\Exception\ExpectedInvokableException;
 use Pimple\Exception\FrozenServiceException;
 use Pimple\Exception\InvalidServiceIdentifierException;
 use Pimple\Exception\UnknownIdentifierException;
+use Psr\Container\ContainerInterface;
 
 /**
  * Container main class.
  *
  * @author Fabien Potencier
  */
-class Container implements \ArrayAccess
+class Container implements \ArrayAccess, ContainerInterface
 {
     private $values = array();
     private $factories;
@@ -294,5 +295,21 @@ class Container implements \ArrayAccess
         }
 
         return $this;
+    }
+
+    /**
+     * @see self::offsetGet()
+     */
+    public function get($id)
+    {
+        return $this->offsetGet($id);
+    }
+
+    /**
+     * @see self::offsetExists()
+     */
+    public function has($id)
+    {
+        return $this->offsetExists($id);
     }
 }
