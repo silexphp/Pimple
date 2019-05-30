@@ -12,10 +12,12 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "psr/container": "^1.0",
+        "pimple/pimple": "^3.2"
     },
     "autoload": {
-        "psr-0": { "Barnacle": "src/" }
+        "psr-4": { "Barnacle\\": "src/" }
     },
     "autoload-dev": {
         "psr-4": { "Barnacle\\Tests\\": "tests/" }
