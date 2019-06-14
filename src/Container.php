@@ -36,6 +36,8 @@ class Container extends Pimple implements ContainerInterface
             try {
                 $item = $this->offsetGet($id);
                 return $item;
+            } catch (NotFoundException $e) {
+                throw $e;
             } catch (Exception $e) {
                 throw new ContainerException($e->getMessage(), $e->getCode());
             }
