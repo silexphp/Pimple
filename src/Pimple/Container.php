@@ -101,26 +101,28 @@ class Container implements \ArrayAccess
             throw new UnknownIdentifierException($id);
         }
 
+        $value = $this->values[$id];
+
         if (
             isset($this->raw[$id])
-            || !\is_object($this->values[$id])
-            || isset($this->protected[$this->values[$id]])
-            || !\method_exists($this->values[$id], '__invoke')
+            || !\is_object($value)
+            || isset($this->protected[$value])
+            || !\method_exists($value, '__invoke')
         ) {
-            return $this->values[$id];
+            return $value;
         }
 
-        if (isset($this->factories[$this->values[$id]])) {
-            return $this->values[$id]($this);
+        if (isset($this->factories[$value])) {
+            return $value($this);
         }
 
-        $raw = $this->values[$id];
-        $val = $this->values[$id] = $raw($this);
+        $raw = $value;
+        $this->values[$id] = $value = $raw($this);
         $this->raw[$id] = $raw;
 
         $this->frozen[$id] = true;
 
-        return $val;
+        return $value;
     }
 
     /**
