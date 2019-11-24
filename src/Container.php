@@ -39,7 +39,7 @@ class Container extends Pimple implements ContainerInterface
             } catch (NotFoundException $e) {
                 throw $e;
             } catch (Exception $e) {
-                throw new ContainerException($e->getMessage(), $e->getCode());
+                throw new ContainerException("Key $id not found.\n" . $e->getMessage(), $e->getCode());
             }
         }
 
