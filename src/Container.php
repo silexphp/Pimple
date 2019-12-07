@@ -37,9 +37,9 @@ class Container extends Pimple implements ContainerInterface
                 $item = $this->offsetGet($id);
                 return $item;
             } catch (NotFoundException $e) {
-                throw $e;
+                throw new NotFoundException("Key $id not found.\n" . $e->getMessage(), $e->getCode());
             } catch (Exception $e) {
-                throw new ContainerException("Key $id not found.\n" . $e->getMessage(), $e->getCode());
+                throw new ContainerException("Problem fetching key $id.\n" . $e->getMessage(), $e->getCode());
             }
         }
 
