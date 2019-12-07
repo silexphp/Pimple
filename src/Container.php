@@ -43,7 +43,7 @@ class Container extends Pimple implements ContainerInterface
             }
         }
 
-        throw new NotFoundException();
+        throw new NotFoundException("Key $id not found.");
     }
 
     /**
