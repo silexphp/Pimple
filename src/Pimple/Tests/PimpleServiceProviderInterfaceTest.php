@@ -29,7 +29,7 @@ namespace Pimple\Tests;
 use Pimple\Container;
 
 /**
- * @author  Dominik Zogg <dominik.zogg@gmail.com>
+ * @author Dominik Zogg <dominik.zogg@gmail.com>
  */
 class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
 {
