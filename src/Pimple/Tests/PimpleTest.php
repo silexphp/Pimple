@@ -27,11 +27,12 @@
 namespace Pimple\Tests;
 
 use Pimple\Container;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
  */
-class PimpleTest extends \PHPUnit_Framework_TestCase
+class PimpleTest extends TestCase
 {
     public function testWithString()
     {
