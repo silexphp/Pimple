@@ -14,6 +14,7 @@ return PhpCsFixer\Config::create()
         'ordered_imports' => true,
         'phpdoc_types_order' => ['null_adjustment' => 'always_last', 'sort_algorithm' => 'none'],
         'native_function_invocation' => ['include' => ['@compiler_optimized'], 'scope' => 'all'],
+        'static_lambda' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder(PhpCsFixer\Finder::create()->in(__DIR__.'/src'))

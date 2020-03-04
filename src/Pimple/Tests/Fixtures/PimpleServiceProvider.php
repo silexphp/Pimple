@@ -43,11 +43,11 @@ class PimpleServiceProvider implements ServiceProviderInterface
     {
         $pimple['param'] = 'value';
 
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Service();
         };
 
-        $pimple['factory'] = $pimple->factory(function () {
+        $pimple['factory'] = $pimple->factory(static function () {
             return new Service();
         });
     }

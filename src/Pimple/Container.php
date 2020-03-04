@@ -255,7 +255,7 @@ class Container implements \ArrayAccess
 
         $factory = $this->values[$id];
 
-        $extended = function ($c) use ($callable, $factory) {
+        $extended = static function ($c) use ($callable, $factory) {
             return $callable($factory($c), $c);
         };
 

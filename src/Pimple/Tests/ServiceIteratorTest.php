@@ -36,13 +36,13 @@ class ServiceIteratorTest extends TestCase
     public function testIsIterable()
     {
         $pimple = new Container();
-        $pimple['service1'] = function () {
+        $pimple['service1'] = static function () {
             return new Service();
         };
-        $pimple['service2'] = function () {
+        $pimple['service2'] = static function () {
             return new Service();
         };
-        $pimple['service3'] = function () {
+        $pimple['service3'] = static function () {
             return new Service();
         };
         $iterator = new ServiceIterator($pimple, ['service1', 'service2']);

@@ -36,7 +36,7 @@ class ContainerTest extends TestCase
     public function testGetReturnsExistingService()
     {
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Service();
         };
         $psr = new PsrContainer($pimple);
@@ -58,7 +58,7 @@ class ContainerTest extends TestCase
     public function testHasReturnsTrueIfServiceExists()
     {
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Service();
         };
         $psr = new PsrContainer($pimple);

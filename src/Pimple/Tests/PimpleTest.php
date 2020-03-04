@@ -45,7 +45,7 @@ class PimpleTest extends TestCase
     public function testWithClosure()
     {
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
 
@@ -55,7 +55,7 @@ class PimpleTest extends TestCase
     public function testServicesShouldBeDifferent()
     {
         $pimple = new Container();
-        $pimple['service'] = $pimple->factory(function () {
+        $pimple['service'] = $pimple->factory(static function () {
             return new Fixtures\Service();
         });
 
@@ -71,10 +71,10 @@ class PimpleTest extends TestCase
     public function testShouldPassContainerAsParameter()
     {
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
-        $pimple['container'] = function ($container) {
+        $pimple['container'] = static function ($container) {
             return $container;
         };
 
@@ -86,7 +86,7 @@ class PimpleTest extends TestCase
     {
         $pimple = new Container();
         $pimple['param'] = 'value';
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
 
@@ -138,7 +138,7 @@ class PimpleTest extends TestCase
     {
         $pimple = new Container();
         $pimple['param'] = 'value';
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
 
@@ -185,7 +185,7 @@ class PimpleTest extends TestCase
     public function testRaw()
     {
         $pimple = new Container();
-        $pimple['service'] = $definition = $pimple->factory(function () {
+        $pimple['service'] = $definition = $pimple->factory(static function () {
             return 'foo';
         });
         $this->assertSame($definition, $pimple->raw('service'));
@@ -231,10 +231,10 @@ class PimpleTest extends TestCase
     public function testExtend($service)
     {
         $pimple = new Container();
-        $pimple['shared_service'] = function () {
+        $pimple['shared_service'] = static function () {
             return new Fixtures\Service();
         };
-        $pimple['factory_service'] = $pimple->factory(function () {
+        $pimple['factory_service'] = $pimple->factory(static function () {
             return new Fixtures\Service();
         });
 
@@ -262,10 +262,10 @@ class PimpleTest extends TestCase
         }
         $pimple = new Container();
 
-        $pimple['foo'] = $pimple->factory(function () {
+        $pimple['foo'] = $pimple->factory(static function () {
             return;
         });
-        $pimple['foo'] = $pimple->extend('foo', function ($foo, $pimple) {
+        $pimple['foo'] = $pimple->extend('foo', static function ($foo, $pimple) {
             return;
         });
         unset($pimple['foo']);
@@ -285,7 +285,7 @@ class PimpleTest extends TestCase
         $this->expectExceptionMessage('Identifier "foo" is not defined.');
 
         $pimple = new Container();
-        $pimple->extend('foo', function () {
+        $pimple->extend('foo', static function () {
         });
     }
 
@@ -298,7 +298,7 @@ class PimpleTest extends TestCase
         $this->expectExceptionMessage('Identifier "foo" is not defined.');
 
         $pimple = new Container();
-        $pimple->extend('foo', function () {
+        $pimple->extend('foo', static function () {
         });
     }
 
@@ -389,7 +389,7 @@ class PimpleTest extends TestCase
 
         $pimple = new Container();
         $pimple['foo'] = $service;
-        $pimple->extend('foo', function () {
+        $pimple->extend('foo', static function () {
         });
     }
 
@@ -404,7 +404,7 @@ class PimpleTest extends TestCase
 
         $pimple = new Container();
         $pimple['foo'] = $service;
-        $pimple->extend('foo', function () {
+        $pimple->extend('foo', static function () {
         });
     }
 
@@ -415,11 +415,11 @@ class PimpleTest extends TestCase
     public function testExtendingProtectedClosureDeprecation()
     {
         $pimple = new Container();
-        $pimple['foo'] = $pimple->protect(function () {
+        $pimple['foo'] = $pimple->protect(static function () {
             return 'bar';
         });
 
-        $pimple->extend('foo', function ($value) {
+        $pimple->extend('foo', static function ($value) {
             return $value.'-baz';
         });
 
@@ -435,7 +435,7 @@ class PimpleTest extends TestCase
         $this->expectExceptionMessage('Extension service definition is not a Closure or invokable object.');
 
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
         };
         $pimple->extend('foo', $service);
     }
@@ -450,7 +450,7 @@ class PimpleTest extends TestCase
         $this->expectExceptionMessage('Extension service definition is not a Closure or invokable object.');
 
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
         };
         $pimple->extend('foo', $service);
     }
@@ -461,12 +461,12 @@ class PimpleTest extends TestCase
         $this->expectExceptionMessage('Cannot override frozen service "foo".');
 
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return new Fixtures\NonInvokable();
         };
         $foo = $pimple['foo'];
 
-        $pimple->extend('foo', function () {
+        $pimple->extend('foo', static function () {
         });
     }
 
@@ -476,12 +476,12 @@ class PimpleTest extends TestCase
         $this->expectExceptionMessage('Cannot override frozen service "foo".');
 
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return new Fixtures\Invokable();
         };
         $foo = $pimple['foo'];
 
-        $pimple->extend('foo', function () {
+        $pimple->extend('foo', static function () {
         });
     }
 
@@ -502,7 +502,7 @@ class PimpleTest extends TestCase
     public function serviceDefinitionProvider()
     {
         return [
-            [function ($value) {
+            [static function ($value) {
                 $service = new Fixtures\Service();
                 $service->value = $value;
 
@@ -515,12 +515,12 @@ class PimpleTest extends TestCase
     public function testDefiningNewServiceAfterFreeze()
     {
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'foo';
         };
         $foo = $pimple['foo'];
 
-        $pimple['bar'] = function () {
+        $pimple['bar'] = static function () {
             return 'bar';
         };
         $this->assertSame('bar', $pimple['bar']);
@@ -532,12 +532,12 @@ class PimpleTest extends TestCase
         $this->expectExceptionMessage('Cannot override frozen service "foo".');
 
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'foo';
         };
         $foo = $pimple['foo'];
 
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'bar';
         };
     }
@@ -551,12 +551,12 @@ class PimpleTest extends TestCase
         $this->expectExceptionMessage('Cannot override frozen service "foo".');
 
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'foo';
         };
         $foo = $pimple['foo'];
 
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'bar';
         };
     }
@@ -564,13 +564,13 @@ class PimpleTest extends TestCase
     public function testRemovingServiceAfterFreeze()
     {
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'foo';
         };
         $foo = $pimple['foo'];
 
         unset($pimple['foo']);
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'bar';
         };
         $this->assertSame('bar', $pimple['foo']);
@@ -579,13 +579,13 @@ class PimpleTest extends TestCase
     public function testExtendingService()
     {
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'foo';
         };
-        $pimple['foo'] = $pimple->extend('foo', function ($foo, $app) {
+        $pimple['foo'] = $pimple->extend('foo', static function ($foo, $app) {
             return "$foo.bar";
         });
-        $pimple['foo'] = $pimple->extend('foo', function ($foo, $app) {
+        $pimple['foo'] = $pimple->extend('foo', static function ($foo, $app) {
             return "$foo.baz";
         });
         $this->assertSame('foo.bar.baz', $pimple['foo']);
@@ -594,15 +594,15 @@ class PimpleTest extends TestCase
     public function testExtendingServiceAfterOtherServiceFreeze()
     {
         $pimple = new Container();
-        $pimple['foo'] = function () {
+        $pimple['foo'] = static function () {
             return 'foo';
         };
-        $pimple['bar'] = function () {
+        $pimple['bar'] = static function () {
             return 'bar';
         };
         $foo = $pimple['foo'];
 
-        $pimple['bar'] = $pimple->extend('bar', function ($bar, $app) {
+        $pimple['bar'] = $pimple->extend('bar', static function ($bar, $app) {
             return "$bar.baz";
         });
         $this->assertSame('bar.baz', $pimple['bar']);

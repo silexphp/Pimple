@@ -41,7 +41,7 @@ class ServiceLocatorTest extends TestCase
     public function testCanAccessServices()
     {
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
         $locator = new ServiceLocator($pimple, ['service']);
@@ -52,7 +52,7 @@ class ServiceLocatorTest extends TestCase
     public function testCanAccessAliasedServices()
     {
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
         $locator = new ServiceLocator($pimple, ['alias' => 'service']);
@@ -66,7 +66,7 @@ class ServiceLocatorTest extends TestCase
         $this->expectExceptionMessage('Identifier "service" is not defined.');
 
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
         $locator = new ServiceLocator($pimple, ['alias' => 'service']);
@@ -80,7 +80,7 @@ class ServiceLocatorTest extends TestCase
         $this->expectExceptionMessage('Identifier "foo" is not defined.');
 
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
         $locator = new ServiceLocator($pimple, ['alias' => 'service']);
@@ -94,7 +94,7 @@ class ServiceLocatorTest extends TestCase
         $this->expectExceptionMessage('Identifier "invalid" is not defined.');
 
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
         $locator = new ServiceLocator($pimple, ['alias' => 'invalid']);
@@ -105,10 +105,10 @@ class ServiceLocatorTest extends TestCase
     public function testHasValidatesServiceCanBeLocated()
     {
         $pimple = new Container();
-        $pimple['service1'] = function () {
+        $pimple['service1'] = static function () {
             return new Fixtures\Service();
         };
-        $pimple['service2'] = function () {
+        $pimple['service2'] = static function () {
             return new Fixtures\Service();
         };
         $locator = new ServiceLocator($pimple, ['service1']);
@@ -120,7 +120,7 @@ class ServiceLocatorTest extends TestCase
     public function testHasChecksIfTargetServiceExists()
     {
         $pimple = new Container();
-        $pimple['service'] = function () {
+        $pimple['service'] = static function () {
             return new Fixtures\Service();
         };
         $locator = new ServiceLocator($pimple, ['foo' => 'service', 'bar' => 'invalid']);
