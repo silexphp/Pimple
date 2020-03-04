@@ -16,5 +16,11 @@ return PhpCsFixer\Config::create()
         'native_function_invocation' => ['include' => ['@compiler_optimized'], 'scope' => 'all'],
     ])
     ->setRiskyAllowed(true)
-    ->setFinder(PhpCsFixer\Finder::create()->in(__DIR__.'/src'))
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+        ->in(__DIR__.'/src')
+        ->in(__DIR__)->ignoreDotFiles(false)->name('.php_cs.dist')
+    )
 ;
+
+// vim:ft=php
