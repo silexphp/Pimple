@@ -1,0 +1,81 @@
+<?php
+$coverage = new SebastianBergmann\CodeCoverage\CodeCoverage;
+$coverage->setData(array (
+  '/var/www/html/vendor/delboy1978uk/barnacle/src/Container.php' => 
+  array (
+    37 => 
+    array (
+      0 => 'Barnacle\\Tests\\BarnacleTest::testBlah',
+      1 => 'Barnacle\\Tests\\BarnacleTest::testNotFoundException',
+      2 => 'Barnacle\\Tests\\BarnacleTest::testContainerxception',
+    ),
+    38 => 
+    array (
+      0 => 'Barnacle\\Tests\\BarnacleTest::testBlah',
+    ),
+    39 => 
+    array (
+      0 => 'Barnacle\\Tests\\BarnacleTest::testNotFoundException',
+      1 => 'Barnacle\\Tests\\BarnacleTest::testContainerxception',
+    ),
+    40 => 
+    array (
+      0 => 'Barnacle\\Tests\\BarnacleTest::testNotFoundException',
+    ),
+    41 => 
+    array (
+      0 => 'Barnacle\\Tests\\BarnacleTest::testContainerxception',
+    ),
+    42 => 
+    array (
+      0 => 'Barnacle\\Tests\\BarnacleTest::testContainerxception',
+    ),
+    44 => NULL,
+    59 => 
+    array (
+      0 => 'Barnacle\\Tests\\BarnacleTest::testBlah',
+    ),
+    60 => NULL,
+  ),
+  '/var/www/html/vendor/delboy1978uk/barnacle/src/Exception/NotFoundException.php' => 
+  array (
+  ),
+  '/var/www/html/vendor/delboy1978uk/barnacle/src/Exception/ContainerException.php' => 
+  array (
+  ),
+  '/var/www/html/vendor/delboy1978uk/barnacle/src/RegistrationInterface.php' => 
+  array (
+  ),
+));
+$coverage->setTests(array (
+  'Barnacle\\Tests\\BarnacleTest::testBlah' => 
+  array (
+    'size' => 'unknown',
+    'status' => 0,
+  ),
+  'Barnacle\\Tests\\BarnacleTest::testNotFoundException' => 
+  array (
+    'size' => 'unknown',
+    'status' => 0,
+  ),
+  'Barnacle\\Tests\\BarnacleTest::testContainerxception' => 
+  array (
+    'size' => 'unknown',
+    'status' => 0,
+  ),
+  'UNCOVERED_FILES_FROM_WHITELIST' => 
+  array (
+    'size' => 'unknown',
+    'status' => -1,
+  ),
+));
+
+$filter = $coverage->filter();
+$filter->setWhitelistedFiles(array (
+  '/var/www/html/vendor/delboy1978uk/barnacle/src/Container.php' => true,
+  '/var/www/html/vendor/delboy1978uk/barnacle/src/RegistrationInterface.php' => true,
+  '/var/www/html/vendor/delboy1978uk/barnacle/src/Exception/ContainerException.php' => true,
+  '/var/www/html/vendor/delboy1978uk/barnacle/src/Exception/NotFoundException.php' => true,
+));
+
+return $coverage;

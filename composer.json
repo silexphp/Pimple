@@ -1,25 +1,36 @@
 {
-    "name": "delboy1978uk/barnacle",
-    "type": "library",
-    "description": "Baracle be a simple Dependency Injection Container fer PHP and part o' th' Bone MVC Framework",
-    "keywords": ["dependency injection", "container"],
-    "homepage": "http://bonemvc.delboysplace.co.uk",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Derek Stephen McLean",
-            "email": "delboy1978uk@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0",
-        "psr/container": "^1.0",
-        "pimple/pimple": "^3.2"
-    },
-    "autoload": {
-        "psr-4": { "Barnacle\\": "src/" }
-    },
-    "autoload-dev": {
-        "psr-4": { "Barnacle\\Tests\\": "tests/" }
+  "name": "delboy1978uk/barnacle",
+  "type": "library",
+  "description": "Baracle be a simple Dependency Injection Container fer PHP and part o' th' Bone Framework",
+  "keywords": [
+    "dependency injection",
+    "container"
+  ],
+  "homepage": "http://bonemvc.delboysplace.co.uk",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Derek Stephen McLean",
+      "email": "delboy1978uk@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=5.3.0",
+    "psr/container": "^1.0",
+    "pimple/pimple": "^3.2"
+  },
+  "require-dev": {
+    "codeception/codeception": "^2.2",
+    "roave/security-advisories": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Barnacle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Barnacle\\Tests\\": "tests/unit/"
+    }
+  }
 }

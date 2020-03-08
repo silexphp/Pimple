@@ -6,6 +6,7 @@ use Barnacle\Exception\ContainerException;
 use Barnacle\Exception\NotFoundException;
 use Exception;
 use Pimple\Container as Pimple;
+use Pimple\Exception\UnknownIdentifierException;
 use Psr\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -25,25 +26,21 @@ class Container extends Pimple implements ContainerInterface
      *
      * @param string $id Identifier of the entry to look for.
      *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @return mixed Entry.
      * @throws ContainerExceptionInterface Error while retrieving the entry.
      *
-     * @return mixed Entry.
+     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
      */
     public function get($id)
     {
-        if ($this->offsetExists($id)) {
-            try {
-                $item = $this->offsetGet($id);
-                return $item;
-            } catch (NotFoundException $e) {
-                throw new NotFoundException("Key $id not found.\n" . $e->getMessage(), $e->getCode());
-            } catch (Exception $e) {
-                throw new ContainerException("Problem fetching key $id.\n" . $e->getMessage(), $e->getCode());
-            }
+        try {
+            $item = $this->offsetGet($id);
+            return $item;
+        } catch (UnknownIdentifierException $e) {
+            throw new NotFoundException("Key $id not found.");
+        } catch (Exception $e) {
+            throw new ContainerException("Problem fetching key $id.\n" . $e->getMessage(), $e->getCode());
         }
-
-        throw new NotFoundException("Key $id not found.");
     }
 
     /**
