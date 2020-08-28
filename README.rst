@@ -6,6 +6,11 @@ Pimple
     Pimple is now closed for changes. No new features will be added and no
     cosmetic changes will be accepted either.
 
+    If you like the simplicity of Pimple, but are looking for a solution that
+    is actively maintained and faster according to neutral `benchmarks`_,
+    implements PSR11 without an adapter, you can take a look at
+    the `chubbyphp/chubbyphp-container`_.
+
 .. caution::
 
     This is the documentation for Pimple 3.x. If you are using Pimple 1.x, read
@@ -329,3 +334,6 @@ when iterated over:
     }
 
 .. _Pimple 1.x documentation: https://github.com/silexphp/Pimple/tree/1.1
+
+.. _benchmarks: https://rawgit.com/kocsismate/php-di-container-benchmarks/master/var/benchmark.html
+.. _chubbyphp/chubbyphp-container: https://github.com/chubbyphp/chubbyphp-container/blob/master/doc/MigrateFromPimple.md
