@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by glensc at 2020-11-17T00:41:32Z
+
+@iansltx links to rfc that changed the behavior? what is the error you are fixing?
+
+include such details to PR body!
+
+also, if PR is not ready (CI fails right now, for example), convert it to Draft:
+- https://github.blog/2019-02-14-introducing-draft-pull-requests/
+
+---------------------------------------------------------------------------
+
+by iansltx at 2020-11-17T01:07:10Z
+
+@glensc Two tests fail due to throwing a TypeError when attempting to define, or protect, the integer 123, contained in the "bad services" data provider in the tests. The tweaks I added short-circuit prior to making the method_exists call that would cause the TypeError, ensuring that error condition throws the same exception that it did before PHP 8. You can see the issue for yourself if you pull down master and run the test suite locally on PHP 8.0.
+
+As for the build failure, Travis doesn't yet have a PHP 8.0 environment apparently. Let's see if nightly works...
+
+---------------------------------------------------------------------------
+
+by iansltx at 2020-11-23T23:23:30Z
+
+@fabpot In case the earlier comment didn't notify, I revised the PR to use the >= PHP version constraint as requested.
