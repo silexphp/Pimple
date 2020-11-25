@@ -308,7 +308,7 @@ when iterated over:
         public function canAccess($resource)
         {
             foreach ($this->voters as $voter) {
-                if (true === $voter->canAccess($resource) {
+                if (true === $voter->canAccess($resource)) {
                     return true;
                 }
             }
