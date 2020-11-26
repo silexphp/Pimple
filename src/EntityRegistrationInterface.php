@@ -4,9 +4,8 @@ namespace Barnacle;
 
 interface EntityRegistrationInterface
 {
-
     /**
      * @return string
      */
-    function getEntityPath(): string;
+    public function getEntityPath(): string;
 }
