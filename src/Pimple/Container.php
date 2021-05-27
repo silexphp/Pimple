@@ -295,4 +295,15 @@ class Container implements \ArrayAccess
 
         return $this;
     }
+
+  /**
+   * Convenience method for supplying a PSR-11 compliant container to libraries and frameworks
+   *
+   * @return \Pimple\Psr11\Container
+   */
+    public function toPsr11() {
+
+      return new Psr11\Container($this);
+
+    }
 }
