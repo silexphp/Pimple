@@ -38,16 +38,25 @@ final class Container implements ContainerInterface
 {
     private $pimple;
 
+    /**
+     * @param PimpleContainer $pimple The Container instance used to locate services
+     */
     public function __construct(PimpleContainer $pimple)
     {
         $this->pimple = $pimple;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function get(string $id)
     {
         return $this->pimple[$id];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function has(string $id): bool
     {
         return isset($this->pimple[$id]);
