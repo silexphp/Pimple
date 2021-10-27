@@ -1,0 +1,90 @@
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-26T15:18:20Z
+
+How to perform tests? Travis does not seem even to be invoked:
+- https://github.com/silexphp/Pimple/pull/268/checks
+
+should first try to migrate to GitHub Actions?
+
+---------------------------------------------------------------------------
+
+by stof at 2021-10-26T15:33:33Z
+
+Yeah, we probably need to migrate to GitHub Actions as Travis stopped providing free CI for open-source packages.
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-26T15:40:43Z
+
+@stof they do provide, but you first need to "migrate" to travis.com:
+- https://docs.travis-ci.com/user/migrate/open-source-repository-migration
+
+altho, it may be easier to start from scratch:
+- https://www.travis-ci.com/getting-started/
+
+and indeed, last build is 8mo ago:
+- https://travis-ci.org/github/silexphp/Pimple/builds/761679114
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-26T15:54:35Z
+
+Ok, the GHA setup was rather trivial (5m work):
+- https://github.com/silexphp/Pimple/pull/269
+
+---------------------------------------------------------------------------
+
+by stof at 2021-10-26T16:02:13Z
+
+@glensc and once you migrate to travis-ci.com, you don't get free CI for public repositories. You only get something like a free trial.
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-27T09:23:53Z
+
+if in the end pull request is squash merged, what's the point of trying to preserve authorship of commits?
+
+- https://github.com/silexphp/Pimple/pull/269#ref-commit-85cb605
+
+perhaps this and adding test should be then separate Pull Requests?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2021-10-27T09:42:12Z
+
+Commits from different authors are not merged.
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-27T10:15:34Z
+
+so, the `src` changes should be perhaps reverted? the doc changes are useless and typehint is to be merged via https://github.com/silexphp/Pimple/pull/266?
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-27T10:16:47Z
+
+Example of CI job:
+- https://github.com/glensc/php-Pimple/actions/runs/1389643807
+
+The actions are run in my fork only, because not merged to master yet?
+
+---------------------------------------------------------------------------
+
+by stof at 2021-10-27T15:01:10Z
+
+@glensc if you push to that PR again, the CI should now run
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-27T16:43:24Z
+
+what about my question:
+- https://github.com/silexphp/Pimple/pull/268#issuecomment-952764420
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-27T17:18:08Z
+
+Removed Draft state. Ready for merge. Is the attribution done correctly?
