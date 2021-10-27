@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    name: PHP ${{ matrix.php }}
+    name: PHP ${{ matrix.php }} - ${{ matrix.dependencies }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -16,6 +16,9 @@ jobs:
           - "7.3"
           - "7.4"
           - "8.0"
+        dependencies:
+          - "psr/container:^1.1"
+          - "psr/container:^2.0"
 
     steps:
       - name: Checkout Code
@@ -34,8 +37,10 @@ jobs:
       - name: Validate composer.json
         run: composer validate --strict --no-check-lock
 
-      - name: Install dependencies
-        run: composer update --prefer-dist --no-progress
+      - name: Install dependencies +${{ matrix.dependencies }}
+        run: |
+          composer require --no-update ${{ matrix.dependencies }}
+          composer update --prefer-dist --no-progress
 
       - name: Run PHPUnit tests
         run: vendor/bin/simple-phpunit --verbose
