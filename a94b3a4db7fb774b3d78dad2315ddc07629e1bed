@@ -1,0 +1,84 @@
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-26T16:21:08Z
+
+Example failures:
+- https://github.com/glensc/php-Pimple/runs/4012227959?check_suite_focus=true
+
+---------------------------------------------------------------------------
+
+by stof at 2021-10-26T16:23:18Z
+
+The issues about the PHPUnit runner are fixed by using PHPUnit 9.5 rather than 9.4 (symfony/phpunit-bridge 5.4 will do it automatically, but it is not released yet)
+
+---------------------------------------------------------------------------
+
+by fabpot at 2021-10-27T17:30:46Z
+
+I've rebased on the current main branch and tests look green across the board. We probably need to add PHP 8.1 in the CI to test it as well.
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-28T07:25:42Z
+
+adding 8.1 CI would result in failures:
+- https://github.com/glensc/php-Pimple/runs/4012227959?check_suite_focus=true
+
+but that requires phpunit-bridge update:
+- https://github.com/silexphp/Pimple/pull/266#issuecomment-952104911
+
+Another option would be to ignore PHPUnit errors, but that's as good as just not running the tests, to avoid giving false sense tests pass:
+- https://github.com/silexphp/Pimple/pull/269#discussion_r736702650
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-28T07:51:11Z
+
+The phpunit error being:
+
+```
+Remaining direct deprecation notices (1)
+
+  1x: PHPUnit\Runner\DefaultTestResultCache implements the Serializable interface, which is deprecated. Implement __serialize() and __unserialize() instead (or in addition, if support for old PHP versions is necessary)
+    1x in ClassLoader::loadClass from Composer\Autoload
+```
+
+- https://github.com/glensc/php-Pimple/runs/4031801734?check_suite_focus=true
+
+---------------------------------------------------------------------------
+
+by fabpot at 2021-10-28T07:54:41Z
+
+@glensc Can you submit a PR that introduces PHP 8.1 in the CI?
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-28T08:36:44Z
+
+@fabpot:
+- https://github.com/silexphp/Pimple/pull/270
+
+you can just cherry-pick it to this branch if you wish:
+
+```
+wget https://github.com/silexphp/Pimple/pull/270.patch
+git am 270.patch
+```
+
+but not sure what's the point is, if it fails, and to fix it need to wait for phpunit-bridge release
+
+---------------------------------------------------------------------------
+
+by derrabus at 2021-10-28T09:55:36Z
+
+> to fix it need to wait for phpunit-bridge release
+
+You can switch PhpUnitBridge to `^5.4@dev` for the moment, I suppose.
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-10-28T10:41:24Z
+
+> You can switch PhpUnitBridge to `^5.4@dev` for the moment, I suppose.
+
+Added in https://github.com/silexphp/Pimple/pull/270
