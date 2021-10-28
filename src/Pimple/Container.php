@@ -74,9 +74,12 @@ class Container implements \ArrayAccess
      * @param string $id    The unique identifier for the parameter or object
      * @param mixed  $value The value of the parameter or a closure to define an object
      *
+     * @return void
+     *
      * @throws FrozenServiceException Prevent override of a frozen service
      */
-    public function offsetSet($id, $value): void
+    #[\ReturnTypeWillChange]
+    public function offsetSet($id, $value)
     {
         if (isset($this->frozen[$id])) {
             throw new FrozenServiceException($id);
@@ -128,8 +131,11 @@ class Container implements \ArrayAccess
      * Checks if a parameter or an object is set.
      *
      * @param string $id The unique identifier for the parameter or object
+     *
+     * @return bool
      */
-    public function offsetExists($id): bool
+    #[\ReturnTypeWillChange]
+    public function offsetExists($id)
     {
         return isset($this->keys[$id]);
     }
@@ -138,8 +144,11 @@ class Container implements \ArrayAccess
      * Unsets a parameter or an object.
      *
      * @param string $id The unique identifier for the parameter or object
+     *
+     * @return void
      */
-    public function offsetUnset($id): void
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($id)
     {
         if (isset($this->keys[$id])) {
             if (\is_object($this->values[$id])) {

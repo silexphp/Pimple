@@ -42,7 +42,11 @@ final class ServiceIterator implements \Iterator
         $this->ids = $ids;
     }
 
-    public function rewind(): void
+    /**
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function rewind()
     {
         \reset($this->ids);
     }
@@ -65,12 +69,20 @@ final class ServiceIterator implements \Iterator
         return \current($this->ids);
     }
 
-    public function next(): void
+    /**
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function next()
     {
         \next($this->ids);
     }
 
-    public function valid(): bool
+    /**
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
+    public function valid()
     {
         return null !== \key($this->ids);
     }
