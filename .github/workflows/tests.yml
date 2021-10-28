@@ -16,6 +16,7 @@ jobs:
           - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
         dependencies:
           - "psr/container:^1.1"
           - "psr/container:^2.0"
