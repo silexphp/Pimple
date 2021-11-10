@@ -1,0 +1,49 @@
+---------------------------------------------------------------------------
+
+by glensc at 2021-11-09T17:45:50Z
+
+This is not valid syntax for the minimum php version the library supports (7.2):
+- https://github.com/silexphp/Pimple/blob/v3.5.0/composer.json#L15
+
+---------------------------------------------------------------------------
+
+by derrabus at 2021-11-09T17:48:45Z
+
+> This is not valid syntax for the minimum php version the library supports (7.2):
+
+Correct, but is that a problem?
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-11-09T17:53:10Z
+
+It's up to maintainers to decide is that a problem, if I would be the maintainer I wouldn't put code to documentation that doesn't always run. it's just asking for support trouble explaining you need yadauyada.
+
+A similar change was rejected in the past, and in that case, the syntax change required PHP 5.4 that matched the supported PHP version (7.2) at that time:
+- https://github.com/silexphp/Pimple/pull/254
+
+---------------------------------------------------------------------------
+
+by glensc at 2021-11-09T17:54:49Z
+
+Also, read the caution in project README:
+
+>
+> Pimple
+> Caution!
+>
+> Pimple is now closed for changes. No new features will be added and no cosmetic changes will be accepted either. The only accepted changes are compatibility with newer PHP versions and security issue fixes.
+>
+> Caution!
+
+---------------------------------------------------------------------------
+
+by fabpot at 2021-11-10T07:59:20Z
+
+I think it's a bit different from the other PR that was rejected. First, it makes things way more readable, and then, 7.2 is not maintained anymore for a very long time.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2021-11-10T07:59:45Z
+
+Also, it only changes the README, not the code.
