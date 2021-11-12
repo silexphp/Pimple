@@ -82,7 +82,7 @@ anonymous function with the ``factory()`` method
 
 .. code-block:: php
 
-    $container['session'] = $container->factory(fn($c) => new Session($c['session_storage']);
+    $container['session'] = $container->factory(fn($c) => new Session($c['session_storage']));
 
 Now, each call to ``$container['session']`` returns a new instance of the
 session.
