@@ -21,7 +21,8 @@
   },
   "require-dev": {
     "codeception/codeception": "^4.1",
-    "roave/security-advisories": "dev-master"
+    "roave/security-advisories": "dev-master",
+    "codeception/module-asserts": "^2.0"
   },
   "autoload": {
     "psr-4": {
