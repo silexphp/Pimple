@@ -20,7 +20,7 @@
     "pimple/pimple": "^3.2"
   },
   "require-dev": {
-    "codeception/codeception": "^2.2",
+    "codeception/codeception": "^4.1",
     "roave/security-advisories": "dev-master"
   },
   "autoload": {
