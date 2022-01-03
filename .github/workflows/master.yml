@@ -1,0 +1,46 @@
+name: main
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version:
+          - 7.3
+          - 7.4
+          - 8.0
+          - 8.1
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run test suite with coverage
+        run: XDEBUG_MODE=coverage vendor/bin/codecept run unit --coverage-xml
+
+      - name: Download Scrutinizer ocular.phar
+        run: composer require scrutinizer/ocular
+
+      - name: Upload coverage
+        run: vendor/bin/ocular code-coverage:upload --format=php-clover tests/_output/coverage.xml
