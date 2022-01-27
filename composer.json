@@ -4,9 +4,9 @@
   "description": "Baracle be a simple Dependency Injection Container fer PHP and part o' th' Bone Framework",
   "keywords": [
     "dependency injection",
-    "container"
+    "container",
+    "PSR-11"
   ],
-  "homepage": "http://bonemvc.delboysplace.co.uk",
   "license": "MIT",
   "authors": [
     {
@@ -33,5 +33,8 @@
     "psr-4": {
       "Barnacle\\Tests\\": "tests/unit/"
     }
+  },
+  "provides": {
+    "psr/container-implementation": "^1.0"
   }
 }
