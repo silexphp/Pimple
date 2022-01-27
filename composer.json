@@ -34,7 +34,7 @@
       "Barnacle\\Tests\\": "tests/unit/"
     }
   },
-  "provides": {
+  "provide": {
     "psr/container-implementation": "^1.0"
   }
 }
