@@ -5,14 +5,14 @@ namespace Barnacle\Tests;
 use Barnacle\Container;
 use Barnacle\Exception\ContainerException;
 use Barnacle\Exception\NotFoundException;
+use Codeception\Test\Unit;
 use DateTime;
 
-class BarnacleTest extends \Codeception\TestCase\Test
+class BarnacleTest extends Unit
 {
-    /** @var Container */
-    protected $container;
+    protected Container $container;
 
-    protected function _before()
+    protected function _before(): void
     {
         $this->container = $c = new Container();
         $c[DateTime::class] = new DateTime('2020-04-06');
@@ -23,13 +23,13 @@ class BarnacleTest extends \Codeception\TestCase\Test
         });
     }
 
-    protected function _after()
+    protected function _after(): void
     {
         unset($this->container);
     }
 
 
-    public function testBlah()
+    public function testBlah(): void
     {
         $c = $this->container;
         $this->assertTrue($c->has(DateTime::class));
@@ -40,7 +40,7 @@ class BarnacleTest extends \Codeception\TestCase\Test
     }
 
 
-    public function testNotFoundException()
+    public function testNotFoundException(): void
     {
         $c = $this->container;
         $this->expectException(NotFoundException::class);
@@ -48,7 +48,7 @@ class BarnacleTest extends \Codeception\TestCase\Test
     }
 
 
-    public function testContainerxception()
+    public function testContainerxception(): void
     {
         $c = $this->container;
         $c['xxx'] = $c->factory(function(Container $c){
