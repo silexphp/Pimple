@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------
+
+by stof at 2026-02-25T13:02:15Z
+
+> * Require PHPUnit 10+ for DataProvider attribute compatibility
+
+this should not be done. the composer.json advocates support for PHP 7.2+, so we should instead restore the CI jobs that were removed in #278, which will require keeping support for PHPUnit 9
